@@ -7,7 +7,7 @@ export class BasicAIController {
 		this.body = params.body;
 		this.player = params.player;
 		this.maxDistance = params.maxDistance;
-		this.character = params.character;
+		this.entity = params.entity;
 		this.bulletManager = params.bulletManager;
 		this.timeToShot = Math.random() * 500;
 	}
@@ -21,9 +21,7 @@ export class BasicAIController {
 			var direction = this.computeDirection();
 			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
 			if(this.timeToShot<0) {
-				
-				
-				this.bulletManager.spawnNewBullet(this.body,direction,BulletManager.BULLET_PISTOL)
+				this.bulletManager.spawnNewBullet(this.entity,direction)
 				this.timeToShot = this.computeNewTime();
 			}
 			else

@@ -28,7 +28,8 @@ export class CharacterController {
 		this.euler = new THREE.Euler();
 	
 		this.velocity = this.characterBody.velocity;
-		this.run = false;
+		this.shiftHelded = false;
+		this.tabHelded = false;
 		
 		this.characterBody.addEventListener("collide",this.onCollision.bind(this));
 	}
@@ -94,14 +95,20 @@ export class CharacterController {
 			this.canJump = false;
 			this.input.keys.space = false;
 		}
-		if (this.input.keys.shift && !this.run){
+		if (this.input.keys.shift && !this.shiftHelded){
 			this.MANAGER.multiplyVelocityFactor();
-			this.character.changeGun();
-			this.run = true;
+			this.shiftHelded = true;
 		}
-		if (this.run && !this.input.keys.shift){
+		if (this.shiftHelded && !this.input.keys.shift){
 			this.MANAGER.resetVelocityFactor();
-			this.run = false;
+			this.shiftHelded = false;
+		}
+		if (this.input.keys.tab && !this.tabHelded){
+			this.character.changeGun();
+			this.tabHelded = true;
+		}
+		if (this.tabHelded && !this.input.keys.tab){
+			this.tabHelded = false;
 		}
 		if(!this.isMoving && !this.inputVelocity.equals(new THREE.Vector3())){
 			this.character.startMove();

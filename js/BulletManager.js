@@ -1,3 +1,4 @@
+import {CharacterFactory} from './CharacterFactory.js';
 
 export class BulletManager {
 	static BULLET_PISTOL = "bulletPistol";
@@ -10,10 +11,10 @@ export class BulletManager {
 		this.bullets = [];
 	}
 	
-	spawnNewBullet(objectFrom, direction, type) {
-		var position = objectFrom.position;
+	spawnNewBullet(entity, direction) {
+		var position = entity.body.position;
 		if(this.MANAGER.gameEnable==false) return;
-		var bullet = this.createNewBullet(type);
+		var bullet = this.createNewBullet(entity.character.getActualGun());
 		var x = position.x;
 		var y = position.y+1.8;
 		var z = position.z;
@@ -25,7 +26,7 @@ export class BulletManager {
 								direction.z * bullet.velocity);
 
 		// Move the ball outside the player sphere
-		var radiusDistance = objectFrom.shapes[0].radius*1.02 + bullet.shape.radius;
+		var radiusDistance = entity.body.shapes[0].radius*1.02 + bullet.shape.radius;
 		x += direction.x * (radiusDistance);
 		y += direction.y * (radiusDistance);
 		z += direction.z * (radiusDistance);
@@ -37,22 +38,38 @@ export class BulletManager {
 	
 	createNewBullet(type) {
 		switch(type) {
-			case BulletManager.BULLET_PISTOL:
+			case CharacterFactory.GUN_PISTOL:
 				var bulletBody = new CANNON.Body({mass: 0.1});
-				var bulletShape = new CANNON.Sphere(0.2);
-				var ballGeometry = new THREE.SphereGeometry(0.05, 32, 32);
+				var bulletShape = new CANNON.Sphere(0.1);
+				var ballGeometry = new THREE.SphereGeometry(0.1, 32, 32);
 				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 				var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
-				var shootVelocity = 50;
+				var shootVelocity = 45;
 				break;
 			
-			case BulletManager.BULLET_RPG:
+			case CharacterFactory.GUN_RPG:
 				var bulletBody = new CANNON.Body({mass: 50});
 				var bulletShape = new CANNON.Sphere(0.5);
 				var ballGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 				var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
-				var shootVelocity = 50;
+				var shootVelocity = 35;
+				break;
+			case CharacterFactory.GUN_SNIPER:
+				var bulletBody = new CANNON.Body({mass: 0.5});
+				var bulletShape = new CANNON.Sphere(0.2);
+				var ballGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
+				var shootVelocity = 90;
+				break;
+			case CharacterFactory.GUN_AK47:
+				var bulletBody = new CANNON.Body({mass: 0.5});
+				var bulletShape = new CANNON.Sphere(0.15);
+				var ballGeometry = new THREE.SphereGeometry(0.15, 32, 32);
+				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
+				var shootVelocity = 55;
 				break;
 		}
 		var bulletMesh = new THREE.Mesh( ballGeometry, material2 );

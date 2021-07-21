@@ -15,7 +15,7 @@ export class EntityManager{
         this.world = params.world;
         this.MANAGER = params.manager;
 		this.bulletManager = params.bulletManager;
-        //this.scoreManager = params.scoreManager;
+        this.scoreManager = params.scoreManager;
 
     }
 
@@ -27,7 +27,7 @@ export class EntityManager{
                     manager: this.MANAGER,
 					entityManager: this,
 					maxDistance: params.maxDistance,
-                    //scoreManager: this.scoreManager,
+                    scoreManager: this.scoreManager,
 					pos: this.entities.length,
                     target: character.getMesh(),
                     body: this.buildBody(params),
@@ -42,7 +42,7 @@ export class EntityManager{
                     manager: this.MANAGER,
 					entityManager: this,
 					pos: this.entities.length,
-                    //scoreManager: this.scoreManager,
+                    scoreManager: this.scoreManager,
                     target: character.getMesh(),
 					body: this.buildBody(params),
 					character : character,
@@ -128,7 +128,7 @@ class Entity{
         this.pos = params.pos;
 
         this.player = params.player;
-        if(this.body && this.player){
+        if(this.body){
             this.contactNormal = new CANNON.Vec3();
             this.upAxis = new CANNON.Vec3(0, 1, 0);
             
@@ -164,13 +164,15 @@ class Entity{
 class SimpleEnemyEntity extends Entity{
 	constructor(params){
 		super(params);
-
+		
+		this.scoreManager = params.scoreManager;
 		this.maxDistance = params.maxDistance;
 		this.character = params.character;
 
 		this.controls = new BasicAIController({
 			manager: this.MANAGER,
 			character: this.character,
+			entity: this,
 			target: this.target,
 			body: this.body,
 			player: this.player,
@@ -180,7 +182,7 @@ class SimpleEnemyEntity extends Entity{
 	}
 
 	hitted(){
-		console.log("Hitted")
+		this.scoreManager.enemyKilled();
 		this.entityManager.eliminateThisEntity(this);
 	}
 
@@ -196,6 +198,11 @@ class SimpleEnemyEntity extends Entity{
 class PlayerEntity extends Entity{
 	constructor(params){
 		super(params);
+		
+		this.scoreManager = params.scoreManager;
 		this.character = params.character;
+	}
+	hitted(){
+		this.scoreManager.lose1life();
 	}
 }

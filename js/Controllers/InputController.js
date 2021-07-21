@@ -67,6 +67,10 @@ export class InputController {
 			case 86: //v
 				this.MANAGER.APP.changeVisual();
 				break;
+				
+			case 9:
+			case 17:
+				this.keys.tab = true;
         }
     }
     onKeyUp(event) {
@@ -98,6 +102,10 @@ export class InputController {
             case 16: // SHIFT
                 this.keys.shift = false;
                 break;
+			
+			case 9:
+			case 17:
+				this.keys.tab = false;
         }
     }
 }

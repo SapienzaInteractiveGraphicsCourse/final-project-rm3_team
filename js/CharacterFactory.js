@@ -4,6 +4,12 @@ export class CharacterFactory {
     static GUN_SNIPER = "sniper";
     static GUN_RPG = "rpg";
 	
+	static GUN_ALL = [CharacterFactory.GUN_PISTOL,
+						CharacterFactory.GUN_AK47,
+						CharacterFactory.GUN_SNIPER,
+						CharacterFactory.GUN_RPG]
+	static GUN_RANDOM = CharacterFactory.GUN_ALL[Math.floor(Math.random() * CharacterFactory.GUN_ALL.length)]
+	
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.gunsName = params.guns;
@@ -156,6 +162,10 @@ export class CharacterFactory {
 	
 	getMesh() {
 		return this.character;
+	}
+	
+	getActualGun() {
+		return this.gunsName[this.actualGun];
 	}
 	
 	changeRotation(rotX) {

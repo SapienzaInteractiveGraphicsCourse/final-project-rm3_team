@@ -2,6 +2,7 @@ import {CharacterController} from './js/Controllers/CharacterController.js';
 import {CharacterFactory} from './js/CharacterFactory.js';
 import {EntityManager} from './js/EntityManager.js';
 import {BulletManager} from './js/BulletManager.js';
+import {ScoreManager} from './js/ScoreManager.js';
 
 class gameManager {
 	constructor(){
@@ -13,6 +14,9 @@ class gameManager {
 		this.APP = null;
 		
 		this.options = {
+			enemyQuantity: 30,
+			lifes: 5,
+			time: 180,
 			mouseSensibility : 1,
 			velocityFactorDefault : 0.2,
 		}
@@ -22,6 +26,16 @@ class gameManager {
 	
 	getMouseSensibility() {
 		return this.options.mouseSensibility;
+	}
+	
+	getEnemyQuantity() {
+		return this.options.enemyQuantity;
+	}
+	getLifes() {
+		return this.options.lifes;
+	}
+	getTime() {
+		return this.options.time;
 	}
 	
 	getVelocityFactor() {
@@ -80,6 +94,14 @@ class gameEnvironment {
 	constructor() {
 		this.models = {};
 		this.load();
+		
+		this.scoreManager = new ScoreManager({
+			lifesTarget: document.getElementById("lifesSpanGame"),
+			timeTarget: document.getElementById("timeSpanGame"),
+			enemyTarget: document.getElementById("enemySpanGame"),
+			lifes: MANAGER.getLifes(), numEnemy: MANAGER.getEnemyQuantity(),
+			time: MANAGER.getTime(),
+		})
 	}
 	
 	load() {
@@ -171,11 +193,16 @@ class gameEnvironment {
 			var pointerlockchange = function ( event ) {
 				if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
 					MANAGER.gameEnable = true;
-
+					
+					if(this.pauseTime){
+						this.scoreManager.addPauseTime(Date.now()-this.pauseTime);
+					}
+					
 					blocker.style.display = 'none';
 					pauseCanvas.style.display = 'none';
 
 				} else {
+					this.pauseTime = Date.now();
 					MANAGER.gameEnable = false;
 
 					pauseCanvas.style.display = '-webkit-flex';
@@ -193,9 +220,9 @@ class gameEnvironment {
 			}
 
 			// Hook pointer lock state change events
-			document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-			document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-			document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+			document.addEventListener( 'pointerlockchange', pointerlockchange.bind(this), false );
+			document.addEventListener( 'mozpointerlockchange', pointerlockchange.bind(this), false );
+			document.addEventListener( 'webkitpointerlockchange', pointerlockchange.bind(this), false );
 
 			document.addEventListener( 'pointerlockerror', pointerlockerror, false );
 			document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
@@ -255,7 +282,7 @@ class gameEnvironment {
 	createBulletFromPlayer() {
 		if(MANAGER.gameEnable==false) return;
 		this.getShootDir(this.shootDirection);
-		this.bulletManager.spawnNewBullet(this.playerEntity.body, this.shootDirection, BulletManager.BULLET_PISTOL)
+		this.bulletManager.spawnNewBullet(this.playerEntity, this.shootDirection)
 	}
 	
 	initializePlayerShot() {
@@ -268,10 +295,20 @@ class gameEnvironment {
 		var dt = 1/60;
 		this.world.step(dt);
 		
-		var timeInSecond = Date.now() - this.time;
+		var time = Date.now() - this.time;
 		
-		this.entityManager.update(timeInSecond);
-		this.bulletManager.update(timeInSecond)
+		this.scoreManager.updateCurrTime(Date.now());
+        if(this.scoreManager.isGameOver()){
+            document.exitPointerLock();
+			if(this.scoreManager.isWin())
+				console.log("Hai vinto!");
+			else
+				console.log("Hai perso!");
+            return;
+        }
+		
+		this.entityManager.update(time);
+		this.bulletManager.update(time)
 		//this.controls.update( Date.now() - this.time );
 		
 		// Update ball positions
@@ -323,12 +360,12 @@ class gameEnvironment {
 		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 		
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
-		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER, bulletManager: this.bulletManager})
+		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
 
-		var ambient = new THREE.AmbientLight( 0x111111 );
+		var ambient = new THREE.AmbientLight( 0x666666 );
 		this.scene.add( ambient );
 
-		this.light = new THREE.SpotLight( 0xffffff );
+		this.light = new THREE.SpotLight( 0x666666 );
 		this.light.position.set( 10, 30, 20 );
 		this.light.target.position.set( 0, 0, 0 );
 		if(true){
@@ -408,11 +445,8 @@ class gameEnvironment {
 		
 		this.scene.add(this.controls.getObject());
 		
-		var rotation = [0,Math.PI,0];
-		this.enemy = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [CharacterFactory.GUN_PISTOL], position: [5,2,-25], maxDistance: 20, rotation: rotation});
-		this.enemy = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [CharacterFactory.GUN_PISTOL], position: [0,2,-25], maxDistance: 20, rotation: rotation});
-		this.enemy = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [CharacterFactory.GUN_PISTOL], position: [-5,2,-25], maxDistance: 20, rotation: rotation});
-
+		this.spawnEnemy();
+		
 		// Add linked boxes
 		var size = 0.5;
 		var he = new CANNON.Vec3(size,size,size*0.1);
@@ -454,8 +488,26 @@ class gameEnvironment {
 		
 		
 		this.locker();
-		this.time = Date.now();
+		var time = Date.now();
+		this.scoreManager.setStartTime(time);
+        this.scoreManager.updateCurrTime(time);
+		
 		this.GameLoop();
+	}
+	
+	spawnEnemy() {
+		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
+			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
+			var minDistanceSquared = 625;
+			var position = [0,2.5,0];
+			position[0] = Math.random()*2-1;
+			position[2] = Math.random()*2-1;
+			var distanceSquared = position[0]*position[0]+position[2]*position[2];
+			var factor = Math.sqrt(minDistanceSquared/distanceSquared);
+			position[0] *= (factor+Math.random()*100);
+			position[2] *= (factor+Math.random()*100);
+			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
+		}
 	}
 	
 	initCannon() {
@@ -476,7 +528,7 @@ class gameEnvironment {
 		else
 			world.solver = solver;
 
-		world.gravity.set(0,-20,0);
+		world.gravity.set(0,-10,0);
 		world.broadphase = new CANNON.NaiveBroadphase();
 
 		// Create a slippery material (friction coefficient = 0.0)

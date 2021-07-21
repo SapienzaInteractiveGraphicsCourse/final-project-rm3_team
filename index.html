@@ -10,7 +10,7 @@
 				<div id="instructions">
 					<input id="playGameButton" class="menuBotton" type="button" value="START">
 					<br />
-					(W,A,S,D = Move, SPACE = Jump, SHIFT = Run, MOUSE = Look, CLICK = Shoot)
+					(W,A,S,D = Move, SPACE = Jump, SHIFT = Run, CONTROL = Change Gun, MOUSE = Look, CLICK = Shoot)
 				</div>
 			</div>
 		</div>
@@ -22,7 +22,23 @@
 			</div>
 			<div id="gameCanvas">
 				<canvas id="canvas"></canvas>
-				
+				<div id="GameValues">
+                <div class="ModeParamsDiv">
+                    <span id="lifesSpanGame" class="spanLogoMode">lifes: 3</span>
+                </div>
+                <div class="ModeParamsDiv">
+                    <span id="timeSpanGame" class="spanLogoMode">time: 3:00</span>
+                </div>
+                <div class="ModeParamsDiv">
+                    <span id="enemySpanGame" class="spanLogoMode">stars: 1</span>
+                </div>
+				<!--
+                <div class="ModeParamsDiv">
+                    <span id="scoreSpanGame" class="spanLogoMode">score: 0000</span>
+                </div>
+				!-->
+                <span id="writer"></span>
+            </div>
 				<div id="PauseCanvas">
 					<input id="resumeButton" class="menuBotton" type="button" value="RESUME">
 					<span></span>
