@@ -13,43 +13,31 @@ class gameManager {
 		
 		this.APP = null;
 		
-		this.options = {
-			enemyQuantity: 30,
-			lifes: 5,
-			time: 180,
-			mouseSensibility : 1,
-			velocityFactorDefault : 0.2,
+		this.setOptionsDefault = function() {
+			this.options = {
+				mouseSensibility : 1,
+				lifes: 5,
+				enemyQuantity: 30,
+				time: 180,
+				velocityFactorDefault : 0.2,
+			}
 		}
+		this.setOptionsDefault();
 		
 		this.velocityFactor = this.options.velocityFactorDefault;
 	}
 	
-	getMouseSensibility() {
-		return this.options.mouseSensibility;
-	}
+	getOptions() {return this.options;}
+	getMouseSensibility() {return this.options.mouseSensibility;}
+	getEnemyQuantity() {return this.options.enemyQuantity;}
+	getLifes() {return this.options.lifes;}
+	getTime() {return this.options.time;}
+	getVelocityFactor() {return this.velocityFactor;}
 	
-	getEnemyQuantity() {
-		return this.options.enemyQuantity;
-	}
-	getLifes() {
-		return this.options.lifes;
-	}
-	getTime() {
-		return this.options.time;
-	}
+	setOptions(options) {this.options = options;}
 	
-	getVelocityFactor() {
-		return this.velocityFactor;
-	}
-	
-	resetVelocityFactor() {
-		this.velocityFactor = this.options.velocityFactorDefault;
-	}
-	
-	multiplyVelocityFactor(val = 2) {
-		this.velocityFactor = this.options.velocityFactorDefault*val;
-	}
-	
+	resetVelocityFactor(){this.velocityFactor = this.options.velocityFactorDefault;}
+	multiplyVelocityFactor(val = 2) {this.velocityFactor = this.options.velocityFactorDefault*val;}
 	
 	startGame() {
 		this.gameStarted = true;
@@ -64,11 +52,24 @@ class MenuEnvironment {
 		this.game = document.getElementById("game");
 		
 		this.playGameButton = document.getElementById("playGameButton");
+		this.settingButton = document.getElementById("settingsButton");
 		
-		this.setUpButtons();
+		this.setting = document.getElementById("settings");
+		this.exitSettings = document.getElementById("exitSettings");
+		this.confirmSettings = document.getElementById("confirmSettings");
+		this.resetSettings = document.getElementById("resetSettings");
+		
+		this.sliderMouseSens = document.getElementById("sliderMouseSens");
+		this.sliderLifes = document.getElementById("sliderLifes");
+		this.sliderEnemys = document.getElementById("sliderEnemys");
+		this.sliderTime = document.getElementById("sliderTime");
+
+		
+		this.setUpMainButtons();
+		this.setUpSettingButton();
 	}
 	
-	setUpButtons() {
+	setUpMainButtons() {
 		this.game.style.display = "none";
 		this.playGameButton.addEventListener("click", () => {
 			this.game.style.display = "block"
@@ -77,6 +78,75 @@ class MenuEnvironment {
             document.activeElement.blur();
             MANAGER.startGame();
         }, false);
+		this.setting.style.display = "none";
+		this.settingButton.addEventListener("click", () => {
+			this.setUpSettingSlider();
+			this.setting.style.display = "block"
+            this.setting.style.bottom = "0px";
+            this.setting.style.animation = "1s newPage normal";
+            document.activeElement.blur();		
+        }, false);
+	}
+	setUpSettingButton() {
+		this.exitSettings.addEventListener("click", this.exitSetting.bind(this), false);
+		this.confirmSettings.addEventListener("click", () => {
+			this.updateAllOptions();
+            var currentOptions = MANAGER.getOptions();
+            document.cookie = "options={mouseSensibility:"+currentOptions.mouseSensibility+
+				", lifes:"+currentOptions.lifes+
+                ", enemyQuantity:"+currentOptions.enemyQuantity+
+                ", time:"+currentOptions.time+"};";
+			this.exitSetting();
+        }, false);
+		this.resetSettings.addEventListener("click", () => {
+			MANAGER.setOptionsDefault();
+			this.updateAllSlider();
+        }, false);
+	}
+	setUpSettingSlider() {
+		var cookieSettings = this.getCookie("options");
+        if(cookieSettings != null){
+            var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
+
+            MANAGER.setOptions({
+                mouseSensibility: parseFloat(data[0].split(":")[1]),
+                lifes: parseFloat(data[1].split(":")[1]),
+                enemyQuantity: parseFloat(data[2].split(":")[1]),
+                time: parseFloat(data[3].split(":")[1]),
+				velocityFactorDefault: 0.2,
+            });
+
+            this.updateAllSlider();
+        } else {
+			this.updateAllSlider();
+        }
+	}
+	
+	getCookie(name){
+        var elem = document.cookie.split("; ").find(row => row.startsWith(name))
+        if(elem == null)
+            return null;
+        return elem.split('=')[1];
+    }
+	exitSetting() {
+		this.setting.style.display = "none";
+		document.activeElement.blur();
+	}
+	updateAllSlider() {
+		var curOptions = MANAGER.getOptions();
+		this.sliderMouseSens.value = curOptions.mouseSensibility;
+		this.sliderLifes.value = curOptions.lifes;
+		this.sliderEnemys.value = curOptions.enemyQuantity;
+		this.sliderTime.value = curOptions.time;
+	}
+	updateAllOptions() {
+		MANAGER.setOptions({
+			mouseSensibility: parseFloat(this.sliderMouseSens.value),
+			lifes: parseFloat(this.sliderLifes.value),
+			enemyQuantity: parseFloat(this.sliderEnemys.value),
+			time: parseFloat(this.sliderTime.value),
+			velocityFactorDefault: 0.2,
+		});
 	}
 }
 
@@ -391,7 +461,7 @@ class gameEnvironment {
 		if(true){
 			this.tourch.castShadow = true;
 
-			this.tourch.shadow.camera.near = 0.5;
+			this.tourch.shadow.camera.near = 3.5;
 			this.tourch.shadow.camera.far = 50;//camera.far;
 			this.tourch.shadow.camera.fov = 40;
 
@@ -403,7 +473,7 @@ class gameEnvironment {
 			this.tourch.shadowCameraVisible = true;
 		}
 		  this.tourch.position.set(0, 1.5, 0);
-		  this.tourch.target.position.set(0, 1.4, -1);
+		  this.tourch.target.position.set(0, 1.5, -1);
 		  
 		
 		this.renderer = new THREE.WebGLRenderer({canvas: document.getElementById( 'canvas' ), antialias: true});
