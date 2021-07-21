@@ -18,11 +18,12 @@ export class BasicAIController {
 		
 		var distance = this.player.body.position.distanceTo(this.body.position);
 		if(distance<this.maxDistance) {
-			
+			var direction = this.computeDirection();
+			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
 			if(this.timeToShot<0) {
 				
 				
-				this.bulletManager.spawnNewBullet(this.body,this.computeDirection(),BulletManager.BULLET_PISTOL)
+				this.bulletManager.spawnNewBullet(this.body,direction,BulletManager.BULLET_PISTOL)
 				this.timeToShot = this.computeNewTime();
 			}
 			else
