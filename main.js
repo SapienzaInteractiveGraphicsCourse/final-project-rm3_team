@@ -364,7 +364,7 @@ class gameEnvironment {
 
 		var ambient = new THREE.AmbientLight( 0x666666 );
 		this.scene.add( ambient );
-
+		/* //Old light
 		this.light = new THREE.SpotLight( 0x666666 );
 		this.light.position.set( 10, 30, 20 );
 		this.light.target.position.set( 0, 0, 0 );
@@ -381,8 +381,30 @@ class gameEnvironment {
 			this.light.shadow.mapSize.height = 2*512;
 
 			//light.shadowCameraVisible = true;
+		}*/
+		
+		this.tourch = new THREE.SpotLight(0xffffff);
+		this.tourch.angle = Math.PI/4
+		this.tourch.distance = 50;
+		this.tourch.penumbra = 0.3;
+		this.tourch.intensity = 1;
+		if(true){
+			this.tourch.castShadow = true;
+
+			this.tourch.shadow.camera.near = 0.5;
+			this.tourch.shadow.camera.far = 50;//camera.far;
+			this.tourch.shadow.camera.fov = 40;
+
+			this.tourch.shadowMapBias = 0.1;
+			this.tourch.shadowMapDarkness = 0.7;
+			this.tourch.shadow.mapSize.width = 2*512;
+			this.tourch.shadow.mapSize.height = 2*512;
+
+			this.tourch.shadowCameraVisible = true;
 		}
-		this.scene.add( this.light );
+		  this.tourch.position.set(0, 1.5, 0);
+		  this.tourch.target.position.set(0, 1.4, -1);
+		  
 		
 		this.renderer = new THREE.WebGLRenderer({canvas: document.getElementById( 'canvas' ), antialias: true});
 		this.renderer.shadowMap.enabled = true;
@@ -397,7 +419,8 @@ class gameEnvironment {
 		var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
-		var material = new THREE.MeshLambertMaterial( { color: 0xeeee00 } );
+		//var material = new THREE.MeshLambertMaterial( { color: 0xeeee00 } );
+		var material = new THREE.MeshPhongMaterial( { color: 0xeeee00, dithering: true } );
 
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.castShadow = true;
@@ -438,6 +461,8 @@ class gameEnvironment {
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
 		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition})
+		this.playerEntity.character.getMesh().add(this.tourch);
+		this.playerEntity.character.getMesh().add(this.tourch.target);
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
