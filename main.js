@@ -67,6 +67,7 @@ class MenuEnvironment {
 		
 		this.setUpMainButtons();
 		this.setUpSettingButton();
+		this.giveValueFromCookie();
 	}
 	
 	setUpMainButtons() {
@@ -80,7 +81,7 @@ class MenuEnvironment {
         }, false);
 		this.setting.style.display = "none";
 		this.settingButton.addEventListener("click", () => {
-			this.setUpSettingSlider();
+			this.updateAllSlider();
 			this.setting.style.display = "block"
             this.setting.style.bottom = "0px";
             this.setting.style.animation = "1s newPage normal";
@@ -103,7 +104,7 @@ class MenuEnvironment {
 			this.updateAllSlider();
         }, false);
 	}
-	setUpSettingSlider() {
+	giveValueFromCookie() {
 		var cookieSettings = this.getCookie("options");
         if(cookieSettings != null){
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
@@ -115,10 +116,6 @@ class MenuEnvironment {
                 time: parseFloat(data[3].split(":")[1]),
 				velocityFactorDefault: 0.2,
             });
-
-            this.updateAllSlider();
-        } else {
-			this.updateAllSlider();
         }
 	}
 	

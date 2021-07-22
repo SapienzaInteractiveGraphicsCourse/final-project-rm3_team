@@ -1,13 +1,61 @@
 export class CharacterFactory {
 	static GUN_PISTOL = "pistol";
+	static GUN_PISTOL_STATISTIC = {
+		name: CharacterFactory.GUN_PISTOL,
+		timeReloading: 4,
+		ammo: 6,
+		timeBetweenAmmo: 1.2,
+		bullet: {
+			mass: 0.1,
+			radius: 0.1,
+			shootVelocity: 45,
+		}
+	};
     static GUN_AK47 = "ak47";
+	static GUN_AK47_STATISTIC = {
+		name: CharacterFactory.GUN_AK47,
+		timeReloading: 4,
+		ammo: 10,
+		timeBetweenAmmo: 0.5,
+		bullet: {
+			mass: 0.5,
+			radius: 0.15,
+			shootVelocity: 55,
+		}
+	};
     static GUN_SNIPER = "sniper";
+	static GUN_SNIPER_STATISTIC = {
+		name: CharacterFactory.GUN_SNIPER,
+		timeReloading: 5,
+		ammo: 4,
+		timeBetweenAmmo: 1.4,
+		bullet: {
+			mass: 0.5,
+			radius: 0.2,
+			shootVelocity: 90,
+		}
+	};
     static GUN_RPG = "rpg";
+	static GUN_RPG_STATISTIC = {
+		name: CharacterFactory.GUN_RPG,
+		timeReloading: 5,
+		ammo: 1,
+		timeBetweenAmmo: 3,
+		bullet: {
+			mass: 50,
+			radius: 0.5,
+			shootVelocity: 35,
+		}
+	};
 	
 	static GUN_ALL = [CharacterFactory.GUN_PISTOL,
 						CharacterFactory.GUN_AK47,
 						CharacterFactory.GUN_SNIPER,
 						CharacterFactory.GUN_RPG]
+	static GUN_ALL_STATISTIC = [CharacterFactory.GUN_PISTOL_STATISTIC,
+						CharacterFactory.GUN_AK47_STATISTIC,
+						CharacterFactory.GUN_SNIPER_STATISTIC,
+						CharacterFactory.GUN_RPG_STATISTIC]
 	static GUN_RANDOM = CharacterFactory.GUN_ALL[Math.floor(Math.random() * CharacterFactory.GUN_ALL.length)]
 	
 	constructor(params){
@@ -165,7 +213,7 @@ export class CharacterFactory {
 	}
 	
 	getActualGun() {
-		return this.gunsName[this.actualGun];
+		return CharacterFactory.GUN_ALL_STATISTIC.find(gun => gun.name==this.gunsName[this.actualGun]);
 	}
 	
 	changeRotation(rotX) {

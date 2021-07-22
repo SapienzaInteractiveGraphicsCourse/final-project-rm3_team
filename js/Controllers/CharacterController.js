@@ -68,27 +68,27 @@ export class CharacterController {
 	
 
     // Moves the camera to the Cannon.js object position and adds velocity to the object if the run key is down
-    update(delta) {
+    update(time) {
         if ( this.MANAGER.gameEnable === false ) return;
 		
 		this.yawObject.rotation.y = this.input.rotationY;
 		this.pitchObject.rotation.x = this.input.rotationX;
 		this.character.rightArm.rotation.x = this.input.rotationX+PI_2
 
-        delta *= 0.1;
+        time *= 0.1;
 
         this.inputVelocity.set(0,0,0);
         if (this.input.keys.forward){
-            this.inputVelocity.z = -this.MANAGER.getVelocityFactor() * delta;
+            this.inputVelocity.z = -this.MANAGER.getVelocityFactor() * time;
         }
         if (this.input.keys.backward){
-            this.inputVelocity.z = this.MANAGER.getVelocityFactor() * delta;
+            this.inputVelocity.z = this.MANAGER.getVelocityFactor() * time;
         }
         if (this.input.keys.left){
-            this.inputVelocity.x = -this.MANAGER.getVelocityFactor() * delta;
+            this.inputVelocity.x = -this.MANAGER.getVelocityFactor() * time;
         }
         if (this.input.keys.right){
-            this.inputVelocity.x = this.MANAGER.getVelocityFactor() * delta;
+            this.inputVelocity.x = this.MANAGER.getVelocityFactor() * time;
         }
 		if (this.input.keys.space && this.canJump){
 			this.velocity.y = this.jumpVelocity;
@@ -126,11 +126,13 @@ export class CharacterController {
         this.quat.setFromEuler(this.euler);
         this.inputVelocity.applyQuaternion(this.quat);
         //this.quat.multiplyVector3(this.inputVelocity);
-
         // Add to the object
+		if(!this.isMoving) {
+			this.velocity.x *= 0.93;
+			this.velocity.z *= 0.93;
+		}
         this.velocity.x += this.inputVelocity.x;
         this.velocity.z += this.inputVelocity.z;
-
         this.yawObject.position.copy(this.characterBody.position);
     };
 };

@@ -83,7 +83,6 @@ export class EntityManager{
                 body.linearDamping = 0.9;
                 break;
         }
-
         body.position.set(...params.position);
         if(params.rotation){
             if(params.rotation[0] != 0)

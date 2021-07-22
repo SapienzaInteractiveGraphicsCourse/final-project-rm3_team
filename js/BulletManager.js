@@ -14,7 +14,7 @@ export class BulletManager {
 	spawnNewBullet(entity, direction) {
 		var position = entity.body.position;
 		if(this.MANAGER.gameEnable==false) return;
-		var bullet = this.createNewBullet(entity.character.getActualGun());
+		var bullet = this.createNewBullet(entity.character.getActualGun().bullet);
 		var x = position.x;
 		var y = position.y+1.8;
 		var z = position.z;
@@ -36,8 +36,9 @@ export class BulletManager {
 		this.scene.add(bullet.mesh);
 	}
 	
-	createNewBullet(type) {
-		switch(type) {
+	createNewBullet(bullet) {
+		/*
+		switch(gun.name) {
 			case CharacterFactory.GUN_PISTOL:
 				var bulletBody = new CANNON.Body({mass: 0.1});
 				var bulletShape = new CANNON.Sphere(0.1);
@@ -72,6 +73,13 @@ export class BulletManager {
 				var shootVelocity = 55;
 				break;
 		}
+		*/
+		var bulletBody = new CANNON.Body({mass: bullet.mass});
+		var bulletShape = new CANNON.Sphere(bullet.radius);
+		var ballGeometry = new THREE.SphereGeometry(bullet.radius, 32, 32);
+		var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+		var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
+		var shootVelocity = bullet.shootVelocity;
 		var bulletMesh = new THREE.Mesh( ballGeometry, material2 );
 		bulletBody.addShape(bulletShape);
 		bulletBody.isBullet = 1;
