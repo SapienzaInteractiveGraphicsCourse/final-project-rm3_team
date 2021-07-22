@@ -63,6 +63,10 @@ class MenuEnvironment {
 		this.sliderLifes = document.getElementById("sliderLifes");
 		this.sliderEnemys = document.getElementById("sliderEnemys");
 		this.sliderTime = document.getElementById("sliderTime");
+		
+		this.difficultyEasy = document.getElementById("easyMode");
+		this.difficultyNormal = document.getElementById("normalMode");
+		this.difficultyHard = document.getElementById("hardMode");
 
 		
 		this.setUpMainButtons();
@@ -103,6 +107,9 @@ class MenuEnvironment {
 			MANAGER.setOptionsDefault();
 			this.updateAllSlider();
         }, false);
+		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this,0), false);
+		this.difficultyNormal.addEventListener("click", this.setDifficulty.bind(this,1), false);
+		this.difficultyHard.addEventListener("click", this.setDifficulty.bind(this,2), false);
 	}
 	giveValueFromCookie() {
 		var cookieSettings = this.getCookie("options");
@@ -144,6 +151,39 @@ class MenuEnvironment {
 			time: parseFloat(this.sliderTime.value),
 			velocityFactorDefault: 0.2,
 		});
+	}
+	setDifficulty(difficulty) {
+		switch(difficulty){
+			case 0:		//easy
+				var options = {
+					mouseSensibility : 1,
+					lifes: 10,
+					enemyQuantity: 10,
+					time: 180,
+					velocityFactorDefault : 0.2,
+				}
+				break
+			case 1:		//normal
+				var options = {
+					mouseSensibility : 1,
+					lifes: 5,
+					enemyQuantity: 25,
+					time: 150,
+					velocityFactorDefault : 0.2,
+				}
+				break;
+			case 2:		//hard
+				var options = {
+					mouseSensibility : 1,
+					lifes: 2,
+					enemyQuantity: 50,
+					time: 120,
+					velocityFactorDefault : 0.2,
+				}
+				break
+		}
+		MANAGER.setOptions(options);
+		this.updateAllSlider();
 	}
 }
 
@@ -636,17 +676,6 @@ class gameEnvironment {
 		
 		// We must add the contact materials to the world
 		world.addContactMaterial(physicsContactMaterial);
-
-		// Create a sphere
-		
-		var mass = 50, radius = 1;
-		this.sphereShape = new CANNON.Sphere(radius);
-		this.sphereBody = new CANNON.Body({ mass: mass });
-		this.sphereShape.material = groundMaterial;
-		this.sphereBody.addShape(this.sphereShape);
-		this.sphereBody.position.set(0,5,0);
-		this.sphereBody.linearDamping = 0.9;
-		//world.add(this.sphereBody);
 		
 		// Create a plane
 		var groundShape = new CANNON.Plane();
@@ -654,6 +683,7 @@ class gameEnvironment {
 		groundShape.material = groundMaterial;
 		groundBody.addShape(groundShape);
 		groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+		groundBody.isGround = true;
 		world.add(groundBody);
 		return world
 	}

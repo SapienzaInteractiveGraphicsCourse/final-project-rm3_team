@@ -140,6 +140,35 @@ body {
 }
 
 
+.difficulty{
+    border-radius: 25px;
+    padding: 3px 8px 6px 8px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    margin: auto;
+    font-size: 28px;
+    padding: 10px 46px;
+    cursor: pointer;
+}
+#easyMode:hover{
+    border: 1px solid #1bff00;
+    background: #8bf58e;
+    box-shadow: 0px 6px 15px #1bff0061;
+}
+#normalMode:hover{
+    border: 1px solid #fffb00;
+    background: #f5f38b;
+    box-shadow: 0px 6px 15px #fbff0061;
+}
+#hardMode:hover{
+    border: 1px solid red;
+    background: #f58b8b;
+    box-shadow: 0px 6px 15px #ff000061;
+}
+
+
+
+
 #settings{
     position: absolute;
     width: 100%;
@@ -239,4 +268,10 @@ body {
 .btnSettings:hover {
     background: rgb(255, 255, 255, 0.5);
     color: black;
+}
+
+.insideDivElem{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
 }
