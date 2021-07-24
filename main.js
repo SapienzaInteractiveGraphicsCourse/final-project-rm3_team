@@ -19,6 +19,7 @@ class gameManager {
 				lifes: 5,
 				enemyQuantity: 30,
 				time: 180,
+				viewfinder: true,
 				velocityFactorDefault : 0.2,
 			}
 		}
@@ -32,6 +33,7 @@ class gameManager {
 	getEnemyQuantity() {return this.options.enemyQuantity;}
 	getLifes() {return this.options.lifes;}
 	getTime() {return this.options.time;}
+	getViewfinder() {return this.options.viewfinder;}
 	getVelocityFactor() {return this.velocityFactor;}
 	
 	setOptions(options) {this.options = options;}
@@ -43,6 +45,11 @@ class gameManager {
 		this.gameStarted = true;
 		this.APP = new gameEnvironment();
 	}
+	
+	endGame(params) {
+		this.APP = new gameOverEnvironment(params);
+	}
+	
 }
 
 
@@ -59,15 +66,16 @@ class MenuEnvironment {
 		this.confirmSettings = document.getElementById("confirmSettings");
 		this.resetSettings = document.getElementById("resetSettings");
 		
+		this.difficultyEasy = document.getElementById("easyMode");
+		this.difficultyNormal = document.getElementById("normalMode");
+		this.difficultyHard = document.getElementById("hardMode");
+		
 		this.sliderMouseSens = document.getElementById("sliderMouseSens");
 		this.sliderLifes = document.getElementById("sliderLifes");
 		this.sliderEnemys = document.getElementById("sliderEnemys");
 		this.sliderTime = document.getElementById("sliderTime");
 		
-		this.difficultyEasy = document.getElementById("easyMode");
-		this.difficultyNormal = document.getElementById("normalMode");
-		this.difficultyHard = document.getElementById("hardMode");
-
+		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
 		
 		this.setUpMainButtons();
 		this.setUpSettingButton();
@@ -100,7 +108,8 @@ class MenuEnvironment {
             document.cookie = "options={mouseSensibility:"+currentOptions.mouseSensibility+
 				", lifes:"+currentOptions.lifes+
                 ", enemyQuantity:"+currentOptions.enemyQuantity+
-                ", time:"+currentOptions.time+"};";
+                ", time:"+currentOptions.time+
+				", viewfinder"+currentOptions.viewfinder+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
@@ -121,6 +130,7 @@ class MenuEnvironment {
                 lifes: parseFloat(data[1].split(":")[1]),
                 enemyQuantity: parseFloat(data[2].split(":")[1]),
                 time: parseFloat(data[3].split(":")[1]),
+				viewfinder: (data[4].split(":")[1] === 'true'),
 				velocityFactorDefault: 0.2,
             });
         }
@@ -142,6 +152,7 @@ class MenuEnvironment {
 		this.sliderLifes.value = curOptions.lifes;
 		this.sliderEnemys.value = curOptions.enemyQuantity;
 		this.sliderTime.value = curOptions.time;
+		this.wiewfinderCkBox.checked = curOptions.viewfinder;
 	}
 	updateAllOptions() {
 		MANAGER.setOptions({
@@ -149,6 +160,7 @@ class MenuEnvironment {
 			lifes: parseFloat(this.sliderLifes.value),
 			enemyQuantity: parseFloat(this.sliderEnemys.value),
 			time: parseFloat(this.sliderTime.value),
+			viewfinder: this.wiewfinderCkBox.checked,
 			velocityFactorDefault: 0.2,
 		});
 	}
@@ -160,6 +172,7 @@ class MenuEnvironment {
 					lifes: 10,
 					enemyQuantity: 10,
 					time: 180,
+					viewfinder: true,
 					velocityFactorDefault : 0.2,
 				}
 				break
@@ -169,6 +182,7 @@ class MenuEnvironment {
 					lifes: 5,
 					enemyQuantity: 25,
 					time: 150,
+					viewfinder: true,
 					velocityFactorDefault : 0.2,
 				}
 				break;
@@ -178,6 +192,7 @@ class MenuEnvironment {
 					lifes: 2,
 					enemyQuantity: 50,
 					time: 120,
+					viewfinder: false,
 					velocityFactorDefault : 0.2,
 				}
 				break
@@ -206,6 +221,7 @@ class gameEnvironment {
 			lifesTarget: document.getElementById("lifesSpanGame"),
 			timeTarget: document.getElementById("timeSpanGame"),
 			enemyTarget: document.getElementById("enemySpanGame"),
+			ammoTarget: document.getElementById("ammoSpanGame"),
 			lifes: MANAGER.getLifes(), numEnemy: MANAGER.getEnemyQuantity(),
 			time: MANAGER.getTime(),
 		})
@@ -290,6 +306,11 @@ class gameEnvironment {
 		var blocker = document.getElementById( 'blocker' );
 		var pauseCanvas = document.getElementById( 'PauseCanvas' );
 		var resumeButton = document.getElementById( 'resumeButton' );
+		
+		if(MANAGER.getViewfinder())
+			document.getElementById('viewfinder').style.display = 'block'
+		else
+			document.getElementById('viewfinder').style.display = 'none'
 
 		var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
@@ -377,27 +398,7 @@ class gameEnvironment {
             element.requestPointerLock();
         }, false)
 	}
-	
-	getShootDir(targetVec){
-		var vector = targetVec;
-		targetVec.set(0,0,1);
-		vector.unproject(this.camera);
-		var ray = new THREE.Ray(this.playerEntity.body.position, vector.sub(this.playerEntity.body.position).normalize() );
-		targetVec.copy(ray.direction);
-	}
-	
-	createBulletFromPlayer() {
-		if(MANAGER.gameEnable==false) return;
-		this.getShootDir(this.shootDirection);
-		this.bulletManager.spawnNewBullet(this.playerEntity, this.shootDirection)
-	}
-	
-	initializePlayerShot() {
-		this.shootDirection = new THREE.Vector3();
-		window.addEventListener("click",this.createBulletFromPlayer.bind(this));
-	}
-	
-	
+		
 	update() {
 		var dt = 1/60;
 		this.world.step(dt);
@@ -406,11 +407,14 @@ class gameEnvironment {
 		
 		this.scoreManager.updateCurrTime(Date.now());
         if(this.scoreManager.isGameOver()){
+			cancelAnimationFrame(this.animationFrameID);
             document.exitPointerLock();
-			if(this.scoreManager.isWin())
-				console.log("Hai vinto!");
-			else
-				console.log("Hai perso!");
+            MANAGER.endGame({
+                win: this.scoreManager.isWin(),
+                enemyKilled: this.scoreManager.getEnemyKilled(),
+				numEnemy: this.scoreManager.getNumEnemy(),
+                time: this.scoreManager.getRemaningTime(),
+            });
             return;
         }
 		
@@ -444,11 +448,11 @@ class gameEnvironment {
 
 	//Run game loop (update, render, repet)
 	GameLoop() {
-		requestAnimationFrame(this.GameLoop.bind(this));
+		this.animationFrameID = requestAnimationFrame(this.GameLoop.bind(this));
 		if(MANAGER.gameEnable){
 			this.update();
-		}
 			this.render();
+        }
 	}
 //---------------------------------------------------------------------
 	
@@ -492,7 +496,7 @@ class gameEnvironment {
 		
 		this.tourch = new THREE.SpotLight(0xffffff);
 		this.tourch.angle = Math.PI/4
-		this.tourch.distance = 50;
+		this.tourch.distance = 100;
 		this.tourch.penumbra = 0.3;
 		this.tourch.intensity = 1;
 		if(true){
@@ -573,7 +577,7 @@ class gameEnvironment {
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
-		this.controls = new CharacterController({manager: MANAGER, body: this.playerEntity.body, character: this.playerEntity.character, camera: this.camera});
+		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
 		
 		this.scene.add(this.controls.getObject());
 		
@@ -615,9 +619,6 @@ class gameEnvironment {
 			}
 			last = boxbody;
 		}
-		
-		this.initializePlayerShot();
-		
 		
 		this.locker();
 		var time = Date.now();
@@ -698,6 +699,32 @@ class gameEnvironment {
             MANAGER.StartGame();
         }, false);
 	}
+}
+
+class gameOverEnvironment {
+    constructor(params){
+        this.gameOver = document.getElementById("gameOver");
+
+        this.gameOverResoult = document.getElementById("gameOverResoult");
+
+        this.statsEnemy = document.getElementById("statsEnemy");
+        //this._statsScore = document.getElementById("statsScore");
+        this.statsTime = document.getElementById("statsTime");
+
+        if(params.win){
+            this.gameOverResoult.innerHTML ="You WIN";
+        } else {
+            this.gameOverResoult.innerHTML ="You LOSE";
+        }
+
+        this.statsEnemy.innerHTML = params.enemyKilled+"/"+params.numEnemy;
+        //var score = ("0000" + params.score);
+        //this._statsScore.innerHTML = score.substr(score.length-4);
+        this.statsTime.innerHTML = parseInt(params.time / 60) + ":" + (params.time % 60).toLocaleString('en-US',
+            { minimumIntegerDigits: 2, useGrouping: false });
+        
+        this.gameOver.style.display = "block";
+    }
 }
 
 var MANAGER = new gameManager();

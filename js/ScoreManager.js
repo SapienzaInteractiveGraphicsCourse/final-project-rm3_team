@@ -3,6 +3,7 @@ export class ScoreManager{
         this.lifesSpanGame = params.lifesTarget;
         this.timeSpanGame = params.timeTarget;
         this.enemySpanGame = params.enemyTarget;
+		this.ammoSpanGame = params.ammoTarget;
 
         this.totalLifes = params.lifes;
 		this.time = params.time;
@@ -26,7 +27,8 @@ export class ScoreManager{
     }
 
     getRemaningTime(){return this.time-this.currPassedTime;}
-    getCurrScore(){return this.currScore}
+    getEnemyKilled(){return this.killedEnemy;}
+	getNumEnemy(){return this.quantityEnemy;}
 
 
     setStartTime(time){this.startTime = time}
@@ -49,6 +51,20 @@ export class ScoreManager{
             this.gameOver = true;
         }
     }
+	
+	setUpGun(params) {
+		this.gun = {
+			name: params.name,
+			ammo: params.ammo,
+			currAmmo: 0,
+		}
+		this.updateSpansGame();
+	}
+	
+	setCurrAmmo(quantity) {
+		this.gun.currAmmo = quantity;
+		this.updateSpansGame();
+	}
 
     lose1life(){
 		console.log("Colpito")
@@ -88,5 +104,8 @@ export class ScoreManager{
         this.enemySpanGame.innerHTML = "enemy: " + this.killedEnemy + "/" + this.quantityEnemy;
         //var score = ("0000" + this.currScore);
         //this.scoreSpanGame.innerHTML = "score: " + score.substr(score.length-4);
+		if(this.gun) {
+			this.ammoSpanGame.innerHTML = this.gun.name +": " + this.gun.currAmmo + "/" + this.gun.ammo;
+		}
     }
 }

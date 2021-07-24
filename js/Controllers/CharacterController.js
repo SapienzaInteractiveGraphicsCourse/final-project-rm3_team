@@ -5,9 +5,18 @@ var PI_2 = Math.PI / 2;
 export class CharacterController {
 	constructor(params) {
 		this.MANAGER = params.manager;
-		this.characterBody = params.body;
-		this.character = params.character;
+		this.entity = params.entity;
 		this.camera = params.camera;
+		this.bulletManager = params.bulletManager;
+		this.scoreManager = params.scoreManager;
+		
+		this.characterBody = this.entity.body;
+		this.character = this.entity.character;
+		
+		this.currentGun = this.character.getActualGun();
+		this.setUpGun();
+		this.setAmmo(this.ammo);
+		this.shotTime = -1;
 		
 		this.input = new InputController({manager : this.MANAGER});
 		this.jumpVelocity = 20;
@@ -32,6 +41,10 @@ export class CharacterController {
 		this.tabHelded = false;
 		
 		this.characterBody.addEventListener("collide",this.onCollision.bind(this));
+		
+		this.shootDirection = new THREE.Vector3();
+		window.addEventListener("click",this.shot.bind(this));
+		console.log(this.bulletManager)
 	}
 	
 	onCollision(e) {
@@ -51,10 +64,10 @@ export class CharacterController {
 	
 	setUpObject() {
 		this.pitchObject.add(this.camera);
-		this.pitchObject.position.set(0.0,1.6,-0.2)
+		this.pitchObject.position.set(0.0,2,-0.2)
 		this.yawObject.add(this.character.getMesh());
 		this.yawObject.add(this.pitchObject);
-		this.yawObject.position.y = 5;
+		//this.yawObject.position.y = 5;
 	}
 	
     getObject() {
@@ -65,11 +78,77 @@ export class CharacterController {
         targetVec.set(0,0,-1);
         this.quat.multiplyVector3(targetVec);
     }
+	getShootDir(targetVec){
+		var vector = targetVec;
+		targetVec.set(0,0,1);
+		vector.unproject(this.camera);
+		var ray = new THREE.Ray(this.entity.body.position, vector.sub(this.entity.body.position).normalize() );
+		targetVec.copy(ray.direction);
+	}
 	
+	createBulletFromPlayer() {
+		this.getShootDir(this.shootDirection);
+		this.bulletManager.spawnNewBullet(this.entity, this.shootDirection)
+	}
+	reloadComplete() {
+		this.setAmmo(this.ammo);
+		this.shotTime = -1;
+		this.isReloading = false;
+	}
+	reload() {
+		console.log("reloading")
+		this.shotTime = this.timeReload;
+		this.isReloading = true;
+	}
+	shot() {
+		if(this.MANAGER.gameEnable==false) return;
+		
+		if(this.shotTime<=0) {
+			this.createBulletFromPlayer();
+			this.setAmmo()
+			if(this.currAmmo<=0)
+				this.reload();
+			else
+				this.shotTime = this.timeBetweenAmmo;
+			console.log(this.currAmmo);
+		}
+	}
+	setAmmo(quantity=null) {
+		if(quantity!=null)
+			this.currAmmo = quantity;
+		else
+			this.currAmmo--;
+		this.scoreManager.setCurrAmmo(this.currAmmo);
+	}
+	
+	setUpGun() {
+		this.currentGun = this.character.getActualGun();
+		this.timeReload = this.currentGun.timeReloading*500;
+		this.ammo = this.currentGun.ammo;
+		this.timeBetweenAmmo = this.currentGun.timeBetweenAmmo*350;
+		this.scoreManager.setUpGun({name: this.currentGun.name, ammo: this.ammo});
+		this.reload();
+	}
+	
+	changeGun() {
+		this.character.changeGun();
+		this.setUpGun();
+		this.setAmmo(0)
+	}
+	
+	updateReloading(time) {
+		if(this.shotTime>0)
+			this.shotTime -= time;
+		if(this.shotTime<=0 && this.isReloading)
+			this.reloadComplete();
+		
+	}
 
     // Moves the camera to the Cannon.js object position and adds velocity to the object if the run key is down
     update(time) {
         if ( this.MANAGER.gameEnable === false ) return;
+		
+		this.updateReloading(time);
 		
 		this.yawObject.rotation.y = this.input.rotationY;
 		this.pitchObject.rotation.x = this.input.rotationX;
@@ -104,7 +183,7 @@ export class CharacterController {
 			this.shiftHelded = false;
 		}
 		if (this.input.keys.tab && !this.tabHelded){
-			this.character.changeGun();
+			this.changeGun();
 			this.tabHelded = true;
 		}
 		if (this.tabHelded && !this.input.keys.tab){
@@ -126,11 +205,11 @@ export class CharacterController {
         this.quat.setFromEuler(this.euler);
         this.inputVelocity.applyQuaternion(this.quat);
         //this.quat.multiplyVector3(this.inputVelocity);
-        // Add to the object
-		if(!this.isMoving) {
+		if(!this.isMoving) {		//to avoid too much slippage
 			this.velocity.x *= 0.93;
 			this.velocity.z *= 0.93;
 		}
+        // Add to the object
         this.velocity.x += this.inputVelocity.x;
         this.velocity.z += this.inputVelocity.z;
         this.yawObject.position.copy(this.characterBody.position);

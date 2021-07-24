@@ -10,15 +10,13 @@
 				<div id="instructions">
 					<input id="playGameButton" class="menuBotton" type="button" value="START">
 					<br />
-					(W,A,S,D = Move, SPACE = Jump, SHIFT = Run, CONTROL = Change Gun, MOUSE = Look, CLICK = Shoot)
+					(W,A,S,D = Move, SPACE = Jump, SHIFT = Run, TAB = Change Gun, MOUSE = Look, CLICK = Shoot)
 					<br/>
 					<br/>
 					<input id="settingsButton" class="menuBotton" type="button" value="SETTINGS">
-            </div>
 				</div>
 			</div>
 		</div>
-		
 		
 		<div id="game">
 			<div id="loading">
@@ -37,13 +35,12 @@
 						<span id="timeSpanGame" class="spanLogoMode">time: 3:00</span>
 					</div>
 					<div class="ModeParamsDiv">
-						<span id="enemySpanGame" class="spanLogoMode">stars: 1</span>
+						<span id="enemySpanGame" class="spanLogoMode">Enemy Killed: 0/</span>
 					</div>
-					<!--
 					<div class="ModeParamsDiv">
-						<span id="scoreSpanGame" class="spanLogoMode">score: 0000</span>
+						<span id="ammoSpanGame" class="spanLogoMode">ammo: 00/00</span>
+						<!--<span id="reloadingSpanGame" class="spanLogoMode">reloading...</span>!-->
 					</div>
-					!-->
 					<span id="writer"></span>
 				</div>
 				<div id="PauseCanvas">
@@ -88,6 +85,12 @@
                         <td><input id="sliderTime" class="sliderSetting" type="range" min="30" max="300" value="180" step="30"></td>
                         <td><span> 5:00</span></td>
                     </tr>
+					<tr>
+                        <td colspan="2">
+                            <span>Show wiewfinder:</span>
+                            <input id="wiewfinderCkBox" type="checkbox" checked></span>
+                        </td>
+                    </tr>
                 </table>
                 <div id="divBtnSettings">
                     <span id="confirmSettings" class="btnSettings">Save changes</span>
@@ -95,9 +98,27 @@
                 </div>
             </div>
         </div>
-    </div>
+		</div>
 		
-		
+		<div id="gameOver">
+			<div id="winGame">
+				<span id="gameOverTitle" class="spanValue">Game Over</span>
+				<span id="gameOverResoult" class="spanName"></span>
+
+				<div id="gameOverStats">
+					<div class="divStats">
+						<span class="spanName">Enemy killed: </span>
+						<span id="statsEnemy" class="spanValue"></span>
+					</div>
+					<div class="divStats">
+						<span class="spanName">Time: </span>
+						<span id="statsTime" class="spanValue"></span>
+					</div>
+				</div>
+				
+				<a href="./" id="gameBackMenu2" class="MSButton">🡸 Back to the Menu</a>
+			</div>
+		</div>
 		<script src="js/extraLibraries/three.js"></script>
 		<script src="js/extraLibraries/cannon.js"></script>
 		<script src="js/extraLibraries/GLTFLoader.js"></script>

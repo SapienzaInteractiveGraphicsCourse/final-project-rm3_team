@@ -88,14 +88,10 @@ export class CharacterFactory {
 		//Generate character
 		this.headMesh = this.generateBoxMesh(0.6,0.6,0.6, 0, 0, 0);
 		this.headMesh.name = "skull"
-		this.leftEyeMesh = this.sphereMesh(0.03, -0.12, 0.15, -0.3);
-		this.leftEyeMesh.name = "Left Eye"
-		this.rightEyeMesh = this.sphereMesh(0.03, 0.12, 0.15, -0.3);
-		this.rightEyeMesh.name = "Right Eye"
-		
+
 		this.headGroup = new THREE.Group();
 		this.headGroup.name = "head"
-		this.headGroup.add(this.headMesh, this.leftEyeMesh, this.rightEyeMesh);
+		this.headGroup.add(this.headMesh);
 		
 		// Body mesh models and groups
 		this.bodyMesh = this.generateBoxMesh(0.6, 1.2, 0.45, 0, -0.9, 0);
