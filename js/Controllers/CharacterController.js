@@ -44,7 +44,6 @@ export class CharacterController {
 		
 		this.shootDirection = new THREE.Vector3();
 		window.addEventListener("click",this.shot.bind(this));
-		console.log(this.bulletManager)
 	}
 	
 	onCollision(e) {
@@ -96,7 +95,6 @@ export class CharacterController {
 		this.isReloading = false;
 	}
 	reload() {
-		console.log("reloading")
 		this.shotTime = this.timeReload;
 		this.isReloading = true;
 	}
@@ -110,7 +108,6 @@ export class CharacterController {
 				this.reload();
 			else
 				this.shotTime = this.timeBetweenAmmo;
-			console.log(this.currAmmo);
 		}
 	}
 	setAmmo(quantity=null) {

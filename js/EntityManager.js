@@ -189,6 +189,7 @@ class SimpleEnemyEntity extends Entity{
 		this.controls.update(timeInSeconds);
 
 		if(this.body.position.y < -20){
+			this.scoreManager.enemyKilled();
 			this.entityManager.eliminateThisEntity(this);
 		}
 	}
