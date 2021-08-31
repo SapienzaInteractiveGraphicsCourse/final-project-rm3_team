@@ -215,6 +215,7 @@ function searchInChild(root, name) {
 class gameEnvironment {
 	constructor() {
 		this.models = {};
+		this.characterTexture = {}
 		this.load();
 		
 		this.scoreManager = new ScoreManager({
@@ -234,6 +235,9 @@ class gameEnvironment {
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_04'),
             this.getModel('Guns/scene.gltf', 0.0006, 'Weapon_06'),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_08'),
+			
+			this.getCharacterTexture('character/protagonist/'),
+			this.getCharacterTexture('character/soldier/'),
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -243,19 +247,29 @@ class gameEnvironment {
 				"sniper",
 				"rpg",
             ];
+			var nameCharacter = [
+				"protagonist",
+				"soldier",
+			]
 
 			for(let i in nameModels){
                 this.models[nameModels[i]] = {};
                 this.models[nameModels[i]].model = data[i];
                 this.models[nameModels[i]].name = nameModels[i];
             }
+			var displace = nameModels.length;
+			console.log(displace)
+			for(let i in nameCharacter) {
+				this.characterTexture[nameCharacter[i]] = data[(parseInt(i) + displace)];
+			}
+			console.log(this.characterTexture);
 			
 			setTimeout(this.init(), 3000);
 		}, error => {
             console.log('An error happened:', error);
         });
 	}
-
+	
 	getModel(path, scale=1.0, childName=null) {
         const myPromise = new Promise((resolve, reject) => {
             const gltfLoader = new THREE.GLTFLoader();
@@ -286,6 +300,74 @@ class gameEnvironment {
         return myPromise;
     }
 	
+	getTexture(path, useNormalMap=false, mode={wrapS: 1, wrapT: 1, repeat: [1, 1]}) {
+        const myPromise = new Promise((resolve, reject) => {
+            var textureLoader = new THREE.TextureLoader();
+            textureLoader.load("./resources/" + path, (img) => {
+                img.wrapS = mode.wrapS;
+                img.wrapT = mode.wrapT;
+                img.repeat.set(...mode.repeat);
+
+                if(useNormalMap){
+                    var normalMap = new THREE.TextureLoader().load("./resources/normalMap/"+ path);
+                    normalMap.wrapS = mode.wrapS;
+                    normalMap.wrapT = mode.wrapT;
+                    normalMap.repeat.set(...mode.repeat);
+                } else {
+                    var normalMap = null;
+                }
+
+                var material = new THREE.MeshStandardMaterial({
+                    map: img,
+                    normalMap: normalMap,
+                    emissive: 'white',
+                    emissiveIntensity: -0.6,
+                 });
+                resolve(material);
+            },
+                function (xhr) {
+                },
+                function (error) {
+                    console.log('An error happened');
+                    reject(error);
+                });
+        });
+        return myPromise;
+    }
+	
+	getCharacterTexture(path, useNormalMap=false) {
+		const myPromise = new Promise((resolve, reject) => {
+			var characterTexture = {};
+			var promiseCharacter = [
+				this.getTexture(path+"headTop.png"),
+				this.getTexture(path+"headBottom.png"),
+				this.getTexture(path+"headLeft.png"),
+				this.getTexture(path+"headFace.png"),
+				this.getTexture(path+"headRight.png"),
+				this.getTexture(path+"headBack.png"),
+			]
+			
+			Promise.all(promiseCharacter).then(data => {
+				var nameCharacterPart = [
+					"headTop",
+					"headBottom",
+					"headLeft",
+					"headFace",
+					"headRight",
+					"headBack",
+				];
+
+				for(let i in nameCharacterPart){
+					characterTexture[nameCharacterPart[i]] = data[i];
+				}
+				resolve(characterTexture);
+			}, error => {
+				console.log('An error happened:');
+				reject(error);
+			});
+		});
+        return myPromise;
+	}
 	
 	changeVisual() {
 		this.activeCamera = (this.activeCamera+1)%2;
@@ -537,8 +619,6 @@ class gameEnvironment {
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		this.scene.add( mesh );
-		
-		
 
 		this.boxes = [];
 		this.boxMeshes = [];

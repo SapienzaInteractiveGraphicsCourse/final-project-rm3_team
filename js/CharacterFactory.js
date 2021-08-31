@@ -65,6 +65,7 @@ export class CharacterFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.gunsName = params.guns;
+		this.texture = params.texture;
 		this.guns = [];
 		this.gunsQuantity = 0;
 		this.actualGun = 0;
