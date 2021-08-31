@@ -48,11 +48,11 @@ body {
 }
 
 #playGameButton{
-    margin: 250px 0 0 0;
+    margin: 13% 0 0 0;
 }
 
 #settingsButton{
-    margin: 50px 0 200px 0;
+    margin: 3% 0 0 0;
     font-size: 30px;
     padding: 13px 18px 13px 18px;
     background: var(--darkYellow);
@@ -78,37 +78,37 @@ body {
 #menuIconMove {
     width: 50px;
     height: 50px;
-    padding: 5px 0px 0 0;
+    padding: 20px 0px 0 0;
 }
 
 #menuIconRun {
-    width: 50px;
-    height: 50px;
-    padding: 5px 0px 0 0;
+    width: 60px;
+    height: 60px;
+    padding: 10px 0px 0 0;
 }
 
 #menuIconJump {
     width: 50px;
     height: 50px;
-    padding: 5px 0px 0 0;
+    padding: 20px 0px 0 0;
 }
 
 #menuIconChangeGun {
     width: 50px;
     height: 50px;
-    padding: 5px 0px 0 0;
+    padding: 20px 0px 0 0;
 }
 
 #menuIconLook {
     width: 50px;
     height: 50px;
-    padding: 5px 0px 0 0;
+    padding: 20px 0px 0 0;
 }
 
 #menuIconClick {
     width: 45px;
     height: 45px;
-    padding: 7px 0px 0 0;
+    padding: 25px 0px 0 0;
 }
 
 #menu{
@@ -124,7 +124,7 @@ body {
 
 #controls {
     font-size: 30px;
-    margin-bottom: 100px;
+    margin-top: 10%;
 }
 
 .controlsItem {
