@@ -56,7 +56,7 @@ export class ScoreManager{
 		this.gun = {
 			name: params.name,
 			ammo: params.ammo,
-			currAmmo: 0,
+			currAmmo: params.currAmmo,
 		}
 		this.updateSpansGame();
 	}

@@ -4,6 +4,7 @@ export class CharacterFactory {
 		name: CharacterFactory.GUN_PISTOL,
 		timeReloading: 4,
 		ammo: 6,
+		curAmmo: 6,
 		timeBetweenAmmo: 1.2,
 		bullet: {
 			mass: 0.1,
@@ -16,6 +17,7 @@ export class CharacterFactory {
 		name: CharacterFactory.GUN_AK47,
 		timeReloading: 4,
 		ammo: 10,
+		curAmmo: 10,
 		timeBetweenAmmo: 0.5,
 		bullet: {
 			mass: 0.5,
@@ -28,6 +30,7 @@ export class CharacterFactory {
 		name: CharacterFactory.GUN_SNIPER,
 		timeReloading: 5,
 		ammo: 4,
+		curAmmo: 4,
 		timeBetweenAmmo: 1.4,
 		bullet: {
 			mass: 0.5,
@@ -40,6 +43,7 @@ export class CharacterFactory {
 		name: CharacterFactory.GUN_RPG,
 		timeReloading: 5,
 		ammo: 1,
+		curAmmo: 1,
 		timeBetweenAmmo: 3,
 		bullet: {
 			mass: 50,

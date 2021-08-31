@@ -109,7 +109,7 @@ class MenuEnvironment {
 				", lifes:"+currentOptions.lifes+
                 ", enemyQuantity:"+currentOptions.enemyQuantity+
                 ", time:"+currentOptions.time+
-				", viewfinder"+currentOptions.viewfinder+"};";
+				", viewfinder:"+currentOptions.viewfinder+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {

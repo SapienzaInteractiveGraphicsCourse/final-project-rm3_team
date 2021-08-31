@@ -115,6 +115,7 @@ export class CharacterController {
 			this.currAmmo = quantity;
 		else
 			this.currAmmo--;
+		this.currentGun.curAmmo = this.currAmmo;
 		this.scoreManager.setCurrAmmo(this.currAmmo);
 	}
 	
@@ -123,14 +124,20 @@ export class CharacterController {
 		this.timeReload = this.currentGun.timeReloading*500;
 		this.ammo = this.currentGun.ammo;
 		this.timeBetweenAmmo = this.currentGun.timeBetweenAmmo*350;
-		this.scoreManager.setUpGun({name: this.currentGun.name, ammo: this.ammo});
-		this.reload();
+		this.currAmmo = this.currentGun.curAmmo;
+		this.scoreManager.setUpGun({name: this.currentGun.name, ammo: this.ammo, currAmmo: this.currAmmo});
 	}
 	
 	changeGun() {
 		this.character.changeGun();
 		this.setUpGun();
-		this.setAmmo(0)
+		if(this.currAmmo<=0) {
+			this.reload();
+		}
+		else {
+			this.isReloading = false;
+			this.shotTime = this.timeBetweenAmmo;
+		}
 	}
 	
 	updateReloading(time) {
