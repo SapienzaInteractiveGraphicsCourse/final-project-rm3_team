@@ -345,6 +345,24 @@ class gameEnvironment {
 				this.getTexture(path+"headFace.png"),
 				this.getTexture(path+"headRight.png"),
 				this.getTexture(path+"headBack.png"),
+				this.getTexture(path+"bodyTop.png"),
+				this.getTexture(path+"bodyBottom.png"),
+				this.getTexture(path+"bodyLeft.png"),
+				this.getTexture(path+"bodyFront.png"),
+				this.getTexture(path+"bodyRight.png"),
+				this.getTexture(path+"bodyBack.png"),
+				this.getTexture(path+"handTop.png"),
+				this.getTexture(path+"handBottom.png"),
+				this.getTexture(path+"armLeft.png"),
+				this.getTexture(path+"armFront.png"),
+				this.getTexture(path+"armRight.png"),
+				this.getTexture(path+"armBack.png"),
+				this.getTexture(path+"footTop.png"),
+				this.getTexture(path+"footBottom.png"),
+				this.getTexture(path+"legLeft.png"),
+				this.getTexture(path+"legFront.png"),
+				this.getTexture(path+"legRight.png"),
+				this.getTexture(path+"legBack.png"),
 			]
 			
 			Promise.all(promiseCharacter).then(data => {
@@ -355,11 +373,61 @@ class gameEnvironment {
 					"headFace",
 					"headRight",
 					"headBack",
+					"bodyTop",
+					"bodyBottom",
+					"bodyLeft",
+					"bodyFront",
+					"bodyRight",
+					"bodyBack",
+					"handTop",
+					"handBottom",
+					"armLeft",
+					"armFront",
+					"armRight",
+					"armBack",
+					"footTop",
+					"footBottom",
+					"legLeft",
+					"legFront",
+					"legRight",
+					"legBack",
 				];
 
 				for(let i in nameCharacterPart){
 					characterTexture[nameCharacterPart[i]] = data[i];
 				}
+				characterTexture["head"] = [
+					characterTexture["headLeft"],
+					characterTexture["headRight"],
+					characterTexture["headTop"],
+					characterTexture["headBottom"],
+					characterTexture["headBack"],
+					characterTexture["headFace"],
+				]
+				characterTexture["body"] = [
+					characterTexture["bodyLeft"],
+					characterTexture["bodyRight"],
+					characterTexture["bodyTop"],
+					characterTexture["bodyBottom"],
+					characterTexture["bodyBack"],
+					characterTexture["bodyFront"],
+				]
+				characterTexture["arm"] = [
+					characterTexture["armLeft"],
+					characterTexture["armRight"],
+					characterTexture["handTop"],
+					characterTexture["handBottom"],
+					characterTexture["armBack"],
+					characterTexture["armFront"],
+				]
+				characterTexture["leg"] = [
+					characterTexture["legLeft"],
+					characterTexture["legRight"],
+					characterTexture["footTop"],
+					characterTexture["hfootBottom"],
+					characterTexture["legBack"],
+					characterTexture["legFront"],
+				]
 				resolve(characterTexture);
 			}, error => {
 				console.log('An error happened:');
@@ -555,7 +623,8 @@ class gameEnvironment {
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
 
-		var ambient = new THREE.AmbientLight( 0x666666 );
+		//var ambient = new THREE.AmbientLight( 0x666666 );
+		var ambient = new THREE.AmbientLight( 0xffffff );
 		this.scene.add( ambient );
 		/* //Old light
 		this.light = new THREE.SpotLight( 0x666666 );
@@ -637,7 +706,10 @@ class gameEnvironment {
 			boxBody.addShape(boxShape);
 			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 			var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
-			var boxMesh = new THREE.Mesh( boxGeometry, material2 );
+			//var boxMesh = new THREE.Mesh( boxGeometry, material2 );
+			console.log("+++++++++++++++++++")
+			console.log(this.characterTexture["protagonist"]["head"])
+			var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
 			boxBody.position.set(x,y,z);

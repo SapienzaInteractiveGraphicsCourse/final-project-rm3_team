@@ -66,9 +66,6 @@ export class CharacterFactory {
 		this.MANAGER = params.manager;
 		this.gunsName = params.guns;
 		this.texture = params.texture;
-		this.guns = [];
-		this.gunsQuantity = 0;
-		this.actualGun = 0;
 		
 		this.buildCharacter();
 		
@@ -91,7 +88,7 @@ export class CharacterFactory {
 	
 	buildCharacter() {
 		//Generate character
-		this.headMesh = this.generateBoxMesh(0.6,0.6,0.6, 0, 0, 0);
+		this.headMesh = this.generateBoxMesh(0.6,0.6,0.6, 0, 0, 0, "head");
 		this.headMesh.name = "skull"
 
 		this.headGroup = new THREE.Group();
@@ -99,7 +96,7 @@ export class CharacterFactory {
 		this.headGroup.add(this.headMesh);
 		
 		// Body mesh models and groups
-		this.bodyMesh = this.generateBoxMesh(0.6, 1.2, 0.45, 0, -0.9, 0);
+		this.bodyMesh = this.generateBoxMesh(0.6, 1.2, 0.45, 0, -0.9, 0, "body");
 		this.bodyMesh.name = "abdomen"
 		
 		//Legs
@@ -107,13 +104,13 @@ export class CharacterFactory {
 		this.leftLeg.position.y = -1.5
 		this.leftLeg.position.x = -0.155
 		this.leftLeg.name = "Left Leg"
-		this.leftLegMesh = this.generateBoxMesh(0.28, 1.0, 0.3, 0, -0.45, 0);
+		this.leftLegMesh = this.generateBoxMesh(0.28, 1.0, 0.3, 0, -0.45, 0, "leg");
 		this.leftLeg.add(this.leftLegMesh)
 		this.rightLeg = new THREE.Object3D;
 		this.rightLeg.position.y = -1.5
 		this.rightLeg.position.x = 0.155
 		this.rightLeg.name = "Right Leg"
-		this.rightLegMesh = this.generateBoxMesh(0.28, 1.0, 0.3, 0, -0.45, 0);
+		this.rightLegMesh = this.generateBoxMesh(0.28, 1.0, 0.3, 0, -0.45, 0, "leg");
 		this.rightLeg.add(this.rightLegMesh)
 		this.legGroup = new THREE.Group();
 		this.legGroup.name = "leg"
@@ -124,13 +121,13 @@ export class CharacterFactory {
 		this.leftArm.position.x = -0.45
 		this.leftArm.position.y = -0.45
 		this.leftArm.name = "Left Arm"
-		this.leftArmMesh = this.generateBoxMesh(0.2775, 0.9, 0.3, 0, -0.3, 0);
+		this.leftArmMesh = this.generateBoxMesh(0.2775, 0.9, 0.3, 0, -0.3, 0, "arm");
 		this.leftArm.add(this.leftArmMesh)
 		this.rightArm = new THREE.Object3D;
 		this.rightArm.position.x = 0.45
 		this.rightArm.position.y = -0.45
 		this.rightArm.name = "Right Arm"
-		this.rightArmMesh = this.generateBoxMesh(0.2775, 0.9, 0.3,0, -0.3, 0);
+		this.rightArmMesh = this.generateBoxMesh(0.2775, 0.9, 0.3,0, -0.3, 0, "arm");
 		this.rightArm.add(this.rightArmMesh)
 		this.rightArm.rotation.x = Math.PI / 2;
 		
@@ -151,6 +148,9 @@ export class CharacterFactory {
 
 	
 	prepareGuns() {
+		this.guns = [];
+		this.gunsQuantity = 0;
+		this.actualGun = 0;
 		for(let i in this.gunsName) {
 			switch(this.gunsName[i]) {
 				case CharacterFactory.GUN_PISTOL:
@@ -221,6 +221,16 @@ export class CharacterFactory {
 		this.leftArm.rotation.x = rotX;
 	}
 	
+	setPosition(position) {
+		this.character.position.set(...position);
+	}
+	
+	setGuns(gunsName) {
+		this.gunsName = gunsName;
+		this.prepareGuns();
+	}
+	
+	
 	startMove() {
 		this.legTween1.start();
 	}
@@ -239,10 +249,17 @@ export class CharacterFactory {
 		mesh.position.set(x,y,z);
 		return mesh;
 	}
-	generateBoxMesh(width, height, depth, x, y, z) {
+	generateBoxMesh(width, height, depth, x, y, z, texturePart=null) {
 		var boxGeometry = new THREE.BoxGeometry(width, height, depth);
-		var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-		var boxMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
+		if(this.texture == null || texturePart == null){
+			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+			var boxMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
+		}
+		else {
+			var boxMaterial = this.texture[texturePart];
+			console.log("Applico material");
+			console.log(boxMaterial)
+		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
 		mesh.castShadow = true;
 		mesh.position.set(x,y,z);
