@@ -3,6 +3,7 @@ import {CharacterFactory} from './js/CharacterFactory.js';
 import {EntityManager} from './js/EntityManager.js';
 import {BulletManager} from './js/BulletManager.js';
 import {ScoreManager} from './js/ScoreManager.js';
+import {SceneFactory} from './js/SceneFactory.js';
 
 class gameManager {
 	constructor(){
@@ -617,7 +618,7 @@ class gameEnvironment {
 		
 		this.activeCamera = 0;
 
-		this.scene = new THREE.Scene();
+		this.scene = new SceneFactory("galaxySkyBox");
 		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 		
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
