@@ -16,6 +16,7 @@ export class BulletManager {
 		var position = entity.body.position;
 		if(this.MANAGER.gameEnable==false) return;
 		var bullet = this.createNewBullet(entity.character.getActualGun().bullet);
+		bullet.body.idBullet = entity.bulletId;
 		bullet.body.addEventListener("collide", function (e){		//se il proiettile colpisce il pavimento
                 if ( !(e.contact.bi.isGround || e.contact.bj.isGround) )
                     return;

@@ -31,7 +31,8 @@ export class EntityManager{
                     target: character.getMesh(),
                     body: this.buildBody(params),
                     player: this.player,
-					character : character, 
+					character: character,
+					bulletId: 2,
                 });
                 this.entities.push(entity);
                 break;
@@ -44,7 +45,8 @@ export class EntityManager{
                     scoreManager: this.scoreManager,
                     target: character.getMesh(),
 					body: this.buildBody(params),
-					character : character,
+					character: character,
+					bulletId : 3,
                 });
                 this.entities.push(entity);
                 break;
@@ -124,6 +126,7 @@ class Entity{
         this.target = params.target;
         this.body = params.body;
         this.pos = params.pos;
+		this.bulletId = params.bulletId;
 
         this.player = params.player;
         if(this.body){
@@ -134,6 +137,9 @@ class Entity{
 				
                 if ( !(e.contact.bi.isBullet || e.contact.bj.isBullet) )
                     return;
+				
+				if (e.contact.bi.idBullet && e.contact.bi.idBullet==this.bulletId || e.contact.bj.idBullet && e.contact.bj.idBullet==this.bulletId)
+					return;
 				
                 if (e.contact.bi.id == this.body.id)
                     e.contact.ni.negate(this.contactNormal);
