@@ -618,14 +618,14 @@ class gameEnvironment {
 		
 		this.activeCamera = 0;
 
-		this.scene = new SceneFactory("galaxySkyBox");
+		this.scene = new SceneFactory("sunsetSkyBox2");
 		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 		
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
 
-		//var ambient = new THREE.AmbientLight( 0x666666 );
-		var ambient = new THREE.AmbientLight( 0xffffff );
+		var ambient = new THREE.AmbientLight( 0x666666 );
+		//var ambient = new THREE.AmbientLight( 0xffffff );
 		this.scene.add( ambient );
 		/* //Old light
 		this.light = new THREE.SpotLight( 0x666666 );
