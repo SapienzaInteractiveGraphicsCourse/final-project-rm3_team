@@ -257,8 +257,6 @@ export class CharacterFactory {
 		}
 		else {
 			var boxMaterial = this.texture[texturePart];
-			console.log("Applico material");
-			console.log(boxMaterial)
 		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
 		mesh.castShadow = true;

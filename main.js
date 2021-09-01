@@ -14,6 +14,12 @@ class gameManager {
 		
 		this.APP = null;
 		
+		this.dayTimeOptions = {
+			dayTime: "",
+            //lights: "",
+            skybox: "",
+		};
+		
 		this.setOptionsDefault = function() {
 			this.options = {
 				mouseSensibility : 1,
@@ -36,8 +42,13 @@ class gameManager {
 	getTime() {return this.options.time;}
 	getViewfinder() {return this.options.viewfinder;}
 	getVelocityFactor() {return this.velocityFactor;}
+	getDayTimeOptions() {return this.dayTimeOptions;}
+	getDayTime() {return this.dayTimeOptions.dayTime;}
+	getLights() {return this.dayTimeOptions.lights;}
+	getSkyBox() {return this.dayTimeOptions.skybox;}
 	
 	setOptions(options) {this.options = options;}
+	setDayTimeOptions(options) {this.dayTimeOptions = options;}
 	
 	resetVelocityFactor(){this.velocityFactor = this.options.velocityFactorDefault;}
 	multiplyVelocityFactor(val = 2) {this.velocityFactor = this.options.velocityFactorDefault*val;}
@@ -78,6 +89,19 @@ class MenuEnvironment {
 		
 		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
 		
+		this.dayButton = document.getElementById("dayButton");
+		this.dayOptions = {
+            dayTime: "day",
+            //lights: LightFactory.DAY_DAYTIME,
+            skybox: SceneFactory.DAY_SKYBOX2,
+        };
+        this.nightButton = document.getElementById("nightButton");
+        this.nightOptions = {
+            dayTime: "night",
+            //lights: LightFactory.NIGHT_DAYTIME,
+            skybox: SceneFactory.GALAXY_SKYBOX,
+        };
+		
 		this.setUpMainButtons();
 		this.setUpSettingButton();
 		this.giveValueFromCookie();
@@ -106,6 +130,7 @@ class MenuEnvironment {
 		this.confirmSettings.addEventListener("click", () => {
 			this.updateAllOptions();
             var currentOptions = MANAGER.getOptions();
+			document.cookie = "dayTime="+MANAGER.getDayTime()+";";
             document.cookie = "options={mouseSensibility:"+currentOptions.mouseSensibility+
 				", lifes:"+currentOptions.lifes+
                 ", enemyQuantity:"+currentOptions.enemyQuantity+
@@ -117,9 +142,13 @@ class MenuEnvironment {
 			MANAGER.setOptionsDefault();
 			this.updateAllSlider();
         }, false);
-		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this,0), false);
-		this.difficultyNormal.addEventListener("click", this.setDifficulty.bind(this,1), false);
-		this.difficultyHard.addEventListener("click", this.setDifficulty.bind(this,2), false);
+		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this, 0), false);
+		this.difficultyNormal.addEventListener("click", this.setDifficulty.bind(this, 1), false);
+		this.difficultyHard.addEventListener("click", this.setDifficulty.bind(this, 2), false);
+		
+		
+        this.dayButton.addEventListener("click", this.selectElementDayTime.bind(this, this.dayOptions), false);
+        this.nightButton.addEventListener("click", this.selectElementDayTime.bind(this, this.nightOptions), false);
 	}
 	giveValueFromCookie() {
 		var cookieSettings = this.getCookie("options");
@@ -135,7 +164,22 @@ class MenuEnvironment {
 				velocityFactorDefault: 0.2,
             });
         }
+		var cookieDayTime = this.getCookie("dayTime");
+        switch(cookieDayTime){
+            case "night":
+                //this.dayButton.classList.add("deselectedDayTime");
+                //this.nightButton.classList.add("selectedDayTime");
+                MANAGER.setDayTimeOptions(this.nightOptions);
+                break;
+            case "day":
+            default:
+                //this.dayButton.classList.add("selectedDayTime");
+                //this.nightButton.classList.add("deselectedDayTime");
+                MANAGER.setDayTimeOptions(this.dayOptions);
+                break;
+        }
 	}
+	
 	
 	getCookie(name){
         var elem = document.cookie.split("; ").find(row => row.startsWith(name))
@@ -143,6 +187,9 @@ class MenuEnvironment {
             return null;
         return elem.split('=')[1];
     }
+	selectElementDayTime(options) {
+		MANAGER.setDayTimeOptions(options);
+	}
 	exitSetting() {
 		this.setting.style.display = "none";
 		document.activeElement.blur();
@@ -259,12 +306,9 @@ class gameEnvironment {
                 this.models[nameModels[i]].name = nameModels[i];
             }
 			var displace = nameModels.length;
-			console.log(displace)
 			for(let i in nameCharacter) {
 				this.characterTexture[nameCharacter[i]] = data[(parseInt(i) + displace)];
 			}
-			console.log(this.characterTexture);
-			
 			setTimeout(this.init(), 3000);
 		}, error => {
             console.log('An error happened:', error);
@@ -618,7 +662,7 @@ class gameEnvironment {
 		
 		this.activeCamera = 0;
 
-		this.scene = new SceneFactory("sunsetSkyBox2");
+		this.scene = new SceneFactory(MANAGER.getSkyBox());
 		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 		
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
@@ -707,9 +751,7 @@ class gameEnvironment {
 			boxBody.addShape(boxShape);
 			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 			var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
-			//var boxMesh = new THREE.Mesh( boxGeometry, material2 );
-			console.log("+++++++++++++++++++")
-			console.log(this.characterTexture["protagonist"]["head"])
+			//var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
 			var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
