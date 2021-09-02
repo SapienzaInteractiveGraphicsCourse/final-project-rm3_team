@@ -93,14 +93,21 @@ class MenuEnvironment {
 		this.dayOptions = {
             dayTime: "day",
             //lights: LightFactory.DAY_DAYTIME,
-            skybox: SceneFactory.DAY_SKYBOX2,
+            skybox: SceneFactory.DAY_SKYBOX3,
         };
-        this.nightButton = document.getElementById("nightButton");
+        this.sunSetButton = document.getElementById("sunSetButton");
+        this.sunSetOptions = {
+            dayTime: "sunset",
+            //lights: LightFactory.NIGHT_DAYTIME,
+            skybox: SceneFactory.SUNSET_SKYBOX2,
+        };
+		this.nightButton = document.getElementById("nightButton");
         this.nightOptions = {
             dayTime: "night",
             //lights: LightFactory.NIGHT_DAYTIME,
             skybox: SceneFactory.GALAXY_SKYBOX,
         };
+		this.elemChecked = dayButton;
 		
 		this.setUpMainButtons();
 		this.setUpSettingButton();
@@ -146,9 +153,9 @@ class MenuEnvironment {
 		this.difficultyNormal.addEventListener("click", this.setDifficulty.bind(this, 1), false);
 		this.difficultyHard.addEventListener("click", this.setDifficulty.bind(this, 2), false);
 		
-		
-        this.dayButton.addEventListener("click", this.selectElementDayTime.bind(this, this.dayOptions), false);
-        this.nightButton.addEventListener("click", this.selectElementDayTime.bind(this, this.nightOptions), false);
+        this.dayButton.addEventListener('change', this.selectElementDayTime.bind(this, this.dayButton, this.dayOptions), false);
+        this.nightButton.addEventListener('change', this.selectElementDayTime.bind(this, this.nightButton, this.nightOptions), false);
+        this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
 	}
 	giveValueFromCookie() {
 		var cookieSettings = this.getCookie("options");
@@ -167,17 +174,29 @@ class MenuEnvironment {
 		var cookieDayTime = this.getCookie("dayTime");
         switch(cookieDayTime){
             case "night":
-                //this.dayButton.classList.add("deselectedDayTime");
-                //this.nightButton.classList.add("selectedDayTime");
+				if(this.nightButton != this.elemChecked) {
+					this.elemChecked.checked = false;
+					this.elemChecked = this.nightButton;
+				}
                 MANAGER.setDayTimeOptions(this.nightOptions);
                 break;
-            case "day":
+            case "sunset":
+				if(this.sunSetButton != this.elemChecked) {
+					this.elemChecked.checked = false;
+					this.elemChecked = this.sunSetButton;
+				}
+                MANAGER.setDayTimeOptions(this.sunSetOptions);
+                break;
+			case "day":
             default:
-                //this.dayButton.classList.add("selectedDayTime");
-                //this.nightButton.classList.add("deselectedDayTime");
+				if(this.dayButton != this.elemChecked) {
+					this.elemChecked.checked = false;
+					this.elemChecked = this.dayButton;
+				}
                 MANAGER.setDayTimeOptions(this.dayOptions);
                 break;
         }
+		this.elemChecked.checked = true;
 	}
 	
 	
@@ -187,7 +206,12 @@ class MenuEnvironment {
             return null;
         return elem.split('=')[1];
     }
-	selectElementDayTime(options) {
+	selectElementDayTime(elem,options) {
+		if(!elem.checked)
+			return;
+		if(elem != this.elemChecked)
+			this.elemChecked.checked = false;
+		this.elemChecked = elem;
 		MANAGER.setDayTimeOptions(options);
 	}
 	exitSetting() {
@@ -668,9 +692,11 @@ class gameEnvironment {
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
 
-		var ambient = new THREE.AmbientLight( 0x666666 );
+		var ambient = new THREE.AmbientLight( 0xAAAAAA );
+		var hemisphere = new THREE.HemisphereLight( 0xC8C8FF, 0x666666, 1 )
 		//var ambient = new THREE.AmbientLight( 0xffffff );
-		this.scene.add( ambient );
+		//this.scene.add(ambient);
+		this.scene.add(hemisphere);
 		/* //Old light
 		this.light = new THREE.SpotLight( 0x666666 );
 		this.light.position.set( 10, 30, 20 );
@@ -726,8 +752,18 @@ class gameEnvironment {
 		var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
-		//var material = new THREE.MeshLambertMaterial( { color: 0xeeee00 } );
-		var material = new THREE.MeshPhongMaterial( { color: 0xeeee00, dithering: true } );
+		//var material = new THREE.MeshLambertMaterial({color: 0xeeee00});
+		//var material = new THREE.MeshPhongMaterial({color: 0xeeee00, dithering: true});
+		//var loader = new THREE.TextureLoader();
+		//var material = loader.load("./resources/textures/terrain.jpg");
+		//console.log(material.image);
+		const texture = new THREE.TextureLoader().load('./resources/textures/terrain.jpg');
+		// immediately use the texture for material creation
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set(10,10);
+		const material = new THREE.MeshPhongMaterial( { map: texture } );
+		console.log(material)
 
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.castShadow = true;
@@ -827,7 +863,7 @@ class gameEnvironment {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
 			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
 			var minDistanceSquared = 625;
-			var position = [0,2.5,0];
+			var position = [0,7,0];
 			position[0] = Math.random()*2-1;
 			position[2] = Math.random()*2-1;
 			var distanceSquared = position[0]*position[0]+position[2]*position[2];
