@@ -260,6 +260,10 @@ function searchInChild(root, name) {
 	return null;
 }
 
+function randRange(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
 class gameEnvironment {
 	constructor() {
 		this.models = {};
@@ -650,6 +654,29 @@ class gameEnvironment {
         }
 	}
 //---------------------------------------------------------------------
+
+	// Check if a position is busy
+	unsafeSpawn(posX, posZ, halfDimX, halfDimZ) {
+		var unsafe = false;
+		const margin = randRange(2, 5);
+		for (const item of this.positionsList) {
+			let [left1, top1, right1, bottom1] = [posX-halfDimX-margin, posZ+halfDimZ+margin, posX+halfDimX+margin, posZ-halfDimZ-margin],
+				[left2, top2, right2, bottom2] = [item[0]-item[2], item[1]+item[3], item[0]+item[2], item[1]-item[3]];
+			/*
+			// The first rectangle is under the second or vice versa
+			if ((top1 < bottom2 || top2 < bottom1)) {
+				return false;
+			}
+			// The first rectangle is to the left of the second or vice versa
+			if ((right1 < left2 || right2 < left1)) {
+				return false;
+			}
+			*/
+			if (!(top1 < bottom2 || top2 < bottom1 || right1 < left2 || right2 < left1))
+				return true;
+		}
+		return false;
+	}
 	
 	init() {
 		this.world = this.initCannon();
@@ -738,21 +765,29 @@ class gameEnvironment {
 		this.boxMeshes = [];
 		this.balls = [];
 		this.ballMeshes=[];
+
+		this.positionsList = [[0, 0, 1, 1]];
+
 		
 		// Add boxes
-		var halfExtents = new CANNON.Vec3(1,1,1);
-		var boxShape = new CANNON.Box(halfExtents);
-		var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-		for(var i=0; i<7; i++){
-			var x = (Math.random()-0.5)*20;
-			var y = 1 + (Math.random()-0.5)*1;
-			var z = (Math.random()-0.5)*20;
-			var boxBody = new CANNON.Body({ mass: 5 });
+		for(var i=0; i<200; i++){
+			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,20), randRange(3,10));
+			var boxShape = new CANNON.Box(halfExtents);
+			var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+			do {
+				var x = (Math.random()-0.5)*300;
+				//var y = 5 + (Math.random()-0.5)*1;
+				var y = halfExtents.y;
+				var z = (Math.random()-0.5)*300;
+			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
+			this.positionsList.push([x, z, halfExtents.x, halfExtents.z]);
+			
+			var boxBody = new CANNON.Body({ mass: 500000 });
 			boxBody.addShape(boxShape);
 			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 			var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
-			//var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
-			var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
+			var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
+			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
 			boxBody.position.set(x,y,z);
@@ -779,6 +814,7 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		// Add linked boxes
+		/*
 		var size = 0.5;
 		var he = new CANNON.Vec3(size,size,size*0.1);
 		var boxShape = new CANNON.Box(he);
@@ -814,6 +850,7 @@ class gameEnvironment {
 			}
 			last = boxbody;
 		}
+		*/
 		
 		this.locker();
 		var time = Date.now();
@@ -827,13 +864,20 @@ class gameEnvironment {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
 			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
 			var minDistanceSquared = 625;
-			var position = [0,2.5,0];
-			position[0] = Math.random()*2-1;
-			position[2] = Math.random()*2-1;
-			var distanceSquared = position[0]*position[0]+position[2]*position[2];
-			var factor = Math.sqrt(minDistanceSquared/distanceSquared);
-			position[0] *= (factor+Math.random()*100);
-			position[2] *= (factor+Math.random()*100);
+			do {
+				var position = [0,20,0];
+				position[0] = Math.random()*2-1;
+				position[2] = Math.random()*2-1;
+				var distanceSquared = position[0]*position[0]+position[2]*position[2];
+				var factor = Math.sqrt(minDistanceSquared/distanceSquared);
+				position[0] *= (factor+Math.random()*100);
+				position[2] *= (factor+Math.random()*100);
+				console.log("Enemy: " + position[0] + position[2]);
+				//console.log(this.positionsList[0] + " " + this.positionsList[1] + " " + " " + this.positionsList[2] + " " + " " + this.positionsList[3] + " " + " " + this.positionsList[4] + " " + " " + this.positionsList[5] + " ");
+				console.log(this.positionsList);
+			} while(this.unsafeSpawn(position[0], position[2], 1, 1));
+			this.positionsList.push([position[0], position[2], 1, 1]);
+
 			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
 		}
 	}
