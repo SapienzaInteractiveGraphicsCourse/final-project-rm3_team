@@ -16,7 +16,6 @@ export class BossAIController {
 		this.body.velocity.z *= 0.95;
 		
 		var distance = this.player.body.position.distanceTo(this.body.position);
-		//console.log(this.body.position);
 		if(distance<this.maxDistance*1.2){				//From maxDistance*1.2 start to move in player direction
 			var direction = this.computeDirection();
 			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
@@ -27,8 +26,6 @@ export class BossAIController {
 			var move = new THREE.Vector3();
 			move.z = -time*0.03;
 			move.applyAxisAngle(new THREE.Vector3(0,1,0),this.target.rotation.y);
-			console.log(time);
-			console.log(move);
 			this.body.velocity.x += move.x;
 			this.body.velocity.z += move.z;
 		}

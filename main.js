@@ -514,14 +514,21 @@ class gameEnvironment {
 	}
 	
 	changeVisual() {
-		this.activeCamera = (this.activeCamera+1)%2;
+		this.activeCamera = (this.activeCamera+1)%3;
+		if(MANAGER.getViewfinder()) {
+		if(this.activeCamera==1)
+			document.getElementById('viewfinder').style.display = 'none';
+		else if(this.activeCamera==0)
+			document.getElementById('viewfinder').style.display = 'block';
+		}
+		
 	}
 	
 	onWindowResize() {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera2.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.camera2.updateProjectionMatrix();
+		for(let i in this.camera) {
+			this.camera[i].aspect = window.innerWidth / window.innerHeight;
+			this.camera[i].updateProjectionMatrix();
+		}
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 	
@@ -631,7 +638,7 @@ class gameEnvironment {
 		this.world.step(dt);
 		
 		var time = Date.now() - this.time - this.addedTime;
-		//this.boss.getBoss().position.z -= 0.06;
+		//console.log(time);
 		this.scoreManager.updateCurrTime(Date.now());
         if(this.scoreManager.isGameOver()){
 			cancelAnimationFrame(this.animationFrameID);
@@ -644,7 +651,6 @@ class gameEnvironment {
             });
             return;
         }
-		console.log(time);
 		this.entityManager.update(time);
 		this.bulletManager.update(time);
 		this.controls.update(time);
@@ -663,23 +669,15 @@ class gameEnvironment {
 		TWEEN.update()
 	}
 
-	//Draw Scene
-	render() {
-		if(this.activeCamera==0)
-			this.renderer.render( this.scene, this.camera );
-		else
-			this.renderer.render( this.scene, this.camera2 );
-		this.time = Date.now();
-	}
-
 	//Run game loop (update, render, repet)
 	GameLoop() {
 		this.animationFrameID = requestAnimationFrame(this.GameLoop.bind(this));
 		if(MANAGER.gameEnable){
 			this.addedTime = this.pausePassedTime ? this.pausePassedTime : 0;
 			this.update();
-			this.render();
+			this.renderer.render(this.scene, this.camera[this.activeCamera]);
 			this.pausePassedTime = 0;
+			this.time = Date.now();
         }
 	}
 //---------------------------------------------------------------------
@@ -709,12 +707,19 @@ class gameEnvironment {
 	
 	init() {
 		this.world = this.initCannon();
-			
-		this.camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 0.15, 1000 );
+		this.camera = [];
+		this.camera.push(new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 0.15, 1000 ));
 		
-		this.camera2 = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
-		this.camera2.translateY(4)
-		this.camera2.rotation.x = -Math.PI/10;
+		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
+		this.camera[1].translateY(1.4)
+		this.camera[1].translateX(0.4)
+		this.camera[1].translateZ(3)
+		this.camera[1].rotation.x = -Math.PI/30;
+		
+		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
+		this.camera[2].translateY(80)
+		this.camera[2].translateZ(-5)
+		this.camera[2].rotation.x = -Math.PI/2;
 		
 		this.activeCamera = 0;
 

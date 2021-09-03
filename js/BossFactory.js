@@ -2,11 +2,9 @@ export class BossFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.buildBoss();
-		console.log(this.boss)
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
 		this.boss.scale.set(5,5,5);
-		console.log(this.boss);
 		//this.startMove();
 	}
 	

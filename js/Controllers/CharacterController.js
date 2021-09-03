@@ -39,6 +39,7 @@ export class CharacterController {
 		this.velocity = this.characterBody.velocity;
 		this.shiftHelded = false;
 		this.tabHelded = false;
+		this.shiftFactor = 1;
 		
 		this.characterBody.addEventListener("collide",this.onCollision.bind(this));
 		
@@ -62,11 +63,18 @@ export class CharacterController {
 	}
 	
 	setUpObject() {
-		this.pitchObject.add(this.camera);
 		this.pitchObject.position.set(0.0,2,-0.2)
 		this.yawObject.add(this.character.getMesh());
 		this.yawObject.add(this.pitchObject);
-		//this.yawObject.position.y = 5;
+		
+		//CAMERA SETTING
+		this.pitchObject.add(this.camera[0]);		//First person camera, move in all direction with the arm
+		//Third person camera, move in all direction but whit focus on the head
+		this.camera1RotationObject = new THREE.Object3D();
+		this.camera1RotationObject.position.y = 1;
+		this.camera1RotationObject.add(this.camera[1]);
+		this.yawObject.add(this.camera1RotationObject);
+		this.yawObject.add(this.camera[2]);		// Camera from above, move only on y, not on x.
 	}
 	
     getObject() {
@@ -80,7 +88,7 @@ export class CharacterController {
 	getShootDir(targetVec){
 		var vector = targetVec;
 		targetVec.set(0,0,1);
-		vector.unproject(this.camera);
+		vector.unproject(this.camera[0]);
 		var ray = new THREE.Ray(this.entity.body.position, vector.sub(this.entity.body.position).normalize() );
 		targetVec.copy(ray.direction);
 	}
@@ -156,22 +164,23 @@ export class CharacterController {
 		
 		this.yawObject.rotation.y = this.input.rotationY;
 		this.pitchObject.rotation.x = this.input.rotationX;
+		this.camera1RotationObject.rotation.x = this.input.rotationX;
 		this.character.rightArm.rotation.x = this.input.rotationX+PI_2
 
         time *= 0.1;
 
         this.inputVelocity.set(0,0,0);
         if (this.input.keys.forward){
-            this.inputVelocity.z = -this.MANAGER.getVelocityFactor() * time;
+            this.inputVelocity.z = -this.MANAGER.getVelocityFactor() * time * this.shiftFactor;
         }
         if (this.input.keys.backward){
-            this.inputVelocity.z = this.MANAGER.getVelocityFactor() * time;
+            this.inputVelocity.z = this.MANAGER.getVelocityFactor() * time * this.shiftFactor;
         }
         if (this.input.keys.left){
-            this.inputVelocity.x = -this.MANAGER.getVelocityFactor() * time;
+            this.inputVelocity.x = -this.MANAGER.getVelocityFactor() * time * this.shiftFactor;
         }
         if (this.input.keys.right){
-            this.inputVelocity.x = this.MANAGER.getVelocityFactor() * time;
+            this.inputVelocity.x = this.MANAGER.getVelocityFactor() * time * this.shiftFactor;
         }
 		if (this.input.keys.space && this.canJump){
 			this.velocity.y = this.jumpVelocity;
@@ -179,11 +188,13 @@ export class CharacterController {
 			this.input.keys.space = false;
 		}
 		if (this.input.keys.shift && !this.shiftHelded){
-			this.MANAGER.multiplyVelocityFactor();
+			//this.MANAGER.multiplyVelocityFactor();
+			this.shiftFactor = 2;
 			this.shiftHelded = true;
 		}
 		if (this.shiftHelded && !this.input.keys.shift){
-			this.MANAGER.resetVelocityFactor();
+			//this.MANAGER.resetVelocityFactor();
+			this.shiftFactor = 1;
 			this.shiftHelded = false;
 		}
 		if (this.input.keys.tab && !this.tabHelded){
@@ -218,4 +229,5 @@ export class CharacterController {
         this.velocity.z += this.inputVelocity.z;
         this.yawObject.position.copy(this.characterBody.position);
     };
+	
 };
