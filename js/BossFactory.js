@@ -2,7 +2,7 @@ export class BossFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.buildBoss();
-		console.log(this.boss)
+		//console.log(this.boss)
 		this.boss.position.set(...params.position);
 	}
 	

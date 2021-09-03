@@ -7,7 +7,6 @@ export class LightFactory{
         this.lights = [];
         switch(daytime){
             case LightFactory.NIGHT_LIGHT:
-                //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.0);
 				var hemisphereLight = new THREE.HemisphereLight(0x333333, 0x666666, 0.5)
                 this.lights.push(hemisphereLight);
                 break;

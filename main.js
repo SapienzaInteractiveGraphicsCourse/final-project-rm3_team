@@ -548,7 +548,8 @@ class gameEnvironment {
 					MANAGER.gameEnable = true;
 					
 					if(this.pauseTime){
-						this.scoreManager.addPauseTime(Date.now()-this.pauseTime);
+						this.pausePassedTime = Date.now()-this.pauseTime;
+						this.scoreManager.addPauseTime(this.pausePassedTime);
 					}
 					
 					blocker.style.display = 'none';
@@ -628,7 +629,7 @@ class gameEnvironment {
 		var dt = 1/60;
 		this.world.step(dt);
 		
-		var time = Date.now() - this.time;
+		var time = Date.now() - this.time - this.addedTime;
 		
 		this.scoreManager.updateCurrTime(Date.now());
         if(this.scoreManager.isGameOver()){
@@ -644,8 +645,8 @@ class gameEnvironment {
         }
 		
 		this.entityManager.update(time);
-		this.bulletManager.update(time)
-		//this.controls.update( Date.now() - this.time );
+		this.bulletManager.update(time);
+		this.controls.update(time);
 		
 		// Update ball positions
 		for(var i=0; i<this.balls.length; i++){
@@ -663,7 +664,6 @@ class gameEnvironment {
 
 	//Draw Scene
 	render() {
-		this.controls.update( Date.now() - this.time );
 		if(this.activeCamera==0)
 			this.renderer.render( this.scene, this.camera );
 		else
@@ -675,8 +675,10 @@ class gameEnvironment {
 	GameLoop() {
 		this.animationFrameID = requestAnimationFrame(this.GameLoop.bind(this));
 		if(MANAGER.gameEnable){
+			this.addedTime = this.pausePassedTime ? this.pausePassedTime : 0;
 			this.update();
 			this.render();
+			this.pausePassedTime = 0;
         }
 	}
 //---------------------------------------------------------------------
@@ -796,7 +798,6 @@ class gameEnvironment {
 		texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set(10,10);
 		const material = new THREE.MeshPhongMaterial( { map: texture } );
-		console.log(material)
 
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.castShadow = true;
@@ -863,7 +864,7 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		//Add boss
-		var bossPosition = [0, 200, 0]
+		var bossPosition = [0, 2.9, -20]
 		this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
 		this.boss.getBoss().scale.set(5,5,5)
 		this.scene.add(this.boss.getBoss());
@@ -927,9 +928,9 @@ class gameEnvironment {
 				var factor = Math.sqrt(minDistanceSquared/distanceSquared);
 				position[0] *= (factor+Math.random()*100);
 				position[2] *= (factor+Math.random()*100);
-				console.log("Enemy: " + position[0] + position[2]);
+				//console.log("Enemy: " + position[0] + position[2]);
 				//console.log(this.positionsList[0] + " " + this.positionsList[1] + " " + " " + this.positionsList[2] + " " + " " + this.positionsList[3] + " " + " " + this.positionsList[4] + " " + " " + this.positionsList[5] + " ");
-				console.log(this.positionsList);
+				//console.log(this.positionsList);
 			} while(this.unsafeSpawn(position[0], position[2], 1, 1));
 			this.positionsList.push([position[0], position[2], 1, 1]);
 			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
