@@ -4,6 +4,7 @@ import {EntityManager} from './js/EntityManager.js';
 import {BulletManager} from './js/BulletManager.js';
 import {ScoreManager} from './js/ScoreManager.js';
 import {SceneFactory} from './js/SceneFactory.js';
+import {BossFactory} from './js/BossFactory.js';
 
 class gameManager {
 	constructor(){
@@ -804,10 +805,10 @@ class gameEnvironment {
 
 		this.positionsList = [[0, 0, 1, 1]];
 
-		
+		/*
 		// Add boxes
-		for(var i=0; i<200; i++){
-			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,20), randRange(3,10));
+		for(var i=0; i<165; i++){
+			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
 			var boxShape = new CANNON.Box(halfExtents);
 			var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
 			do {
@@ -833,7 +834,7 @@ class gameEnvironment {
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
-		
+		*/
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
@@ -848,6 +849,12 @@ class gameEnvironment {
 		this.scene.add(this.controls.getObject());
 		
 		this.spawnEnemy();
+		
+		//Add boss
+		var bossPosition = [0, 4, 0]
+		this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
+		this.boss.getBoss().scale.set(5,5,5)
+		this.scene.add(this.boss.getBoss());
 		
 		// Add linked boxes
 		/*
