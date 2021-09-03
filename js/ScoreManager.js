@@ -107,10 +107,11 @@ export class ScoreManager{
         //this.lifesSpanGame.innerHTML = "Lifes: " + this.currLifes;
 
         //this.hBar.data('value', 300);
+        var currLifes = this.currLifes;
 	    setTimeout(function(){
 	    	//bar.css('width', 300 + "%");
-	    	console.log(this.currLifes);
-	    	bar.style.width = this.currLifes * 20;
+	    	console.log(currLifes);
+	    	bar.style.width = "" + (currLifes * 20) + "%";
 	    }, 500);
 
         this.timeSpanGame.innerHTML = parseInt(this.currPassedTime / 60) + ":" + (this.currPassedTime % 60).toLocaleString('en-US',
