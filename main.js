@@ -4,6 +4,7 @@ import {EntityManager} from './js/EntityManager.js';
 import {BulletManager} from './js/BulletManager.js';
 import {ScoreManager} from './js/ScoreManager.js';
 import {SceneFactory} from './js/SceneFactory.js';
+import {LightFactory} from './js/LightFactory.js';
 import {BossFactory} from './js/BossFactory.js';
 
 class gameManager {
@@ -17,7 +18,7 @@ class gameManager {
 		
 		this.dayTimeOptions = {
 			dayTime: "",
-            //lights: "",
+            lights: "",
             skybox: "",
 		};
 		
@@ -93,19 +94,19 @@ class MenuEnvironment {
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
             dayTime: "day",
-            //lights: LightFactory.DAY_DAYTIME,
+            lights: LightFactory.DAY_LIGHT,
             skybox: SceneFactory.DAY_SKYBOX3,
         };
         this.sunSetButton = document.getElementById("sunSetButton");
         this.sunSetOptions = {
             dayTime: "sunset",
-            //lights: LightFactory.NIGHT_DAYTIME,
+            lights: LightFactory.SUNSET_LIGHT,
             skybox: SceneFactory.SUNSET_SKYBOX2,
         };
 		this.nightButton = document.getElementById("nightButton");
         this.nightOptions = {
             dayTime: "night",
-            //lights: LightFactory.NIGHT_DAYTIME,
+            lights: LightFactory.NIGHT_LIGHT,
             skybox: SceneFactory.GALAXY_SKYBOX,
         };
 		this.elemChecked = dayButton;
@@ -395,7 +396,7 @@ class gameEnvironment {
                     map: img,
                     normalMap: normalMap,
                     emissive: 'white',
-                    emissiveIntensity: -0.6,
+                    emissiveIntensity: 0.0,
                  });
                 resolve(material);
             },
@@ -719,12 +720,16 @@ class gameEnvironment {
 		
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
-
-		var ambient = new THREE.AmbientLight( 0xAAAAAA );
-		var hemisphere = new THREE.HemisphereLight( 0xC8C8FF, 0x666666, 1 )
+		
+		this.lights = new LightFactory(MANAGER.getLights());
+        for (var i in this.lights) {
+            this.scene.add(this.lights[i]);
+        }
+		//var ambient = new THREE.AmbientLight( 0xAAAAAA );
+		//var hemisphere = new THREE.HemisphereLight( 0xC8C8FF, 0x666666, 1 )
 		//var ambient = new THREE.AmbientLight( 0xffffff );
 		//this.scene.add(ambient);
-		this.scene.add(hemisphere);
+		//this.scene.add(hemisphere);
 		/* //Old light
 		this.light = new THREE.SpotLight( 0x666666 );
 		this.light.position.set( 10, 30, 20 );
@@ -839,8 +844,15 @@ class gameEnvironment {
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
 		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition})
-		this.playerEntity.character.getMesh().add(this.tourch);
-		this.playerEntity.character.getMesh().add(this.tourch.target);
+		//this.playerEntity.character.getMesh().add(this.tourch);
+		//this.playerEntity.character.getMesh().add(this.tourch.target);	
+		this.tourchGroup = new THREE.Group();
+		this.tourchGroup.add(this.tourch, this.tourch.target);
+		this.tourchGroup.rotateX(-Math.PI/2);
+		this.playerEntity.character.rightArm.add(this.tourchGroup);
+		
+		
+		
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
@@ -851,7 +863,7 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		//Add boss
-		var bossPosition = [0, 4, 0]
+		var bossPosition = [0, 200, 0]
 		this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
 		this.boss.getBoss().scale.set(5,5,5)
 		this.scene.add(this.boss.getBoss());
