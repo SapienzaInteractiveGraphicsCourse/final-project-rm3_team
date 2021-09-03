@@ -2,8 +2,10 @@ export class BossFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.buildBoss();
-		//console.log(this.boss)
+		console.log(this.boss)
 		this.boss.position.set(...params.position);
+		this.initializeAnimation();
+		this.startMove();
 	}
 	
 	buildBoss(){
@@ -21,7 +23,7 @@ export class BossFactory {
 		this.bodyGroup.add(this.headMesh, this.neckMesh, this.bottomMesh);
 		
 		this.leftLeg1 = new THREE.Object3D;
-		this.leftLeg1.name = "Left Leg 1"
+		this.leftLeg1.name = "Leg 1"
 		this.leftUpperLegMesh = this.generateBoxMesh(1, 0.25, 0.25, 0.45, 0, 0);
 		this.leftLeg1.add(this.leftUpperLegMesh)
 		this.leftLeg1.rotateZ(Math.PI/12)
@@ -38,15 +40,15 @@ export class BossFactory {
 		this.leftLeg1.position.z = -0.65
 		
 		this.leftLeg2 = this.leftLeg1.clone()
-		this.leftLeg2.name = "Left Leg 2"
+		this.leftLeg2.name = "Leg 2"
 		this.leftLeg2.position.z = -0.15
 		
 		this.leftLeg3 = this.leftLeg1.clone()
-		this.leftLeg3.name = "Left Leg 3"
+		this.leftLeg3.name = "Leg 3"
 		this.leftLeg3.position.z = 0.25
 		
 		this.leftLeg4 = this.leftLeg1.clone()
-		this.leftLeg4.name = "Left Leg 4"
+		this.leftLeg4.name = "Leg 4"
 		this.leftLeg4.position.z = 0.65
 		
 		this.leftLeg1.rotateY(Math.PI/6)
@@ -60,12 +62,17 @@ export class BossFactory {
 		this.leftLegs.position.z = 0.65
 		
 		this.rightLegs = this.leftLegs.clone()
+		this.rightLegs.name = "right legs";
 		this.rightLegs.rotateY(Math.PI)
+		
+		this.legs = new THREE.Group();
+		this.legs.name = "legs";
+		this.legs.add(this.leftLegs, this.rightLegs)
 		
 		//Boss group
 		this.boss = new THREE.Group();
 		this.boss.name = "boss";
-		this.boss.add(this.bodyGroup, this.leftLegs, this.rightLegs);
+		this.boss.add(this.bodyGroup, this.legs);
 		
 	}
 	
@@ -82,6 +89,48 @@ export class BossFactory {
 		mesh.castShadow = true;
 		mesh.position.set(x,y,z);
 		return mesh;
+	}
+	
+	initializeAnimation() {
+		//Generate Animations
+		this.legTween1 = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}).to({upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}, 50/this.MANAGER.getVelocityFactor() )
+			.easing(TWEEN.Easing.Quadratic.InOut)
+		this.legTween2 = new TWEEN.Tween({upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}).to({upz: 0, lowz: -Math.PI/12, roty: Math.PI/12}, 100/this.MANAGER.getVelocityFactor() )
+			.easing(TWEEN.Easing.Quadratic.InOut)
+		this.legTween3 = new TWEEN.Tween({upz: 0, lowz: -Math.PI/12, roty: Math.PI/12}).to( {upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}, 100/this.MANAGER.getVelocityFactor() )
+			.easing(TWEEN.Easing.Quadratic.InOut)
+		this.legTween1.chain(this.legTween2)
+		this.legTween2.chain(this.legTween3)
+		this.legTween3.chain(this.legTween2)
+		
+		this.updateLeg1 = function(object){
+			for(var i in this.legs.children){
+				for (var j in this.legs.children[i].children){
+					
+					var leg = this.legs.children[i].children[j];
+					var lowerLeg = leg.children[1];
+					leg.rotation.z = object.upz;
+					lowerLeg.rotation.z = object.lowz;
+					if(j == 0) leg.rotation.y = object.roty;
+					if(j == 3) leg.rotation.y = object.roty;
+				}
+			}
+
+		}
+		this.legTween1.onUpdate(this.updateLeg1.bind(this))
+		this.legTween2.onUpdate(this.updateLeg1.bind(this))
+		this.legTween3.onUpdate(this.updateLeg1.bind(this))		
+	}
+	
+	startMove() {
+		this.legTween1.start();
+	}
+	
+	stopMove() {
+		this.legTween1.stop();
+		const legTween4 = new TWEEN.Tween(this.leftLeg.rotation.clone()).to({x: 0, y: 0, z: 0}, 50/this.MANAGER.getVelocityFactor());
+		legTween4.onUpdate(this.updateLeg1.bind(this));
+		legTween4.start();
 	}
 	
 	getBoss() {
