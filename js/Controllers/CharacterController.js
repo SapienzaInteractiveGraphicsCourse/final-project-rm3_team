@@ -63,7 +63,7 @@ export class CharacterController {
 	}
 	
 	setUpObject() {
-		this.pitchObject.position.set(0.0,2,-0.2)
+		this.pitchObject.position.set(0.0,2,-0.2);
 		this.yawObject.add(this.character.getMesh());
 		this.yawObject.add(this.pitchObject);
 		
@@ -228,6 +228,7 @@ export class CharacterController {
         this.velocity.x += this.inputVelocity.x;
         this.velocity.z += this.inputVelocity.z;
         this.yawObject.position.copy(this.characterBody.position);
+		this.yawObject.position.y -= 0.15;
     };
 	
 };
