@@ -66,21 +66,27 @@
 			<div id="gameCanvas">
 				<canvas id="canvas"></canvas>
 				<div id="GameValues">
+					<div id="ammo">
+						<span id="gunSpanGame" class="spanLogoMode">Pistol</span>
+						<br/>
+						<img src="resources/images/bullet.png" widht="37" height="37">
+						<span id="ammoSpanGame" class="spanLogoMode">00/00</span>
+					</div>
+					<div id="health">
+						<img src="resources/images/cardiogram.png" widht="37" height="37">
+						<span id="healthSpan" class="spanLogoMode">Health</span>
+						<div id="health-bar" data-total="1000" data-value="1000">
+  							<div id="bar"></div>
+  						</div>
+  					</div>
 					<div class="viewfinder">
 						<img id="viewfinder" src="./resources/images/mirino.png">
 					</div>
-					<div class="ModeParamsDiv">
-						<span id="lifesSpanGame" class="spanLogoMode">lifes: 3</span>
+					<div id="time">
+						<span id="timeSpanGame" class="spanLogoMode">3:00</span>
 					</div>
-					<div class="ModeParamsDiv">
-						<span id="timeSpanGame" class="spanLogoMode">time: 3:00</span>
-					</div>
-					<div class="ModeParamsDiv">
-						<span id="enemySpanGame" class="spanLogoMode">Enemy Killed: 0/</span>
-					</div>
-					<div class="ModeParamsDiv">
-						<span id="ammoSpanGame" class="spanLogoMode">ammo: 00/00</span>
-						<!--<span id="reloadingSpanGame" class="spanLogoMode">reloading...</span>!-->
+					<div id="kills">
+						<span id="enemySpanGame" class="spanLogoMode">Kills: 0/</span>
 					</div>
 					<span id="writer"></span>
 				</div>

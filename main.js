@@ -297,9 +297,12 @@ class gameEnvironment {
 		this.load();
 		
 		this.scoreManager = new ScoreManager({
-			lifesTarget: document.getElementById("lifesSpanGame"),
+			//hBar: document.getElementById("health-bar"),
+			bar: document.getElementById("bar"),
+			//lifesTarget: document.getElementById("lifesSpanGame"),
 			timeTarget: document.getElementById("timeSpanGame"),
 			enemyTarget: document.getElementById("enemySpanGame"),
+			gunTarget: document.getElementById("gunSpanGame"),
 			ammoTarget: document.getElementById("ammoSpanGame"),
 			lifes: MANAGER.getLifes(), numEnemy: MANAGER.getEnemyQuantity(),
 			time: MANAGER.getTime(),

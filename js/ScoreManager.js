@@ -1,8 +1,14 @@
 export class ScoreManager{
     constructor(params){
-        this.lifesSpanGame = params.lifesTarget;
+
+    	//this.hBar = params.hBar;
+      	//this.bar = this.hBar.find('.bar');
+      	this.bar = params.bar;
+
+        //this.lifesSpanGame = params.lifesTarget;
         this.timeSpanGame = params.timeTarget;
         this.enemySpanGame = params.enemyTarget;
+        this.gunSpanGame = params.gunTarget;
 		this.ammoSpanGame = params.ammoTarget;
 
         this.totalLifes = params.lifes;
@@ -98,14 +104,23 @@ export class ScoreManager{
 	}
 
     updateSpansGame() {
-        this.lifesSpanGame.innerHTML = "Lifes: " + this.currLifes;
-        this.timeSpanGame.innerHTML = "time: " + parseInt(this.currPassedTime / 60) + ":" + (this.currPassedTime % 60).toLocaleString('en-US',
+        //this.lifesSpanGame.innerHTML = "Lifes: " + this.currLifes;
+
+        //this.hBar.data('value', 300);
+	    setTimeout(function(){
+	    	//bar.css('width', 300 + "%");
+	    	console.log(this.currLifes);
+	    	bar.style.width = this.currLifes * 20;
+	    }, 500);
+
+        this.timeSpanGame.innerHTML = parseInt(this.currPassedTime / 60) + ":" + (this.currPassedTime % 60).toLocaleString('en-US',
             { minimumIntegerDigits: 2, useGrouping: false });
-        this.enemySpanGame.innerHTML = "enemy: " + this.killedEnemy + "/" + this.quantityEnemy;
+        this.enemySpanGame.innerHTML = "Kills: " + this.killedEnemy + "/" + this.quantityEnemy;
         //var score = ("0000" + this.currScore);
         //this.scoreSpanGame.innerHTML = "score: " + score.substr(score.length-4);
 		if(this.gun) {
-			this.ammoSpanGame.innerHTML = this.gun.name +": " + this.gun.currAmmo + "/" + this.gun.ammo;
+			this.gunSpanGame.innerHTML = this.gun.name.toUpperCase();
+			this.ammoSpanGame.innerHTML = this.gun.currAmmo + "/" + this.gun.ammo;
 		}
     }
 }
