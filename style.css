@@ -49,15 +49,11 @@ body {
 }
 
 #logo {
-    /*max-width:28px;
-    max-height:28px;*/
-    width: auto;
-    height: auto;
-    margin: 13vh 0 0 0;
+    padding-top: 13vh;
 }
 
 #playGameButton{
-    margin: 13vh 0 0 0;
+    margin: 10vh 0 0 0;
 }
 
 #settingsButton{
@@ -143,7 +139,7 @@ body {
 #controls {
     /*font-size: 30px;*/
     font-size: 130%;
-    margin-top: 10vh;
+    margin: 10vh 0 0 0;
 }
 
 .controlsItem {
