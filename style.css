@@ -23,7 +23,8 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
     font-family: fantasy, sans-serif;
-    font-size: 25px;
+    /*font-size: 25px;*/
+    font-size: 150%;
 
     background: var(--darkBlue);
 	z-index: -20;
@@ -47,14 +48,23 @@ body {
     height: 235px;
 }
 
+#logo {
+    /*max-width:28px;
+    max-height:28px;*/
+    width: auto;
+    height: auto;
+    margin: 13vh 0 0 0;
+}
+
 #playGameButton{
-    margin: 13% 0 0 0;
+    margin: 13vh 0 0 0;
 }
 
 #settingsButton{
-    margin: 3% 0 0 0;
-    font-size: 30px;
-    padding: 13px 18px 13px 18px;
+    margin: 3vh 0 0 0;
+    /*font-size: 30px;*/
+    font-size: 150%;
+    padding: 16px 18px 13px 18px;
     background: var(--darkYellow);
 }
 
@@ -70,8 +80,16 @@ body {
 }
 
 #menuIconSettings {
-    width: 25px;
-    height: 25px;
+    /*width: 25px;
+    height: 25px;*/
+    /*
+    width: 3vw;
+    height: 3vw;*/
+    /*display: block;*/
+    max-width:28px;
+    max-height:28px;
+    width: auto;
+    height: auto;
     margin-right: 10px;
 }
 
@@ -123,8 +141,9 @@ body {
 }
 
 #controls {
-    font-size: 30px;
-    margin-top: 10%;
+    /*font-size: 30px;*/
+    font-size: 130%;
+    margin-top: 10vh;
 }
 
 .controlsItem {
@@ -137,7 +156,7 @@ body {
     background: var(--darkGreen);
     color: var(--white);
     cursor: pointer;
-    font-size: 70px;
+    font-size: 300%; /*70px*/
     padding: 17px 35px 17px 35px;
     border: 0px solid var(--green);
     /*box-shadow: 3px 3px 0px black;*/
@@ -175,6 +194,14 @@ body {
 #PauseCanvas span{
     font-size: 40px;
     color: white;
+}
+
+#backToMenuButton {
+    margin: 4vh 0 0 0;
+    /*font-size: 30px;*/
+    font-size: 110%;
+    padding: 16px 18px 13px 18px;
+    background: var(--red);
 }
 
 #GameValues{
