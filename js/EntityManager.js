@@ -1,10 +1,13 @@
 import {CharacterController} from './Controllers/CharacterController.js';
 import {BasicAIController} from './Controllers/BasicAIController.js';
+import {BossAIController} from './Controllers/BossAIController.js';
 import {CharacterFactory} from './CharacterFactory.js';
+import {BossFactory} from './BossFactory.js';
 
 export class EntityManager{
 	static ENTITY_SIMPLE_ENEMY = "SimpleEnemy";
 	static ENTITY_PLAYER = "Player";
+	static ENTITY_BOSS = "Boss";
 	
 	constructor(params){
         this.entities = [];
@@ -50,6 +53,22 @@ export class EntityManager{
                 });
                 this.entities.push(entity);
                 break;
+			case EntityManager.ENTITY_BOSS:
+				var character = new BossFactory({manager: this.MANAGER, position: params.position})
+                var entity = new BossEntity({
+                    manager: this.MANAGER,
+					entityManager: this,
+					maxDistance: params.maxDistance,
+					pos: this.entities.length,
+                    scoreManager: this.scoreManager,
+                    target: character.getBoss(),
+					body: this.buildBody(params),
+					player: this.player,
+					character: character,
+					bulletId : 2,
+                });
+                this.entities.push(entity);
+                break;
         }
 		this.scene.add(entity.target);
         if(entity.body != null){
@@ -60,29 +79,19 @@ export class EntityManager{
         this.addEntity(params);
         return this.entities[this.entities.length-1];
     }
-	
-	buildMesh(params){
-		var elem = this._models[params.name];
-		var mesh = elem.model.clone();
-
-        mesh.name = params.name+(++elem.count);
-
-        mesh.position.set(...params.position);
-        if(params.rotation)
-            mesh.rotation.set(...params.rotation);
-
-        return mesh;
-    }
 
 	buildBody(params){
         switch(params.name){ 
             case EntityManager.ENTITY_SIMPLE_ENEMY:
-                var body = new CANNON.Body({ mass: 30, shape: new CANNON.Sphere(2), });
+                var body = new CANNON.Body({ mass: 30, shape: new CANNON.Sphere(2),});
                 break;
             case EntityManager.ENTITY_PLAYER:
-                var body = new CANNON.Body({ mass: 50, shape: new CANNON.Sphere(1), });
+                var body = new CANNON.Body({ mass: 50, shape: new CANNON.Sphere(1),});
                 body.linearDamping = 0.9;
                 break;
+			case EntityManager.ENTITY_BOSS:
+				var body = new CANNON.Body({ mass: 100, shape: new CANNON.Sphere(7),});
+				break;
         }
         body.position.set(...params.position);
         if(params.rotation){
@@ -112,6 +121,7 @@ export class EntityManager{
     }
 	
 	update(timeInSeconds){
+		//console.log(this.entities)
         for(var i in this.entities){
             this.entities[i].update(timeInSeconds);
         }
@@ -165,8 +175,8 @@ class Entity{
     update(timeInSeconds){}
 }
 	
-class SimpleEnemyEntity extends Entity{
-	constructor(params){
+class SimpleEnemyEntity extends Entity {
+	constructor(params) {
 		super(params);
 		
 		this.scoreManager = params.scoreManager;
@@ -200,7 +210,7 @@ class SimpleEnemyEntity extends Entity{
 	}
 }
 
-class PlayerEntity extends Entity{
+class PlayerEntity extends Entity {
 	constructor(params){
 		super(params);
 		
@@ -209,5 +219,31 @@ class PlayerEntity extends Entity{
 	}
 	hitted(){
 		this.scoreManager.lose1life();
+	}
+}
+
+class BossEntity extends Entity {
+	constructor(params){
+		super(params);
+		
+		this.scoreManager = params.scoreManager;
+		this.maxDistance = params.maxDistance;
+		this.character = params.character;
+		
+		this.controls = new BossAIController({
+			manager: this.MANAGER,
+			character: this.character,
+			entity: this,
+			target: this.target,
+			body: this.body,
+			player: this.player,
+			maxDistance: this.maxDistance,
+		});
+	}
+	hitted(){
+		this.scoreManager.lose1life();
+	}
+	update(timeInSeconds){
+		this.controls.update(timeInSeconds);
 	}
 }

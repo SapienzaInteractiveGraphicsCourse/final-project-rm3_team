@@ -308,7 +308,6 @@ class gameEnvironment {
 	
 	load() {
 		var promise = [
-            this.getModel('Pistola/scene.gltf', 5.0),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_03'),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_04'),
             this.getModel('Guns/scene.gltf', 0.0006, 'Weapon_06'),
@@ -319,7 +318,6 @@ class gameEnvironment {
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
-                "Pistola",
 				"ak47",
 				"pistol",
 				"sniper",
@@ -630,7 +628,7 @@ class gameEnvironment {
 		this.world.step(dt);
 		
 		var time = Date.now() - this.time - this.addedTime;
-		
+		//this.boss.getBoss().position.z -= 0.06;
 		this.scoreManager.updateCurrTime(Date.now());
         if(this.scoreManager.isGameOver()){
 			cancelAnimationFrame(this.animationFrameID);
@@ -643,7 +641,7 @@ class gameEnvironment {
             });
             return;
         }
-		
+		console.log(time);
 		this.entityManager.update(time);
 		this.bulletManager.update(time);
 		this.controls.update(time);
@@ -864,10 +862,9 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		//Add boss
-		var bossPosition = [0, 2.9, -20]
-		this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
-		this.boss.getBoss().scale.set(5,5,5)
-		this.scene.add(this.boss.getBoss());
+		var bossPosition = [0, 20, -50];
+		//this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
+		this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 40})
 		
 		// Add linked boxes
 		/*
@@ -910,9 +907,9 @@ class gameEnvironment {
 		
 		this.locker();
 		var time = Date.now();
+		this.time = Date.now();
 		this.scoreManager.setStartTime(time);
         this.scoreManager.updateCurrTime(time);
-		
 		this.GameLoop();
 	}
 	

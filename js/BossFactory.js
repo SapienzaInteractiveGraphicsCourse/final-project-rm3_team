@@ -5,7 +5,9 @@ export class BossFactory {
 		console.log(this.boss)
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
-		this.startMove();
+		this.boss.scale.set(5,5,5);
+		console.log(this.boss);
+		//this.startMove();
 	}
 	
 	buildBoss(){
@@ -93,11 +95,11 @@ export class BossFactory {
 	
 	initializeAnimation() {
 		//Generate Animations
-		this.legTween1 = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}).to({upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}, 50/this.MANAGER.getVelocityFactor() )
+		this.legTween1 = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}).to({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}, 60/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
-		this.legTween2 = new TWEEN.Tween({upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}).to({upz: 0, lowz: -Math.PI/12, roty: Math.PI/12}, 100/this.MANAGER.getVelocityFactor() )
+		this.legTween2 = new TWEEN.Tween({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}).to({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}, 120/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
-		this.legTween3 = new TWEEN.Tween({upz: 0, lowz: -Math.PI/12, roty: Math.PI/12}).to( {upz: Math.PI/4, lowz: -Math.PI/2, roty: Math.PI/4}, 100/this.MANAGER.getVelocityFactor() )
+		this.legTween3 = new TWEEN.Tween({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}).to( {upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}, 120/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
 		this.legTween1.chain(this.legTween2)
 		this.legTween2.chain(this.legTween3)
@@ -109,10 +111,40 @@ export class BossFactory {
 					
 					var leg = this.legs.children[i].children[j];
 					var lowerLeg = leg.children[1];
-					leg.rotation.z = object.upz;
-					lowerLeg.rotation.z = object.lowz;
-					if(j == 0) leg.rotation.y = object.roty;
-					if(j == 3) leg.rotation.y = object.roty;
+					
+					if(j == 0){
+						if(i==0) {
+							leg.rotation.y = object.roty;
+							//leg.rotation.z = object.upz;
+							//lowerLeg.rotation.z = object.lowz;
+						}
+						if(i==1) {
+							leg.rotation.y = Math.PI/3 - object.roty;
+							//leg.rotation.z = Math.PI/6 - object.upz;
+							//lowerLeg.rotation.z = -2*Math.PI/3 - object.lowz;
+						}
+					}
+					if(j == 3){
+						if(i==0) {
+							leg.rotation.y = -object.roty;
+							//leg.rotation.z = object.upz;
+							//lowerLeg.rotation.z = object.lowz;
+						}
+						if(i==1) {
+							leg.rotation.y = -Math.PI/3 + object.roty;
+							//leg.rotation.z = Math.PI/6 - object.upz;
+							//lowerLeg.rotation.z = -2*Math.PI/3 - object.lowz;;
+						}
+					}
+					if(j == 1) {
+						if(i==0) leg.rotation.y = Math.PI/6 - object.roty/2;
+						if(i==1) leg.rotation.y = object.roty/2;
+					}
+					if(j == 2) {
+						if(i==0) leg.rotation.y = -(Math.PI/6 - object.roty/2);
+						if(i==1) leg.rotation.y = -object.roty/2
+					}
+					
 				}
 			}
 
@@ -128,7 +160,7 @@ export class BossFactory {
 	
 	stopMove() {
 		this.legTween1.stop();
-		const legTween4 = new TWEEN.Tween(this.leftLeg.rotation.clone()).to({x: 0, y: 0, z: 0}, 50/this.MANAGER.getVelocityFactor());
+		const legTween4 = new TWEEN.Tween({upz: this.leftLeg1.rotation.z, lowz: this.leftLowerLeg.rotation.z, roty: this.leftLeg1.rotation.y}).to({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}, 60/this.MANAGER.getVelocityFactor());
 		legTween4.onUpdate(this.updateLeg1.bind(this));
 		legTween4.start();
 	}
