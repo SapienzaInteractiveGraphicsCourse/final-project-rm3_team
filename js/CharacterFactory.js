@@ -46,9 +46,9 @@ export class CharacterFactory {
 		curAmmo: 1,
 		timeBetweenAmmo: 3,
 		bullet: {
-			mass: 50,
+			mass: 500000000,
 			radius: 0.5,
-			shootVelocity: 35,
+			shootVelocity: 60,
 		}
 	};
 	

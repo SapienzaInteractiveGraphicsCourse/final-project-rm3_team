@@ -93,11 +93,11 @@ export class BossFactory {
 	
 	initializeAnimation() {
 		//Generate Animations
-		this.legTween1 = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}).to({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}, 60/this.MANAGER.getVelocityFactor() )
+		this.legTween1 = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, roty: Math.PI/6}).to({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4.5}, 60/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
-		this.legTween2 = new TWEEN.Tween({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}).to({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}, 120/this.MANAGER.getVelocityFactor() )
+		this.legTween2 = new TWEEN.Tween({upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4.5}).to({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}, 120/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
-		this.legTween3 = new TWEEN.Tween({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}).to( {upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4}, 120/this.MANAGER.getVelocityFactor() )
+		this.legTween3 = new TWEEN.Tween({upz: Math.PI/18, lowz: -Math.PI/6, roty: Math.PI/12}).to( {upz: Math.PI/9, lowz: -Math.PI/2, roty: Math.PI/4.5}, 120/this.MANAGER.getVelocityFactor() )
 			.easing(TWEEN.Easing.Quadratic.InOut)
 		this.legTween1.chain(this.legTween2)
 		this.legTween2.chain(this.legTween3)
