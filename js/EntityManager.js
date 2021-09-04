@@ -54,7 +54,7 @@ export class EntityManager{
                 this.entities.push(entity);
                 break;
 			case EntityManager.ENTITY_BOSS:
-				var character = new BossFactory({manager: this.MANAGER, position: params.position})
+				var character = new BossFactory({manager: this.MANAGER, position: params.position, texture: this.MANAGER.APP.characterTexture["boss"]})
                 var entity = new BossEntity({
                     manager: this.MANAGER,
 					entityManager: this,

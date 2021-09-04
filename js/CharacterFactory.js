@@ -66,7 +66,6 @@ export class CharacterFactory {
 		this.MANAGER = params.manager;
 		this.gunsName = params.guns;
 		this.texture = params.texture;
-		
 		this.buildCharacter();
 		
 		if(params.rotation){

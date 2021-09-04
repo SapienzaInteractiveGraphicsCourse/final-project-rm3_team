@@ -319,8 +319,8 @@ class gameEnvironment {
 			
 			this.getCharacterTexture('character/protagonist/'),
 			this.getCharacterTexture('character/soldier/'),
-			
-			//Da mettere il get Texture
+			//this.getTexture('textures/ragnoFace.png')
+			this.getBossTexture('character/boss/')
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -332,6 +332,7 @@ class gameEnvironment {
 			var nameCharacter = [
 				"protagonist",
 				"soldier",
+				"boss",
 			]
 
 			for(let i in nameModels){
@@ -413,6 +414,47 @@ class gameEnvironment {
         });
         return myPromise;
     }
+	
+	getBossTexture(path, useNormalMap=false) {
+		const myPromise = new Promise((resolve, reject) => {
+			var characterTexture = {};
+			var promiseCharacter = [
+				this.getTexture(path+ "ragnoFace.png"),
+				this.getTexture(path+ "spiderBody.png"),
+			]
+			Promise.all(promiseCharacter).then(data => {
+				var nameCharacterPart = [
+					"face",
+					"skin",
+				];
+
+				for(let i in nameCharacterPart){
+					characterTexture[nameCharacterPart[i]] = data[i];
+				}
+				characterTexture["head"] = [
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["face"],
+				]
+				characterTexture["body"] = [
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+				]
+				resolve(characterTexture);
+			}, error => {
+				console.log('An error happened:');
+				reject(error);
+			});
+		});
+        return myPromise;
+	}
 	
 	getCharacterTexture(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
@@ -503,7 +545,7 @@ class gameEnvironment {
 					characterTexture["legLeft"],
 					characterTexture["legRight"],
 					characterTexture["footTop"],
-					characterTexture["hfootBottom"],
+					characterTexture["footBottom"],
 					characterTexture["legBack"],
 					characterTexture["legFront"],
 				]
@@ -825,6 +867,7 @@ class gameEnvironment {
 		this.positionsList = [[0, 0, 1, 1]];
 
 		// Add boxes
+		
 		for(var i=0; i<165; i++){
 			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
 			var boxShape = new CANNON.Box(halfExtents);
