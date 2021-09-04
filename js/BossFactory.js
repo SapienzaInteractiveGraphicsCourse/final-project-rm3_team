@@ -1,6 +1,17 @@
 export class BossFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
+		//------------------------------TEMPORANEO----------------
+		this.texture = [];
+		var tex = new THREE.TextureLoader().load('./resources/textures/ragnoFace.png');
+		var material = new THREE.MeshStandardMaterial({
+                    map: tex,
+                    emissive: 'white',
+                    emissiveIntensity: 0.0,
+                 });
+		this.texture.push(material);
+		console.log(this.texture);
+		//------------------------------FINE TEMPORANEO-----------
 		this.buildBoss();
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
@@ -9,7 +20,7 @@ export class BossFactory {
 	}
 	
 	buildBoss(){
-		this.headMesh = this.generateBoxMesh(0.8, 0.8, 0.8, 0, 0, -0.6);
+		this.headMesh = this.generateBoxMesh(0.8, 0.8, 0.8, 0, 0, -0.6, 0);
 		this.headMesh.name = "skull";
 		
 		this.neckMesh = this.generateBoxMesh(0.6, 0.6, 0.4, 0, 0, 0);
@@ -83,6 +94,7 @@ export class BossFactory {
 			var boxMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
 		}
 		else {
+			console.log("applico texture")
 			var boxMaterial = this.texture[texturePart];
 		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
