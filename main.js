@@ -319,6 +319,8 @@ class gameEnvironment {
 			
 			this.getCharacterTexture('character/protagonist/'),
 			this.getCharacterTexture('character/soldier/'),
+			
+			//Da mettere il get Texture
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
