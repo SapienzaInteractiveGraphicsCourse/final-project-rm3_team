@@ -24,7 +24,7 @@ export class BossAIController {
 				this.move = true;
 			}
 			var move = new THREE.Vector3();
-			move.z = -time*0.03;
+			move.z = -time*0.125*this.MANAGER.getVelocityFactor();
 			move.applyAxisAngle(new THREE.Vector3(0,1,0),this.target.rotation.y);
 			this.body.velocity.x += move.x;
 			this.body.velocity.z += move.z;

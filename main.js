@@ -22,8 +22,8 @@ class gameManager {
             skybox: "",
 		};
 		
-		this.setOptionsDefault = function() {
-			this.options = {
+		this.setGameOptionsDefault = function() {
+			this.gameOptions = {
 				mouseSensibility : 1,
 				lifes: 5,
 				enemyQuantity: 30,
@@ -32,28 +32,29 @@ class gameManager {
 				velocityFactorDefault : 0.2,
 			}
 		}
-		this.setOptionsDefault();
+		this.setGameOptionsDefault();
+		this.deletedBody = [];
 		
-		this.velocityFactor = this.options.velocityFactorDefault;
+		this.velocityFactor = this.gameOptions.velocityFactorDefault;
 	}
 	
-	getOptions() {return this.options;}
-	getMouseSensibility() {return this.options.mouseSensibility;}
-	getEnemyQuantity() {return this.options.enemyQuantity;}
-	getLifes() {return this.options.lifes;}
-	getTime() {return this.options.time;}
-	getViewfinder() {return this.options.viewfinder;}
+	getGameOptions() {return this.gameOptions;}
+	getMouseSensibility() {return this.gameOptions.mouseSensibility;}
+	getEnemyQuantity() {return this.gameOptions.enemyQuantity;}
+	getLifes() {return this.gameOptions.lifes;}
+	getTime() {return this.gameOptions.time;}
+	getViewfinder() {return this.gameOptions.viewfinder;}
 	getVelocityFactor() {return this.velocityFactor;}
 	getDayTimeOptions() {return this.dayTimeOptions;}
 	getDayTime() {return this.dayTimeOptions.dayTime;}
 	getLights() {return this.dayTimeOptions.lights;}
 	getSkyBox() {return this.dayTimeOptions.skybox;}
 	
-	setOptions(options) {this.options = options;}
+	setGameOptions(options) {this.gameOptions = options;}
 	setDayTimeOptions(options) {this.dayTimeOptions = options;}
 	
-	resetVelocityFactor(){this.velocityFactor = this.options.velocityFactorDefault;}
-	multiplyVelocityFactor(val = 2) {this.velocityFactor = this.options.velocityFactorDefault*val;}
+	resetVelocityFactor(){this.velocityFactor = this.gameOptions.velocityFactorDefault;}
+	multiplyVelocityFactor(val = 2) {this.velocityFactor = this.gameOptions.velocityFactorDefault*val;}
 	
 	startGame() {
 		this.gameStarted = true;
@@ -138,17 +139,17 @@ class MenuEnvironment {
 		this.exitSettings.addEventListener("click", this.exitSetting.bind(this), false);
 		this.confirmSettings.addEventListener("click", () => {
 			this.updateAllOptions();
-            var currentOptions = MANAGER.getOptions();
+            var currentGameOptions = MANAGER.getGameOptions();
 			document.cookie = "dayTime="+MANAGER.getDayTime()+";";
-            document.cookie = "options={mouseSensibility:"+currentOptions.mouseSensibility+
-				", lifes:"+currentOptions.lifes+
-                ", enemyQuantity:"+currentOptions.enemyQuantity+
-                ", time:"+currentOptions.time+
-				", viewfinder:"+currentOptions.viewfinder+"};";
+            document.cookie = "gameOptions={mouseSensibility:"+currentGameOptions.mouseSensibility+
+				", lifes:"+currentGameOptions.lifes+
+                ", enemyQuantity:"+currentGameOptions.enemyQuantity+
+                ", time:"+currentGameOptions.time+
+				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
-			MANAGER.setOptionsDefault();
+			MANAGER.setGameOptionsDefault();
 			this.updateAllSlider();
         }, false);
 		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this, 0), false);
@@ -160,11 +161,11 @@ class MenuEnvironment {
         this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
 	}
 	giveValueFromCookie() {
-		var cookieSettings = this.getCookie("options");
+		var cookieSettings = this.getCookie("gameOptions");
         if(cookieSettings != null){
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
 
-            MANAGER.setOptions({
+            MANAGER.setGameOptions({
                 mouseSensibility: parseFloat(data[0].split(":")[1]),
                 lifes: parseFloat(data[1].split(":")[1]),
                 enemyQuantity: parseFloat(data[2].split(":")[1]),
@@ -221,15 +222,15 @@ class MenuEnvironment {
 		document.activeElement.blur();
 	}
 	updateAllSlider() {
-		var curOptions = MANAGER.getOptions();
-		this.sliderMouseSens.value = curOptions.mouseSensibility;
-		this.sliderLifes.value = curOptions.lifes;
-		this.sliderEnemys.value = curOptions.enemyQuantity;
-		this.sliderTime.value = curOptions.time;
-		this.wiewfinderCkBox.checked = curOptions.viewfinder;
+		var curGameOptions = MANAGER.getGameOptions();
+		this.sliderMouseSens.value = curGameOptions.mouseSensibility;
+		this.sliderLifes.value = curGameOptions.lifes;
+		this.sliderEnemys.value = curGameOptions.enemyQuantity;
+		this.sliderTime.value = curGameOptions.time;
+		this.wiewfinderCkBox.checked = curGameOptions.viewfinder;
 	}
 	updateAllOptions() {
-		MANAGER.setOptions({
+		MANAGER.setGameOptions({
 			mouseSensibility: parseFloat(this.sliderMouseSens.value),
 			lifes: parseFloat(this.sliderLifes.value),
 			enemyQuantity: parseFloat(this.sliderEnemys.value),
@@ -241,7 +242,7 @@ class MenuEnvironment {
 	setDifficulty(difficulty) {
 		switch(difficulty){
 			case 0:		//easy
-				var options = {
+				var gameOptions = {
 					mouseSensibility : 1,
 					lifes: 10,
 					enemyQuantity: 10,
@@ -251,7 +252,7 @@ class MenuEnvironment {
 				}
 				break
 			case 1:		//normal
-				var options = {
+				var gameOptions = {
 					mouseSensibility : 1,
 					lifes: 5,
 					enemyQuantity: 25,
@@ -261,7 +262,7 @@ class MenuEnvironment {
 				}
 				break;
 			case 2:		//hard
-				var options = {
+				var gameOptions = {
 					mouseSensibility : 1,
 					lifes: 2,
 					enemyQuantity: 50,
@@ -271,7 +272,7 @@ class MenuEnvironment {
 				}
 				break
 		}
-		MANAGER.setOptions(options);
+		MANAGER.setGameOptions(gameOptions);
 		this.updateAllSlider();
 	}
 }
@@ -636,6 +637,10 @@ class gameEnvironment {
 	update() {
 		var dt = 1/60;
 		this.world.step(dt);
+		for(let i in MANAGER.deletedBody) {
+			this.world.remove(MANAGER.deletedBody[i]);
+		}
+		MANAGER.deletedBody = [];
 		
 		var time = Date.now() - this.time - this.addedTime;
 		//console.log(time);
@@ -817,7 +822,6 @@ class gameEnvironment {
 
 		this.positionsList = [[0, 0, 1, 1]];
 
-		/*
 		// Add boxes
 		for(var i=0; i<165; i++){
 			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
@@ -831,7 +835,7 @@ class gameEnvironment {
 			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
 			this.positionsList.push([x, z, halfExtents.x, halfExtents.z]);
 			
-			var boxBody = new CANNON.Body({ mass: 500000 });
+			var boxBody = new CANNON.Body({ mass: 1000 });
 			boxBody.addShape(boxShape);
 			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 			var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
@@ -846,7 +850,7 @@ class gameEnvironment {
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
-		*/
+		
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];

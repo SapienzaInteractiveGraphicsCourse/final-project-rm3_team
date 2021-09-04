@@ -90,7 +90,8 @@ export class EntityManager{
                 body.linearDamping = 0.9;
                 break;
 			case EntityManager.ENTITY_BOSS:
-				var body = new CANNON.Body({ mass: 100, shape: new CANNON.Sphere(7),});
+				var body = new CANNON.Body({ mass: 100000, shape: new CANNON.Sphere(7),});
+				body.isBoss = true;
 				break;
         }
         body.position.set(...params.position);
@@ -106,9 +107,9 @@ export class EntityManager{
     }
 	
 	eliminateThisEntity(elem){
-		elem.body.position.y = -100;
-		elem.body.sleep();
 		elem.target.parent.remove(elem.target);
+		elem.body.position.y = 100;
+		this.MANAGER.deletedBody.push(elem.body);
         var pos = elem.pos;
         this.entities.splice(pos, 1);
         for (var i = pos; i < this.entities.length; i++){
@@ -145,6 +146,9 @@ class Entity{
             
             this.body.addEventListener("collide", function (e){
 				
+				if(e.contact.bi.isBoss || e.contact.bj.isBoss)
+					this.hittedBoss();
+				
                 if ( !(e.contact.bi.isBullet || e.contact.bj.isBullet) )
                     return;
 				
@@ -155,23 +159,16 @@ class Entity{
                     e.contact.ni.negate(this.contactNormal);
                 else
                     this.contactNormal.copy(e.contact.ni);
-                
-                var direction = this.contactNormal.dot(this.upAxis)
-                if (direction > 0.5){
-                    this.hittedDown();
-                } else if (direction < -0.5){
-                    this.hittedUp();
-                } else {
-                    this.hitted();
-                }
+				
+				
+				this.hitted();
             }.bind(this));
         }
     }
 
     collected(){}
     hitted(){}
-    hittedUp(){this.hitted()}
-    hittedDown(){this.hitted()}
+	hittedBoss(){}
     update(timeInSeconds){}
 }
 	
@@ -217,6 +214,9 @@ class PlayerEntity extends Entity {
 		this.scoreManager = params.scoreManager;
 		this.character = params.character;
 	}
+	hittedBoss() {
+		this.hitted();
+	};
 	hitted(){
 		this.scoreManager.lose1life();
 	}
@@ -229,6 +229,7 @@ class BossEntity extends Entity {
 		this.scoreManager = params.scoreManager;
 		this.maxDistance = params.maxDistance;
 		this.character = params.character;
+		this.life = 20;
 		
 		this.controls = new BossAIController({
 			manager: this.MANAGER,
@@ -241,7 +242,10 @@ class BossEntity extends Entity {
 		});
 	}
 	hitted(){
-		this.scoreManager.lose1life();
+		this.life -= 1;
+		if(this.life<=0) {
+			this.entityManager.eliminateThisEntity(this);
+		}
 	}
 	update(timeInSeconds){
 		this.controls.update(timeInSeconds);
