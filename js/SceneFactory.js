@@ -1,5 +1,3 @@
-import * as THREE from 'https://cdn.skypack.dev/three@v0.129.0-oVPEZFilCYUpzWgJBZqM/build/three.module.js';
-
 export class SceneFactory{
     static DAY_SKYBOX = "daySkyBox"
     static DAY_SKYBOX2 = "daySkyBox2"

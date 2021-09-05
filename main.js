@@ -36,6 +36,7 @@ class gameManager {
 		this.setGameSettingsDefault = function() {
 			this.gameSettings = {
 				useNormalMap: true,
+				shadow: true,
 			}
 		}
 		this.setGameSettingsDefault();
@@ -58,6 +59,7 @@ class gameManager {
 	
 	getGameSettings() {return this.gameSettings;}
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
+	getShadowRule() {return this.gameSettings.shadow;}
 	
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
@@ -103,6 +105,7 @@ class MenuEnvironment {
 		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
 		
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
+		this.shadowCkBox = document.getElementById("shadowCkBox");
 		
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -160,7 +163,7 @@ class MenuEnvironment {
                 ", time:"+currentGameOptions.time+
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
-				"};";
+				", shadow:"+curretGameSettings.shadow+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
@@ -195,6 +198,7 @@ class MenuEnvironment {
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
             MANAGER.setGameSettings({
                 useNormalMap: (data[0].split(":")[1] === 'true'),
+                shadow: (data[1].split(":")[1] === 'true'),
             });
         }
 		
@@ -255,6 +259,7 @@ class MenuEnvironment {
 		
 		var curGameSettings = MANAGER.getGameSettings();
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
+		this.shadowCkBox.checked = curGameSettings.shadow;
 	}
 	updateAllOptions() {
 		MANAGER.setGameOptions({
@@ -267,6 +272,7 @@ class MenuEnvironment {
 		});
 		MANAGER.setGameSettings({
 			useNormalMap: this.normalMapCkBox.checked,
+			shadow: this.shadowCkBox.checked,
 		})
 	}
 	setDifficulty(difficulty) {
@@ -405,7 +411,7 @@ class gameEnvironment {
 					throw 'Error in searching ' + childName + ' in ' + path;
 
                 mesh.traverse(c => {
-                    c.castShadow = true;
+                    c.castShadow = MANAGER.getShadowRule();;
                 });
 
                 mesh.scale.setScalar(scale);
@@ -822,6 +828,7 @@ class gameEnvironment {
 		
 		this.lights = new LightFactory(MANAGER.getLights());
         for (var i in this.lights) {
+			this.lights.castShadow = MANAGER.getShadowRule();
             this.scene.add(this.lights[i]);
         }
 		//var ambient = new THREE.AmbientLight( 0xAAAAAA );
@@ -853,8 +860,9 @@ class gameEnvironment {
 		this.tourch.distance = 100;
 		this.tourch.penumbra = 0.3;
 		this.tourch.intensity = 1;
-		if(true){
-			this.tourch.castShadow = true;
+		this.tourch.castShadow = MANAGER.getShadowRule();
+		if(MANAGER.getShadowRule()){
+			
 
 			this.tourch.shadow.camera.near = 3.5;
 			this.tourch.shadow.camera.far = 50;//camera.far;
@@ -898,8 +906,8 @@ class gameEnvironment {
 		//const material = new THREE.MeshPhongMaterial( { map: texture } );
 
 		var mesh = new THREE.Mesh( geometry, this.texture["terrain"] );
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
+		mesh.castShadow = MANAGER.getShadowRule();
+		mesh.receiveShadow = MANAGER.getShadowRule();
 		this.scene.add( mesh );
 
 		this.boxes = [];
@@ -957,8 +965,8 @@ class gameEnvironment {
 			this.scene.add(boxMesh);
 			boxBody.position.set(x,y,z);
 			boxMesh.position.set(x,y,z);
-			boxMesh.castShadow = true;
-			boxMesh.receiveShadow = true;
+			boxMesh.castShadow = MANAGER.getShadowRule();
+			boxMesh.receiveShadow = MANAGER.getShadowRule();
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
