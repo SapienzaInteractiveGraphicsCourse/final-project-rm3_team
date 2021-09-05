@@ -870,33 +870,28 @@ class gameEnvironment {
 		var posXs = [150, -150, 0, 0]
 		var posZs = [0, 0, 150, -150]
 		for (var i=0; i<4; i++){
-			var half = new CANNON.Vec3(150, 10, 1);
-			var shape = new CANNON.Box(half);
-			var boxGeom = new THREE.BoxGeometry(half.x*2,half.y*2,half.z*2);
-			var posX = posXs[i]
+			if (posZs[i] == 0) var half = new CANNON.Vec3(2, 20, 150);
+			else var half = new CANNON.Vec3(150, 20, 2);
+
 			var posY = 20
+			var posX = posXs[i]
 			var posZ = posZs[i]
-			var body = new CANNON.Body({ mass: 10000000 });
+			var shape = new CANNON.Box(half);
+			var boxGeom = new THREE.BoxGeometry(half.x*2,half.y,half.z*2);
+
+			var body = new CANNON.Body({ mass: 0 });
 			body.addShape(shape);
 			var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 			var material3 = new THREE.MeshLambertMaterial( { color: randColor } );
 			var mesh = new THREE.Mesh( boxGeom, material3 );
-			if (posX == 0 || posZ == 0) {
-				boxGeom.rotateY(Math.PI/2);
-				mesh.rotateY(Math.PI/2);
-			}
+
 			this.world.add(body);
 			this.scene.add(mesh);
 			body.position.set(posX,posY,posZ);
-			mesh.position.set(posX,posY,posZ);
-			mesh.castShadow = true;
-			mesh.receiveShadow = true;
-			this.boxes.push(body);
-			this.boxMeshes.push(mesh);
+			mesh.position.set(posX,posY/2,posZ);
 		}
 		
 		// Add boxes
-		/*
 		for(var i=0; i<165; i++){
 			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
 			var boxShape = new CANNON.Box(halfExtents);
@@ -924,7 +919,7 @@ class gameEnvironment {
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
-		*/
+
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
