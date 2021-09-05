@@ -839,7 +839,7 @@ class gameEnvironment {
 		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
 		// floor
-		var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
+		var geometry = new THREE.PlaneGeometry( 324, 324, 50, 50 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
 		//var material = new THREE.MeshLambertMaterial({color: 0xeeee00});
@@ -867,11 +867,11 @@ class gameEnvironment {
 		this.positionsList = [[0, 0, 1, 1]];
 
 		//Add walls
-		var posXs = [150, -150, 0, 0]
-		var posZs = [0, 0, 150, -150]
+		var posXs = [162, -162, 0, 0]
+		var posZs = [0, 0, 162, -162]
 		for (var i=0; i<4; i++){
-			if (posZs[i] == 0) var half = new CANNON.Vec3(2, 20, 150);
-			else var half = new CANNON.Vec3(150, 20, 2);
+			if (posZs[i] == 0) var half = new CANNON.Vec3(2, 20, 162);
+			else var half = new CANNON.Vec3(162, 20, 2);
 
 			var posY = 20
 			var posX = posXs[i]
