@@ -7,21 +7,21 @@
 		
 		<div id="menu">
 			<div id="blocker">
-				<div style="height: 30vh;">
+				<div style="height: 27vh;">
 					<img id="logo" src="./resources/images/logo2.png"/>
 				</div>
-				<div id="instructions" style="height: 40vh;">
-					<button id="playGameButton" class="menuButton" value="START">
+				<div id="instructions" style="height: 41vh;">
+					<button id="playGameButton" class="menuButton greenButton" value="START">
 						<img id="menuIconPlay" src="./resources/images/assault-rifle.png"/>
 						START
 					</button>
 					<br/>
-					<button id="settingsButton" class="menuButton" value="SETTINGS">
+					<button id="settingsButton" class="menuButton yellowButton" value="SETTINGS">
 						<img id="menuIconSettings" src="./resources/images/gear.png"/>
 						SETTINGS
 					</button>
 				</div>
-				<div style="height: 30vh;">
+				<div style="height: 32vh;">
 					<div id="controls">
 						<div class="controlsItem">
 							Move
@@ -91,16 +91,16 @@
 					<span id="writer"></span>
 				</div>
 				<div id="PauseCanvas">
-					<input id="resumeButton" class="menuButton" type="button" value="RESUME">
+					<input id="resumeButton" class="menuButton greenButton" type="button" value="RESUME">
 					<span></span>
-					<input id="backToMenuButton" onclick="window.location.href='./'" class="menuButton" type="button" value="BACK TO MENU">
+					<input id="backToMenuButton" onclick="window.location.href='./'" class="menuButton redButton" type="button" value="BACK TO MENU">
 				</div>
 			</div>
 		</div>
 		
 		<div id="settings">
         <div id="MainSett">
-            <span id="exitSettings">🡸 BACK</span>
+            <span id="exitSettings" class="menuButton redButton">🡸 BACK</span> <!--id="exitSettings"-->
 			<div class="settingElem">
                 <h1 class="titleElement">Select Day Time:</h1>
                 <div class="insideDivElem">
