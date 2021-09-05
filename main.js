@@ -937,6 +937,7 @@ class gameEnvironment {
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
 		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
+		this.playerEntity.setControls(this.controls);
 		
 		this.scene.add(this.controls.getObject());
 		

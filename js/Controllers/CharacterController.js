@@ -80,11 +80,13 @@ export class CharacterController {
     getObject() {
         return this.yawObject;
     };
-
-    getDirection(targetVec) {
-        targetVec.set(0,0,-1);
-        this.quat.multiplyVector3(targetVec);
-    }
+	kickBack(enemyPosition) {
+		var playerPos = new THREE.Vector3(this.entity.body.position.x, this.entity.body.position.y, this.entity.body.position.z);
+		var enemyPos = new THREE.Vector3(enemyPosition.x,enemyPosition.y,enemyPosition.z)
+		var directionMove = playerPos.sub(enemyPos).normalize()
+		this.velocity.x += directionMove.x*200;
+		this.velocity.z += directionMove.z*200;
+	}
 	getShootDir(targetVec){
 		var vector = targetVec;
 		targetVec.set(0,0,1);
