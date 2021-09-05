@@ -114,8 +114,10 @@ export class CharacterController {
 			this.setAmmo()
 			if(this.currAmmo<=0)
 				this.reload();
-			else
+			else{
 				this.shotTime = this.timeBetweenAmmo;
+			}
+			new Audio(this.character.getActualGun().audio.shot).play();
 		}
 	}
 	setAmmo(quantity=null) {
@@ -151,6 +153,9 @@ export class CharacterController {
 	updateReloading(time) {
 		if(this.shotTime>0)
 			this.shotTime -= time;
+		if(this.shotTime<1500 && this.isReloading) {
+			this.character.getActualGun().audio.reload.play();
+		}
 		if(this.shotTime<=0 && this.isReloading)
 			this.reloadComplete();
 		

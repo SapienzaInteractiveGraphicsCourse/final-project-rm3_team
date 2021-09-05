@@ -27,6 +27,11 @@ export class BasicAIController {
 			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
 			if(distance<this.maxDistance) {				//From maxDistance start to shot
 				if(this.timeToShot<0) {
+
+					var shotAudio = new Audio(this.entity.character.getActualGun().audio.shot);
+					shotAudio.volume = Math.exp(-0.1*distance);
+					console.log(shotAudio.volume);
+					shotAudio.play();
 					this.bulletManager.spawnNewBullet(this.entity,direction)
 					this.currAmmo -= 1;
 					this.timeToShot = this.computeNewTimeToShot();

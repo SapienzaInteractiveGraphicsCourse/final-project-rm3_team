@@ -10,6 +10,10 @@ export class CharacterFactory {
 			mass: 0.1,
 			radius: 0.1,
 			shootVelocity: 45,
+		},
+		audio: {
+			shot: ".\\resources\\audio\\pistol_shot.mp3",
+			reload: new Audio(".\\resources\\audio\\pistol_reload.mp3")
 		}
 	};
     static GUN_AK47 = "ak47";
@@ -23,6 +27,10 @@ export class CharacterFactory {
 			mass: 0.5,
 			radius: 0.15,
 			shootVelocity: 55,
+		},
+		audio: {
+			shot: ".\\resources\\audio\\ak47_shot.mp3",
+			reload: new Audio(".\\resources\\audio\\ak47_reload.mp3")
 		}
 	};
     static GUN_SNIPER = "sniper";
@@ -36,6 +44,10 @@ export class CharacterFactory {
 			mass: 0.5,
 			radius: 0.2,
 			shootVelocity: 90,
+		},
+		audio: {
+			shot: ".\\resources\\audio\\sniper_shot.mp3",
+			reload: new Audio(".\\resources\\audio\\sniper_reload.mp3")
 		}
 	};
     static GUN_RPG = "rpg";
@@ -49,6 +61,10 @@ export class CharacterFactory {
 			mass: 500000000,
 			radius: 0.5,
 			shootVelocity: 60,
+		},
+		audio: {
+			shot: ".\\resources\\audio\\RPG_shot.mp3",
+			reload: new Audio(".\\resources\\audio\\RPG_reload.mp3")
 		}
 	};
 	
