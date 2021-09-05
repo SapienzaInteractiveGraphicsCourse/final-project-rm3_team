@@ -319,8 +319,8 @@ class gameEnvironment {
 			
 			this.getCharacterTexture('character/protagonist/'),
 			this.getCharacterTexture('character/soldier/'),
-			
-			//Da mettere il get Texture
+			//this.getTexture('textures/ragnoFace.png')
+			this.getBossTexture('character/boss/')
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -332,6 +332,7 @@ class gameEnvironment {
 			var nameCharacter = [
 				"protagonist",
 				"soldier",
+				"boss",
 			]
 
 			for(let i in nameModels){
@@ -413,6 +414,47 @@ class gameEnvironment {
         });
         return myPromise;
     }
+	
+	getBossTexture(path, useNormalMap=false) {
+		const myPromise = new Promise((resolve, reject) => {
+			var characterTexture = {};
+			var promiseCharacter = [
+				this.getTexture(path+ "ragnoFace.png"),
+				this.getTexture(path+ "spiderBody.png"),
+			]
+			Promise.all(promiseCharacter).then(data => {
+				var nameCharacterPart = [
+					"face",
+					"skin",
+				];
+
+				for(let i in nameCharacterPart){
+					characterTexture[nameCharacterPart[i]] = data[i];
+				}
+				characterTexture["head"] = [
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["face"],
+				]
+				characterTexture["body"] = [
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+					characterTexture["skin"],
+				]
+				resolve(characterTexture);
+			}, error => {
+				console.log('An error happened:');
+				reject(error);
+			});
+		});
+        return myPromise;
+	}
 	
 	getCharacterTexture(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
@@ -503,7 +545,7 @@ class gameEnvironment {
 					characterTexture["legLeft"],
 					characterTexture["legRight"],
 					characterTexture["footTop"],
-					characterTexture["hfootBottom"],
+					characterTexture["footBottom"],
 					characterTexture["legBack"],
 					characterTexture["legFront"],
 				]
@@ -797,7 +839,7 @@ class gameEnvironment {
 		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
 		// floor
-		var geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
+		var geometry = new THREE.PlaneGeometry( 324, 324, 50, 50 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
 		//var material = new THREE.MeshLambertMaterial({color: 0xeeee00});
@@ -824,6 +866,31 @@ class gameEnvironment {
 
 		this.positionsList = [[0, 0, 1, 1]];
 
+		//Add walls
+		var posXs = [162, -162, 0, 0]
+		var posZs = [0, 0, 162, -162]
+		for (var i=0; i<4; i++){
+			if (posZs[i] == 0) var half = new CANNON.Vec3(2, 20, 162);
+			else var half = new CANNON.Vec3(162, 20, 2);
+
+			var posY = 20
+			var posX = posXs[i]
+			var posZ = posZs[i]
+			var shape = new CANNON.Box(half);
+			var boxGeom = new THREE.BoxGeometry(half.x*2,half.y,half.z*2);
+
+			var body = new CANNON.Body({ mass: 0 });
+			body.addShape(shape);
+			var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+			var material3 = new THREE.MeshLambertMaterial( { color: randColor } );
+			var mesh = new THREE.Mesh( boxGeom, material3 );
+
+			this.world.add(body);
+			this.scene.add(mesh);
+			body.position.set(posX,posY,posZ);
+			mesh.position.set(posX,posY/2,posZ);
+		}
+		
 		// Add boxes
 		for(var i=0; i<165; i++){
 			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
@@ -852,7 +919,7 @@ class gameEnvironment {
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
-		
+
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
@@ -870,6 +937,7 @@ class gameEnvironment {
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
 		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
+		this.playerEntity.setControls(this.controls);
 		
 		this.scene.add(this.controls.getObject());
 		

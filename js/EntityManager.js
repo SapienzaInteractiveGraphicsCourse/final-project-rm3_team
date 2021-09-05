@@ -19,12 +19,16 @@ export class EntityManager{
         this.MANAGER = params.manager;
 		this.bulletManager = params.bulletManager;
         this.scoreManager = params.scoreManager;
+		this.entityEnemy = null;
     }
 
 	addEntity(params) {
 		switch(params.name){
             case EntityManager.ENTITY_SIMPLE_ENEMY:
-				var character = new CharacterFactory({manager: this.MANAGER, guns: params.guns, position: params.position, texture: this.MANAGER.APP.characterTexture["soldier"]})
+				if(this.entityEnemy == null) {
+					this.entityEnemy = new CharacterFactory({manager: this.MANAGER, guns: [], position: [0,0,0], texture: this.MANAGER.APP.characterTexture["soldier"]})
+				}
+				var character = this.entityEnemy.clone(params.position, params.guns)
                 var entity = new SimpleEnemyEntity({
                     manager: this.MANAGER,
 					entityManager: this,
@@ -54,7 +58,7 @@ export class EntityManager{
                 this.entities.push(entity);
                 break;
 			case EntityManager.ENTITY_BOSS:
-				var character = new BossFactory({manager: this.MANAGER, position: params.position})
+				var character = new BossFactory({manager: this.MANAGER, position: params.position, texture: this.MANAGER.APP.characterTexture["boss"]})
                 var entity = new BossEntity({
                     manager: this.MANAGER,
 					entityManager: this,
@@ -108,7 +112,7 @@ export class EntityManager{
 	
 	eliminateThisEntity(elem){
 		elem.target.parent.remove(elem.target);
-		elem.body.position.y = 100;
+		//elem.body.position.y = 100;
 		this.MANAGER.deletedBody.push(elem.body);
         var pos = elem.pos;
         this.entities.splice(pos, 1);
@@ -146,8 +150,10 @@ class Entity{
             
             this.body.addEventListener("collide", function (e){
 				
-				if(e.contact.bi.isBoss || e.contact.bj.isBoss)
-					this.hittedBoss();
+				if(e.contact.bi.isBoss)
+					this.hittedBoss(e.contact.bi);
+				if(e.contact.bj.isBoss)
+					this.hittedBoss(e.contact.bj);
 				
                 if ( !(e.contact.bi.isBullet || e.contact.bj.isBullet) )
                     return;
@@ -168,7 +174,7 @@ class Entity{
 
     collected(){}
     hitted(){}
-	hittedBoss(){}
+	hittedBoss(bossBody){}
     update(timeInSeconds){}
 }
 	
@@ -214,7 +220,11 @@ class PlayerEntity extends Entity {
 		this.scoreManager = params.scoreManager;
 		this.character = params.character;
 	}
-	hittedBoss() {
+	setControls(controls) {
+		this.controls = controls;
+	}
+	hittedBoss(bossBody) {
+		this.controls.kickBack(bossBody.position)
 		this.hitted();
 	};
 	hitted(){

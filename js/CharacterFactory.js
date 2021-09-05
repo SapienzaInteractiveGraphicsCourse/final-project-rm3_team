@@ -81,9 +81,14 @@ export class CharacterFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.gunsName = params.guns;
-		this.texture = params.texture;
-		
-		this.buildCharacter();
+		if(!params.character) {
+			this.texture = params.texture;
+			this.buildCharacter();
+		}
+		else {
+			this.character = params.character;
+			this.selectArmLeg();
+		}
 		
 		if(params.rotation){
             if(params.rotation[0] != 0)
@@ -159,9 +164,16 @@ export class CharacterFactory {
 		this.character = new THREE.Group();
 		this.character.name = "robot";
 		this.character.add(this.headGroup, this.bodyGroup);
-		}
+	}
 	
-
+	selectArmLeg() {
+		var leg = this.character.children[1].children[1];
+		this.leftLeg = leg.children[0];
+		this.rightLeg = leg.children[1];
+		var arm = this.character.children[1].children[2];
+		this.leftArm = arm.children[0];
+		this.rightArm = arm.children[1];
+	}
 	
 	prepareGuns() {
 		this.guns = [];
@@ -246,6 +258,12 @@ export class CharacterFactory {
 		this.prepareGuns();
 	}
 	
+	clone(position = null, guns = null) {
+		if(position==null) position = [...this.character.position];
+		if(guns==null) guns = [...this.gunsName]
+		return new CharacterFactory({character: this.character.clone(), manager: this.MANAGER, position: position, guns: guns});
+	}
+	
 	
 	startMove() {
 		this.legTween1.start();
@@ -258,13 +276,6 @@ export class CharacterFactory {
 		legTween4.start();
 	}
 	
-	sphereMesh(radius, x, y, z, color='#' + (Math.random() * 0xFFFFFF << 0).toString(16)) {
-		var sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
-		var sphereMaterial = new THREE.MeshPhongMaterial( { color: color } );
-		var mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-		mesh.position.set(x,y,z);
-		return mesh;
-	}
 	generateBoxMesh(width, height, depth, x, y, z, texturePart=null) {
 		var boxGeometry = new THREE.BoxGeometry(width, height, depth);
 		if(this.texture == null || texturePart == null){
@@ -276,15 +287,6 @@ export class CharacterFactory {
 		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
 		mesh.castShadow = true;
-		mesh.position.set(x,y,z);
-		return mesh;
-	}
-
-	cylinderMesh(radius, height, x, y, z) {
-		var cylinderGeometry = new THREE.CylinderGeometry(radius,radius, height, 32, 32);
-		var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-		var cylinderMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
-		var mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
 		mesh.position.set(x,y,z);
 		return mesh;
 	}
