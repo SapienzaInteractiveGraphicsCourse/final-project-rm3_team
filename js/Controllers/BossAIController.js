@@ -12,7 +12,6 @@ export class BossAIController {
 		update(time) {
 		this.target.position.copy(this.body.position);
 		this.target.position.y -= 4;
-		console.log(this.body.position.y);
 		if(this.body.position.y<8) {
 			this.body.velocity.x *= 0.95;
 			this.body.velocity.z *= 0.95;

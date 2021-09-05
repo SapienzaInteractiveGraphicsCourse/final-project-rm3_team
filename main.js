@@ -33,6 +33,12 @@ class gameManager {
 			}
 		}
 		this.setGameOptionsDefault();
+		this.setGameSettingsDefault = function() {
+			this.gameSettings = {
+				useNormalMap: true,
+			}
+		}
+		this.setGameSettingsDefault();
 		this.deletedBody = [];
 		
 		this.velocityFactor = this.gameOptions.velocityFactorDefault;
@@ -50,7 +56,11 @@ class gameManager {
 	getLights() {return this.dayTimeOptions.lights;}
 	getSkyBox() {return this.dayTimeOptions.skybox;}
 	
+	getGameSettings() {return this.gameSettings;}
+	getNormalMapRule() {return this.gameSettings.useNormalMap;}
+	
 	setGameOptions(options) {this.gameOptions = options;}
+	setGameSettings(settings) {this.gameSettings = settings;}
 	setDayTimeOptions(options) {this.dayTimeOptions = options;}
 	
 	resetVelocityFactor(){this.velocityFactor = this.gameOptions.velocityFactorDefault;}
@@ -91,6 +101,8 @@ class MenuEnvironment {
 		this.sliderTime = document.getElementById("sliderTime");
 		
 		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
+		
+		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -140,16 +152,20 @@ class MenuEnvironment {
 		this.confirmSettings.addEventListener("click", () => {
 			this.updateAllOptions();
             var currentGameOptions = MANAGER.getGameOptions();
+			var curretGameSettings = MANAGER.getGameSettings();
 			document.cookie = "dayTime="+MANAGER.getDayTime()+";";
             document.cookie = "gameOptions={mouseSensibility:"+currentGameOptions.mouseSensibility+
 				", lifes:"+currentGameOptions.lifes+
                 ", enemyQuantity:"+currentGameOptions.enemyQuantity+
                 ", time:"+currentGameOptions.time+
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
+			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
+				"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
 			MANAGER.setGameOptionsDefault();
+			MANAGER.setGameSettingsDefault();
 			this.updateAllSlider();
         }, false);
 		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this, 0), false);
@@ -161,10 +177,9 @@ class MenuEnvironment {
         this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
 	}
 	giveValueFromCookie() {
-		var cookieSettings = this.getCookie("gameOptions");
-        if(cookieSettings != null){
-            var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
-
+		var cookieOptions = this.getCookie("gameOptions");
+        if(cookieOptions != null){
+            var data = cookieOptions.slice(1, cookieOptions.length-1).split(", ");
             MANAGER.setGameOptions({
                 mouseSensibility: parseFloat(data[0].split(":")[1]),
                 lifes: parseFloat(data[1].split(":")[1]),
@@ -174,6 +189,15 @@ class MenuEnvironment {
 				velocityFactorDefault: 0.2,
             });
         }
+		
+		var cookieSettings = this.getCookie("gameSettings");
+        if(cookieSettings != null){
+            var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
+            MANAGER.setGameSettings({
+                useNormalMap: (data[0].split(":")[1] === 'true'),
+            });
+        }
+		
 		var cookieDayTime = this.getCookie("dayTime");
         switch(cookieDayTime){
             case "night":
@@ -228,6 +252,9 @@ class MenuEnvironment {
 		this.sliderEnemys.value = curGameOptions.enemyQuantity;
 		this.sliderTime.value = curGameOptions.time;
 		this.wiewfinderCkBox.checked = curGameOptions.viewfinder;
+		
+		var curGameSettings = MANAGER.getGameSettings();
+		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 	}
 	updateAllOptions() {
 		MANAGER.setGameOptions({
@@ -238,6 +265,9 @@ class MenuEnvironment {
 			viewfinder: this.wiewfinderCkBox.checked,
 			velocityFactorDefault: 0.2,
 		});
+		MANAGER.setGameSettings({
+			useNormalMap: this.normalMapCkBox.checked,
+		})
 	}
 	setDifficulty(difficulty) {
 		switch(difficulty){
@@ -294,7 +324,8 @@ function randRange(min, max) {
 class gameEnvironment {
 	constructor() {
 		this.models = {};
-		this.characterTexture = {}
+		this.characterTexture = {};
+		this.texture = {};
 		this.load();
 		
 		this.scoreManager = new ScoreManager({
@@ -317,10 +348,12 @@ class gameEnvironment {
             this.getModel('Guns/scene.gltf', 0.0006, 'Weapon_06'),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_08'),
 			
-			this.getCharacterTexture('character/protagonist/'),
-			this.getCharacterTexture('character/soldier/'),
-			//this.getTexture('textures/ragnoFace.png')
-			this.getBossTexture('character/boss/')
+			this.getCharacterTexture('character/protagonist/', MANAGER.getNormalMapRule()),
+			this.getCharacterTexture('character/soldier/', MANAGER.getNormalMapRule()),
+			
+			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
+			
+			this.getTexture('textures/terrain.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -334,6 +367,9 @@ class gameEnvironment {
 				"soldier",
 				"boss",
 			]
+			var nameTexture = [
+				"terrain",
+			]
 
 			for(let i in nameModels){
                 this.models[nameModels[i]] = {};
@@ -342,7 +378,13 @@ class gameEnvironment {
             }
 			var displace = nameModels.length;
 			for(let i in nameCharacter) {
+				this.characterTexture[nameCharacter[i]] = {};
 				this.characterTexture[nameCharacter[i]] = data[(parseInt(i) + displace)];
+			}
+			displace += nameCharacter.length;
+			for(let i in nameTexture) {
+				this.texture[nameTexture[i]] = {};
+				this.texture[nameTexture[i]] = data[(parseInt(i) + displace)];
 			}
 			setTimeout(this.init(), 3000);
 		}, error => {
@@ -419,8 +461,8 @@ class gameEnvironment {
 		const myPromise = new Promise((resolve, reject) => {
 			var characterTexture = {};
 			var promiseCharacter = [
-				this.getTexture(path+ "ragnoFace.png"),
-				this.getTexture(path+ "spiderBody.png"),
+				this.getTexture(path+"ragnoFace.png",useNormalMap),
+				this.getTexture(path+"spiderBody.png",useNormalMap),
 			]
 			Promise.all(promiseCharacter).then(data => {
 				var nameCharacterPart = [
@@ -460,30 +502,30 @@ class gameEnvironment {
 		const myPromise = new Promise((resolve, reject) => {
 			var characterTexture = {};
 			var promiseCharacter = [
-				this.getTexture(path+"headTop.png"),
-				this.getTexture(path+"headBottom.png"),
-				this.getTexture(path+"headLeft.png"),
-				this.getTexture(path+"headFace.png"),
-				this.getTexture(path+"headRight.png"),
-				this.getTexture(path+"headBack.png"),
-				this.getTexture(path+"bodyTop.png"),
-				this.getTexture(path+"bodyBottom.png"),
-				this.getTexture(path+"bodyLeft.png"),
-				this.getTexture(path+"bodyFront.png"),
-				this.getTexture(path+"bodyRight.png"),
-				this.getTexture(path+"bodyBack.png"),
-				this.getTexture(path+"handTop.png"),
-				this.getTexture(path+"handBottom.png"),
-				this.getTexture(path+"armLeft.png"),
-				this.getTexture(path+"armFront.png"),
-				this.getTexture(path+"armRight.png"),
-				this.getTexture(path+"armBack.png"),
-				this.getTexture(path+"footTop.png"),
-				this.getTexture(path+"footBottom.png"),
-				this.getTexture(path+"legLeft.png"),
-				this.getTexture(path+"legFront.png"),
-				this.getTexture(path+"legRight.png"),
-				this.getTexture(path+"legBack.png"),
+				this.getTexture(path+"headTop.png",useNormalMap),
+				this.getTexture(path+"headBottom.png",useNormalMap),
+				this.getTexture(path+"headLeft.png",useNormalMap),
+				this.getTexture(path+"headFace.png",useNormalMap),
+				this.getTexture(path+"headRight.png",useNormalMap),
+				this.getTexture(path+"headBack.png",useNormalMap),
+				this.getTexture(path+"bodyTop.png",useNormalMap),
+				this.getTexture(path+"bodyBottom.png",useNormalMap),
+				this.getTexture(path+"bodyLeft.png",useNormalMap),
+				this.getTexture(path+"bodyFront.png",useNormalMap),
+				this.getTexture(path+"bodyRight.png",useNormalMap),
+				this.getTexture(path+"bodyBack.png",useNormalMap),
+				this.getTexture(path+"handTop.png",useNormalMap),
+				this.getTexture(path+"handBottom.png",useNormalMap),
+				this.getTexture(path+"armLeft.png",useNormalMap),
+				this.getTexture(path+"armFront.png",useNormalMap),
+				this.getTexture(path+"armRight.png",useNormalMap),
+				this.getTexture(path+"armBack.png",useNormalMap),
+				this.getTexture(path+"footTop.png",useNormalMap),
+				this.getTexture(path+"footBottom.png",useNormalMap),
+				this.getTexture(path+"legLeft.png",useNormalMap),
+				this.getTexture(path+"legFront.png",useNormalMap),
+				this.getTexture(path+"legRight.png",useNormalMap),
+				this.getTexture(path+"legBack.png",useNormalMap),
 			]
 			
 			Promise.all(promiseCharacter).then(data => {
@@ -847,14 +889,15 @@ class gameEnvironment {
 		//var loader = new THREE.TextureLoader();
 		//var material = loader.load("./resources/textures/terrain.jpg");
 		//console.log(material.image);
-		const texture = new THREE.TextureLoader().load('./resources/textures/terrain.jpg');
+		//terrain = this.texture["terrain"]
+		//const texture = new THREE.TextureLoader().load('./resources/textures/terrain.jpg');
 		// immediately use the texture for material creation
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set(10,10);
-		const material = new THREE.MeshPhongMaterial( { map: texture } );
+		//texture.wrapS = THREE.RepeatWrapping;
+		//texture.wrapT = THREE.RepeatWrapping;
+		//texture.repeat.set(10,10);
+		//const material = new THREE.MeshPhongMaterial( { map: texture } );
 
-		var mesh = new THREE.Mesh( geometry, material );
+		var mesh = new THREE.Mesh( geometry, this.texture["terrain"] );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		this.scene.add( mesh );
