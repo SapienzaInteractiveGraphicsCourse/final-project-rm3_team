@@ -361,6 +361,7 @@ class gameEnvironment {
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
 			
 			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
+			this.getTexture('textures/wall.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [50, 7]}),
 			this.getImages('textures/buildings/building1',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building2',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building3',MANAGER.getNormalMapRule()),
@@ -382,6 +383,7 @@ class gameEnvironment {
 			]
 			var nameTexture = [
 				"terrain",
+				"wall",
 			]
 			
 			this.buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
@@ -1029,10 +1031,13 @@ class gameEnvironment {
 
 			var body = new CANNON.Body({ mass: 0 });
 			body.addShape(shape);
-			var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-			var material3 = new THREE.MeshLambertMaterial( { color: randColor } );
-			var mesh = new THREE.Mesh( boxGeom, material3 );
-
+			//var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+			//var material3 = new THREE.MeshLambertMaterial( { color: randColor } );
+			//var mesh = new THREE.Mesh( boxGeom, material3 );
+			var mesh = new THREE.Mesh( boxGeom, this.texture["wall"] );
+			mesh.castShadow = MANAGER.getShadowRule();
+			mesh.receiveShadow = MANAGER.getShadowRule();
+	
 			this.world.add(body);
 			this.scene.add(mesh);
 			body.position.set(posX,posY,posZ);
