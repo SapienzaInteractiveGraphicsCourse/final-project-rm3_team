@@ -103,101 +103,105 @@
 	            <span id="exitSettings" class="menuButton redButton">🡸 BACK</span> <!--id="exitSettings"-->
 				<div class="settingElem">
 	                <h1 class="titleElement">SELECT DAY TIME</h1>
-	                <div class="insideDivElem">
-	                    <div class="oneDayTime">
+	                <div class="insideDivElem settingsCorpus">
+	                    <div class="dayTime">
 	                        <input type="radio" id="dayButton" class="radioButton">
-	                        <span id="" class="spanDayTime">Day</span>
+	                        <span id="" class="spanDayTime">DAY</span>
 	                    </div>
-						<div class="oneDayTime">
+						<div class="dayTime">
 	                        <input type="radio" id="sunSetButton" class="radioButton">
-	                        <span id="" class="spanDayTime">Sunset</span>
+	                        <span id="" class="spanDayTime">SUNSET</span>
 	                    </div>
-	                    <div class="oneDayTime">
+	                    <div class="dayTime">
 	                        <input type="radio" id="nightButton" class="radioButton">
-	                        <span id="" class="spanDayTime">Night</span>
+	                        <span id="" class="spanDayTime">NIGHT</span>
 	                    </div>
 	                </div>
 	            </div>
 				<div class="settingElem">
-	                <h1 class="titleElement">Video and audio Settings:</h1>
-					<table id="otherSettingsTable">
+	                <h1 class="titleElement">VIDEO AND AUDIO SETTINGS</h1>
+					<table class="settingsCorpus">
 						<tr>
 	                        <td colspan="2">
-	                            <span>Normal map:</span>
-	                            <input id="normalMapCkBox" type="checkbox" checked></span>
+	                            <span class="insideSpanElem">NORMAL MAP</span>
+	                            <input id="normalMapCkBox" type="checkbox" class="checkbox" checked></span>
 	                        </td>
 	                    </tr>
 						<tr>
 	                        <td colspan="2">
-	                            <span>Allow Shadow:</span>
-	                            <input id="shadowCkBox" type="checkbox" checked></span>
+	                            <span class="insideSpanElem">ALLOW SHADOWS</span>
+	                            <input id="shadowCkBox" type="checkbox" class="checkbox" checked></span>
 	                        </td>
 	                    </tr>
 					</table>
 	            </div>
 	            <div class="settingElem">
-	                <h1 class="titleElement">Game Options:</h1>
+	                <h1 class="titleElement">GAME OPTIONS</h1>
 					<div class="insideDivElem">
-	                    <span id="easyMode" class="difficulty">Easy</span>
-	                    <span id="normalMode" class="difficulty">Normal</span>
-	                    <span id="hardMode" class="difficulty">Hard</span>
+	                    <span id="easyMode" class="difficulty">EASY</span>
+	                    <span id="normalMode" class="difficulty">NORMAL</span>
+	                    <span id="hardMode" class="difficulty">HARD</span>
 	                </div>
-	                <table id="otherSettingsTable">
-	                        <td><span>Mouse sensibility:</span></td>
-	                        <td><span> 1 </span></td>
+	                <div class="otherSettingsDiv">
+	                	<table class="settingsCorpus">
+	                	</tr>
+	                        <td><span class="insideSpanElem">MOUSE SENSIBILITY</span></td>
+	                        <td><span> &nbsp;&nbsp;1 </span></td>
 	                        <td><input id="sliderMouseSens" class="sliderSetting" type="range" min="0.5" max="1.5" value="1" step="0.1"></td>
 	                        <td><span> 100</span></td>
 	                    </tr>
 	                    <tr>
-	                        <td><span>Lifes Quantity:</span></td>
-	                        <td><span> 1 </span></td>
+	                        <td><span class="insideSpanElem">HEALTH QUANTITY</span></td>
+	                        <td><span> &nbsp;&nbsp;1 </span></td>
 	                        <td><input id="sliderLifes" class="sliderSetting" type="range" min="1" max="10" value="5" step="1"></td>
-	                        <td><span> 10</span></td>
+	                        <td><span> &nbsp;10</span></td>
 	                    </tr>
 	                    <tr>
-	                        <td><span>Enemy Quantity:</span></td>
-	                        <td><span> 5 </span></td>
+	                        <td><span class="insideSpanElem">ENEMIES QUANTITY</span></td>
+	                        <td><span> &nbsp;&nbsp;5 </span></td>
 	                        <td><input id="sliderEnemys" class="sliderSetting" type="range" min="5" max="50" value="25" step="5"></td>
-	                        <td><span> 50</span></td>
+	                        <td><span> &nbsp;50</span></td>
 	                    </tr>
 	                    <tr>
-	                        <td><span>Time:</span></td>
+	                        <td><span class="insideSpanElem">TIME</span></td>
 	                        <td><span> 0:30 </span></td>
 	                        <td><input id="sliderTime" class="sliderSetting" type="range" min="30" max="300" value="180" step="30"></td>
 	                        <td><span> 5:00</span></td>
 	                    </tr>
 						<tr>
 	                        <td colspan="2">
-	                            <span>Show wiewfinder:</span>
-	                            <input id="wiewfinderCkBox" type="checkbox" checked></span>
+	                            <span class="insideSpanElem">SHOW VIEWFINDER</span>
+	                            <input id="wiewfinderCkBox" type="checkbox" class="checkbox" checked></span>
 	                        </td>
 	                    </tr>
 	                </table>
-	                <div id="divBtnSettings">
-	                    <span id="confirmSettings" class="btnSettings">Save changes</span>
-	                    <span id="resetSettings" class="btnSettings">Reset settings</span>
 	                </div>
+	                
+	            </div>
+	            <div id="divBtnSettings">
+	                <span id="confirmSettings" class="btnSettings">SAVE</span>
+	                <span id="resetSettings" class="btnSettings">RESET</span>
 	            </div>
 	        </div>
 		</div>
 		
 		<div id="gameOver">
 			<div id="winGame">
-				<span id="gameOverTitle" class="spanValue">Game Over</span>
-				<span id="gameOverResoult" class="spanName"></span>
+				<span id="gameOverTitle" class="spanValue">GAME OVER</span>
+				<span id="gameOverResult" class="spanName"></span>
 
 				<div id="gameOverStats">
 					<div class="divStats">
-						<span class="spanName">Enemy killed: </span>
+						<span class="spanName">ENEMY KILLED</span>
 						<span id="statsEnemy" class="spanValue"></span>
 					</div>
 					<div class="divStats">
-						<span class="spanName">Time: </span>
+						<span class="spanName">TIME</span>
 						<span id="statsTime" class="spanValue"></span>
 					</div>
 				</div>
 				
-				<a href="./" id="gameBackMenu2" class="MSButton">🡸 Back to the Menu</a>
+				<a href="./" id="gameBackMenu2" class="MSButton">🡸 BACK TO MENU</a>
 			</div>
 		</div>
 		<script src="js/extraLibraries/three.js"></script>
