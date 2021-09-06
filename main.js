@@ -361,12 +361,12 @@ class gameEnvironment {
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
 			
 			this.getTexture('textures/terrain.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
-			this.getImages('textures/buildings/building1.jpg'),
-			this.getImages('textures/buildings/building2.jpg'),
-			this.getImages('textures/buildings/building3.jpg'),
-			this.getImages('textures/buildings/building4.jpg'),
-			this.getImages('textures/buildings/building5.jpg'),
-			this.getImages('textures/buildings/building6.jpg'),
+			this.getImages('textures/buildings/building1',MANAGER.getNormalMapRule()),
+			this.getImages('textures/buildings/building2',MANAGER.getNormalMapRule()),
+			this.getImages('textures/buildings/building3',MANAGER.getNormalMapRule()),
+			this.getImages('textures/buildings/building4',MANAGER.getNormalMapRule()),
+			this.getImages('textures/buildings/building5',MANAGER.getNormalMapRule()),
+			this.getImages('textures/buildings/building6',MANAGER.getNormalMapRule()),
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -479,13 +479,22 @@ class gameEnvironment {
         return myPromise;
     }
 	
-	getImages(path) {
+	getImages(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
 			var textureLoader = new THREE.TextureLoader();
-			textureLoader.load("./resources/" + path, (img) => {
+			textureLoader.load("./resources/" + path +".jpg", (img) => {
 				img.wrapS = THREE.RepeatWrapping;
 				img.wrapT = THREE.RepeatWrapping;
-				resolve(img);
+				if(useNormalMap) {
+					new THREE.TextureLoader().load("./resources/normalMap/"+ path+".png", (normalMap) => {
+						normalMap.wrapS = THREE.RepeatWrapping;
+						normalMap.wrapT = THREE.RepeatWrapping;
+						resolve({map: img, normalMap: normalMap});
+					});
+				}
+				else {
+					resolve({map: img, normalMap: null});
+				}
 		},
 			function (xhr) {
 			},
@@ -516,16 +525,29 @@ class gameEnvironment {
 			boxBody.addShape(boxShape);
 			if(false){
 				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-				var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
+				var material = new THREE.MeshStandardMaterial({color: randomColor});
 			}
 			else {
 				var index = Math.floor(Math.random()*this.buildingNames.length);
-				var texture = this.buildings[this.buildingNames[index]].clone();
+				var texture = this.buildings[this.buildingNames[index]].map.clone();
 				texture.needsUpdate = true;
-				texture.repeat.set(buildingRepeatFactors[index].x, Math.floor(y/3)*buildingRepeatFactors[index].y);
-				var material2 = new THREE.MeshPhongMaterial( { map: texture } );
+				var repeatingFactorY = Math.floor(y/3)*buildingRepeatFactors[index].y;
+				texture.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
+				if(this.buildings[this.buildingNames[index]].normalMap) {
+					var normalMap = this.buildings[this.buildingNames[index]].normalMap.clone();
+					if(!normalMap.image)
+						console.log(index)
+					normalMap.needsUpdate = true;
+					normalMap.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
+				}
+				else normalMap = null;
+				
+				var material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    normalMap: normalMap,
+                 });
 			}
-			var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
+			var boxMesh = new THREE.Mesh( boxGeometry, material );									//TEMPORANEO
 			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
