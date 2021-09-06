@@ -463,6 +463,56 @@ class gameEnvironment {
         return myPromise;
     }
 	
+	buildingBuildings(){
+		var textureLoader = new THREE.TextureLoader();
+		var buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
+		var buildingRepeatFactors = [{x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 3, y: 4}, {x: 2, y: 1}]
+		this.buildingTexture = [];
+		for(var i in buildingNames){
+			this.buildingTexture.push(textureLoader.load("./resources/textures/buildings/" + buildingNames[i] + '.jpg'));
+			this.buildingTexture[i].wrapS = THREE.RepeatWrapping;
+			this.buildingTexture[i].wrapT = THREE.RepeatWrapping;
+		}
+		
+		for(var i=0; i<165; i++){
+			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
+			var boxShape = new CANNON.Box(halfExtents);
+			var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+			do {
+				var x = (Math.random()-0.5)*300;
+				//var y = 5 + (Math.random()-0.5)*1;
+				var y = halfExtents.y;
+				var z = (Math.random()-0.5)*300;
+			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
+			this.positionsList.push([x, z, halfExtents.x, halfExtents.z]);
+			
+			var boxBody = new CANNON.Body({ mass: 1000 });
+			boxBody.addShape(boxShape);
+			if(false){
+				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
+			}
+			else {
+				var index = Math.floor(Math.random()*this.buildingTexture.length);
+				var texture = this.buildingTexture[index];
+				texture.repeat.set(buildingRepeatFactors[index].x, Math.floor(y/3)*buildingRepeatFactors[index].y);
+				var material2 = new THREE.MeshPhongMaterial( { map: texture } );
+			}
+			var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
+			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
+			this.world.add(boxBody);
+			this.scene.add(boxMesh);
+			boxBody.position.set(x,y,z);
+			boxMesh.position.set(x,y,z);
+			boxMesh.castShadow = MANAGER.getShadowRule();
+			boxMesh.receiveShadow = MANAGER.getShadowRule();
+			this.boxes.push(boxBody);
+			this.boxMeshes.push(boxMesh);
+		}
+			
+		
+	}
+	
 	getBossTexture(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
 			var characterTexture = {};
@@ -941,33 +991,7 @@ class gameEnvironment {
 		}
 		
 		// Add boxes
-		for(var i=0; i<165; i++){
-			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
-			var boxShape = new CANNON.Box(halfExtents);
-			var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-			do {
-				var x = (Math.random()-0.5)*300;
-				//var y = 5 + (Math.random()-0.5)*1;
-				var y = halfExtents.y;
-				var z = (Math.random()-0.5)*300;
-			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
-			this.positionsList.push([x, z, halfExtents.x, halfExtents.z]);
-			
-			var boxBody = new CANNON.Body({ mass: 1000 });
-			boxBody.addShape(boxShape);
-			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-			var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
-			var boxMesh = new THREE.Mesh( boxGeometry, material2 );									//TEMPORANEO
-			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
-			this.world.add(boxBody);
-			this.scene.add(boxMesh);
-			boxBody.position.set(x,y,z);
-			boxMesh.position.set(x,y,z);
-			boxMesh.castShadow = MANAGER.getShadowRule();
-			boxMesh.receiveShadow = MANAGER.getShadowRule();
-			this.boxes.push(boxBody);
-			this.boxMeshes.push(boxMesh);
-		}
+		this.buildingBuildings();	
 
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
