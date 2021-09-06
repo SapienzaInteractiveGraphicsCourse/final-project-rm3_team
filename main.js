@@ -360,7 +360,7 @@ class gameEnvironment {
 			
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
 			
-			this.getTexture('textures/terrain.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
+			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
 			this.getImages('textures/buildings/building1.jpg'),
 			this.getImages('textures/buildings/building2.jpg'),
 			this.getImages('textures/buildings/building3.jpg'),

@@ -58,9 +58,9 @@ export class CharacterFactory {
 		curAmmo: 1,
 		timeBetweenAmmo: 3,
 		bullet: {
-			mass: 500000000,
+			mass: 5000000,
 			radius: 0.5,
-			shootVelocity: 60,
+			shootVelocity: 40,
 		},
 		audio: {
 			shot: ".\\resources\\audio\\RPG_shot.mp3",
