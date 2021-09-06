@@ -316,26 +316,27 @@ body {
     border-radius: 25px;
     padding: 3px 8px 6px 8px;
     text-align: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
     margin: auto;
     font-size: 28px;
     padding: 10px 46px;
     cursor: pointer;
+    color: white;
 }
 #easyMode:hover{
-    border: 1px solid #1bff00;
-    background: #8bf58e;
-    box-shadow: 0px 6px 15px #1bff0061;
+    /*border: 1px solid #1bff00;*/
+    background: var(--green);
+    /*box-shadow: 0px 6px 15px var(--green);*/
 }
 #normalMode:hover{
-    border: 1px solid #fffb00;
-    background: #f5f38b;
-    box-shadow: 0px 6px 15px #fbff0061;
+    /*border: 1px solid #fffb00;*/
+    background: var(--darkYellow);
+    /*box-shadow: 0px 6px 15px var(--yellow);*/
 }
 #hardMode:hover{
-    border: 1px solid red;
-    background: #f58b8b;
-    box-shadow: 0px 6px 15px #ff000061;
+    /*border: 1px solid red;*/
+    background: var(--red);
+    /*box-shadow: 0px 6px 15px var(--red);*/
 }
 
 
@@ -383,8 +384,8 @@ body {
     margin: 20px 0 0 0;
     padding: 0 0 20px 0;
     
-    background-color: var(--darkYellow);
-    background-color: rgba(255, 255, 255, 0.2);
+    /*background-color: var(--darkYellow);*/
+    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
 
     display: flex;
@@ -393,14 +394,30 @@ body {
     flex-direction: column;
 }
 .titleElement {
-    margin: 10px 0 10px 0;
-    color: black;
+    margin: 20px 0 25px 0;
+    color: #222;
     text-shadow: 0 0 0px black;
-    font-size: 180%;
+    font-size: 165%;
 }
-#otherSettingsTable tr td span {
-    color: white;
-    text-shadow: 0 0 4px black;
+.settingsCorpus tr td span {
+    color: #222;
+    /*text-shadow: 0 0 4px black;*/
+    font-size: 130%;
+    font-weight: 500;
+    text-align: center;
+}
+
+.otherSettingsDiv {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.insideSpanElem {
+    padding: 15px;
+}
+
+.dayTime {
+    margin: auto;
 }
 
 .sliderSetting {
@@ -435,11 +452,15 @@ body {
 }
 
 #divBtnSettings{
-    margin: 15px 0 10px 0;
+    margin: 25px 0 10px 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 .btnSettings {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 7px 12px;
+    padding: 12px 23px;
     border-radius: 25px;
     cursor: pointer;
     color: white;
@@ -451,11 +472,35 @@ body {
     background: rgb(255, 255, 255, 0.5);
     color: black;
 }
+#confirmSettings {
+    background: var(--green);
+}
+#confirmSettings:hover {
+    background: rgb(255, 255, 255, 0.5);
+    color: black;
+}
+#resetSettings {
+    background: var(--red);
+}
+#resetSettings:hover {
+    background: rgb(255, 255, 255, 0.5);
+    color: black;
+}
 
 .insideDivElem{
     display: flex;
     flex-direction: row;
-    width: 80%;
+    width: 70%;
+}
+
+.radioButton {
+    width: 17px;
+    height: 17px;
+}
+
+.checkbox {
+    width: 17px;
+    height: 17px;
 }
 
 
@@ -463,9 +508,9 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: var(--red);
     z-index: 40;
     transition: all 0.3s;
+    font-family: fantasy;
 
     display: none;
 }
@@ -481,6 +526,7 @@ body {
     align-content: center;
     justify-content: center;
     align-items: center;
+    background: var(--red);
 }
 .spanValue{
     font-size: 30px;
@@ -495,7 +541,7 @@ body {
 #gameOverTitle{
     font-size: 60px;
 }
-#gameOverResoult{
+#gameOverResult{
     font-size: 50px;
 }
 #gameBackMenu{
