@@ -20,6 +20,7 @@ export class BossFactory {
 		this.buildBoss();
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
+		this.deathAnimation()
 		this.boss.scale.set(5,5,5);
 		//this.startMove();
 	}
@@ -109,6 +110,34 @@ export class BossFactory {
 		mesh.castShadow = true;
 		mesh.position.set(x,y,z);
 		return mesh;
+	}
+	
+	deathAnimation() {
+		this.deathTween = new TWEEN.Tween({upz: Math.PI/12, lowz: -Math.PI/3, posY: this.boss.position.y-17}).to({upz: -Math.PI/18, lowz: -Math.PI/18, posY: 2.5}, 300/this.MANAGER.getVelocityFactor() )
+			.easing(TWEEN.Easing.Quadratic.InOut)
+		this.deathTween2 = new TWEEN.Tween({upz: -Math.PI/18, lowz: -Math.PI/18, posY: 2.5}).to({upz: -Math.PI/18, lowz: -Math.PI/18, posY: -10}, 1000/this.MANAGER.getVelocityFactor() )
+			.easing(TWEEN.Easing.Quadratic.InOut).delay(1)
+			
+		this.deathTween.chain(this.deathTween2)	
+		this.updateDeath = function(object){
+			for(var i in this.legs.children){
+				for (var j in this.legs.children[i].children){
+					
+				var leg = this.legs.children[i].children[j];
+				var lowerLeg = leg.children[1];
+				
+				leg.rotation.z = object.upz;
+				lowerLeg.rotation.z = object.lowz;
+				this.boss.position.y = object.posY;
+				}
+			}
+		}
+		this.deathTween.onUpdate(this.updateDeath.bind(this))
+		this.deathTween2.onUpdate(this.updateDeath.bind(this))
+	}
+	
+	startDeathAnimation() {
+		this.deathTween.start();
 	}
 	
 	initializeAnimation() {

@@ -171,7 +171,7 @@ class Entity{
             }.bind(this));
         }
     }
-
+	deleteEntity() {this.entityManager.eliminateThisEntity(this);}
     collected(){}
     hitted(){}
 	hittedBoss(bossBody){}
@@ -239,8 +239,8 @@ class BossEntity extends Entity {
 		this.scoreManager = params.scoreManager;
 		this.maxDistance = params.maxDistance;
 		this.character = params.character;
-		this.life = 20;
-		
+		this.life = 5;
+		this.alive = true;
 		this.controls = new BossAIController({
 			manager: this.MANAGER,
 			character: this.character,
@@ -253,8 +253,11 @@ class BossEntity extends Entity {
 	}
 	hitted(){
 		this.life -= 1;
-		if(this.life<=0) {
-			this.entityManager.eliminateThisEntity(this);
+		if(this.life<=0 && this.alive) {
+			this.body.isBoss = false;
+			this.alive = false;
+			//this.entityManager.eliminateThisEntity(this);
+			this.controls.death();
 		}
 	}
 	update(timeInSeconds){
