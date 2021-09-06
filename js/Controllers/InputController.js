@@ -9,6 +9,8 @@ export class InputController {
             right: false,
             space: false,
             shift: false,
+			t: false,
+			r: false,
         };
 
         this.MANAGER = params.manager;
@@ -72,6 +74,14 @@ export class InputController {
 				event.preventDefault();
 				this.keys.tab = true;
 				break;
+			
+			case 82:	//r
+				this.keys.r = true;
+				break;
+			
+			case 84:	//t
+				this.keys.t = true;
+				break;
         }
     }
     onKeyUp(event) {
@@ -106,6 +116,14 @@ export class InputController {
 			
 			case 9:		//Tab
 				this.keys.tab = false;
+				break;
+				
+			case 82:	//r
+				this.keys.r = false;
+				break;
+			
+			case 84:	//t
+				this.keys.t = false;
 				break;
         }
     }

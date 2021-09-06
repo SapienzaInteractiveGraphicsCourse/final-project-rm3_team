@@ -17,7 +17,6 @@ export class CharacterController {
 		this.setUpGun();
 		this.setAmmo(this.ammo);
 		this.shotTime = -1;
-		
 		this.input = new InputController({manager : this.MANAGER});
 		this.jumpVelocity = 20;
 
@@ -87,6 +86,16 @@ export class CharacterController {
 		this.velocity.x += directionMove.x*200;
 		this.velocity.z += directionMove.z*200;
 	}
+	addTourch(tourch) {
+		var tourchGroup = new THREE.Group();
+		tourchGroup.add(tourch, tourch.target);
+		tourchGroup.rotateX(-Math.PI/2);
+		this.character.rightArm.add(tourchGroup);
+		this.tourch = tourch;
+	}
+	turnTourch() {
+		this.tourch.visible = !this.tourch.visible;
+	}
 	getShootDir(targetVec){
 		var vector = targetVec;
 		targetVec.set(0,0,1);
@@ -103,6 +112,7 @@ export class CharacterController {
 		this.setAmmo(this.ammo);
 		this.shotTime = -1;
 		this.isReloading = false;
+		this.audioReloading = false;
 	}
 	reload() {
 		this.shotTime = this.timeReload;
@@ -155,12 +165,12 @@ export class CharacterController {
 	updateReloading(time) {
 		if(this.shotTime>0)
 			this.shotTime -= time;
-		if(this.shotTime<1500 && this.isReloading) {
+		if(this.shotTime<1500 && this.isReloading && !this.audioReloading) {
 			this.character.getActualGun().audio.reload.play();
+			this.audioReloading = true;
 		}
 		if(this.shotTime<=0 && this.isReloading)
-			this.reloadComplete();
-		
+			this.reloadComplete();	
 	}
 
     // Moves the camera to the Cannon.js object position and adds velocity to the object if the run key is down
@@ -218,7 +228,21 @@ export class CharacterController {
 		else if(this.isMoving && this.inputVelocity.equals(new THREE.Vector3())){
 			this.character.stopMove();
 			this.isMoving = false;
-		} 
+		}
+		if (this.input.keys.r && !this.rHelded){
+			if(!this.isReloading) this.reload();
+			this.rHelded = true;
+		}
+		if (this.rHelded && !this.input.keys.r){
+			this.rHelded = false;
+		}
+		if (this.input.keys.t && !this.tHelded){
+			this.turnTourch();
+			this.tHelded = true;
+		}
+		if (this.tHelded && !this.input.keys.t){
+			this.tHelded = false;
+		}
 		
         // Convert velocity to world coordinates
         this.euler.x = this.pitchObject.rotation.x;

@@ -862,8 +862,6 @@ class gameEnvironment {
 		this.tourch.intensity = 1;
 		this.tourch.castShadow = MANAGER.getShadowRule();
 		if(MANAGER.getShadowRule()){
-			
-
 			this.tourch.shadow.camera.near = 3.5;
 			this.tourch.shadow.camera.far = 50;//camera.far;
 			this.tourch.shadow.camera.fov = 40;
@@ -875,8 +873,8 @@ class gameEnvironment {
 
 			this.tourch.shadowCameraVisible = true;
 		}
-		  this.tourch.position.set(0, 1.5, 0);
-		  this.tourch.target.position.set(0, 1.5, -1);
+		this.tourch.position.set(0, 1.5, 0);
+		this.tourch.target.position.set(0, 1.5, -1);
 		  
 		
 		this.renderer = new THREE.WebGLRenderer({canvas: document.getElementById( 'canvas' ), antialias: true});
@@ -974,21 +972,14 @@ class gameEnvironment {
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
-		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition})
-		//this.playerEntity.character.getMesh().add(this.tourch);
-		//this.playerEntity.character.getMesh().add(this.tourch.target);	
-		this.tourchGroup = new THREE.Group();
-		this.tourchGroup.add(this.tourch, this.tourch.target);
-		this.tourchGroup.rotateX(-Math.PI/2);
-		this.playerEntity.character.rightArm.add(this.tourchGroup);
-		
-		
+		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition});
 		
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
 		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
 		this.playerEntity.setControls(this.controls);
+		this.controls.addTourch(this.tourch);
 		
 		this.scene.add(this.controls.getObject());
 		
