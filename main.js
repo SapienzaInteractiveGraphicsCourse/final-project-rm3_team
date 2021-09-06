@@ -332,6 +332,7 @@ class gameEnvironment {
 		this.models = {};
 		this.characterTexture = {};
 		this.texture = {};
+		this.buildings = {};
 		this.load();
 		
 		this.scoreManager = new ScoreManager({
@@ -360,6 +361,12 @@ class gameEnvironment {
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
 			
 			this.getTexture('textures/terrain.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
+			this.getImages('textures/buildings/building1.jpg'),
+			this.getImages('textures/buildings/building2.jpg'),
+			this.getImages('textures/buildings/building3.jpg'),
+			this.getImages('textures/buildings/building4.jpg'),
+			this.getImages('textures/buildings/building5.jpg'),
+			this.getImages('textures/buildings/building6.jpg'),
 		];
 		Promise.all(promise).then(data => {
             var nameModels = [
@@ -376,6 +383,8 @@ class gameEnvironment {
 			var nameTexture = [
 				"terrain",
 			]
+			
+			this.buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
 
 			for(let i in nameModels){
                 this.models[nameModels[i]] = {};
@@ -392,6 +401,13 @@ class gameEnvironment {
 				this.texture[nameTexture[i]] = {};
 				this.texture[nameTexture[i]] = data[(parseInt(i) + displace)];
 			}
+			
+			displace += nameTexture.length;
+			for(let i in this.buildingNames) {
+				this.buildings[this.buildingNames[i]] = {};
+				this.buildings[this.buildingNames[i]] = data[(parseInt(i) + displace)];
+			}
+			
 			setTimeout(this.init(), 3000);
 		}, error => {
             console.log('An error happened:', error);
@@ -463,17 +479,27 @@ class gameEnvironment {
         return myPromise;
     }
 	
+	getImages(path) {
+		const myPromise = new Promise((resolve, reject) => {
+			var textureLoader = new THREE.TextureLoader();
+			textureLoader.load("./resources/" + path, (img) => {
+				img.wrapS = THREE.RepeatWrapping;
+				img.wrapT = THREE.RepeatWrapping;
+				resolve(img);
+		},
+			function (xhr) {
+			},
+			function (error) {
+				console.log('An error happened');
+				reject(error);
+			});
+        });
+		return myPromise;
+	} 
+	
 	buildingBuildings(){
-		var textureLoader = new THREE.TextureLoader();
-		var buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
 		var buildingRepeatFactors = [{x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 3, y: 4}, {x: 2, y: 1}]
-		this.buildingTexture = [];
-		for(var i in buildingNames){
-			this.buildingTexture.push(textureLoader.load("./resources/textures/buildings/" + buildingNames[i] + '.jpg'));
-			this.buildingTexture[i].wrapS = THREE.RepeatWrapping;
-			this.buildingTexture[i].wrapT = THREE.RepeatWrapping;
-		}
-		
+
 		for(var i=0; i<165; i++){
 			var halfExtents = new CANNON.Vec3(randRange(3,10), randRange(3,12), randRange(3,10));
 			var boxShape = new CANNON.Box(halfExtents);
@@ -493,8 +519,9 @@ class gameEnvironment {
 				var material2 = new THREE.MeshLambertMaterial( { color: randomColor } );
 			}
 			else {
-				var index = Math.floor(Math.random()*this.buildingTexture.length);
-				var texture = this.buildingTexture[index];
+				var index = Math.floor(Math.random()*this.buildingNames.length);
+				var texture = this.buildings[this.buildingNames[index]].clone();
+				texture.needsUpdate = true;
 				texture.repeat.set(buildingRepeatFactors[index].x, Math.floor(y/3)*buildingRepeatFactors[index].y);
 				var material2 = new THREE.MeshPhongMaterial( { map: texture } );
 			}
