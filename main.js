@@ -28,8 +28,8 @@ class gameManager {
 				lifes: 5,
 				enemyQuantity: 30,
 				time: 180,
+				haveBoss: true,
 				viewfinder: true,
-				velocityFactorDefault : 0.2,
 			}
 		}
 		this.setGameOptionsDefault();
@@ -43,7 +43,7 @@ class gameManager {
 		this.setGameSettingsDefault();
 		this.deletedBody = [];
 		
-		this.velocityFactor = this.gameOptions.velocityFactorDefault;
+		this.velocityFactor = 0.2;
 	}
 	
 	getGameOptions() {return this.gameOptions;}
@@ -52,6 +52,7 @@ class gameManager {
 	getLifes() {return this.gameOptions.lifes;}
 	getTime() {return this.gameOptions.time;}
 	getViewfinder() {return this.gameOptions.viewfinder;}
+	getHaveBoss() {return this.gameOptions.haveBoss;}
 	getVelocityFactor() {return this.velocityFactor;}
 	getDayTimeOptions() {return this.dayTimeOptions;}
 	getDayTime() {return this.dayTimeOptions.dayTime;}
@@ -66,9 +67,6 @@ class gameManager {
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
 	setDayTimeOptions(options) {this.dayTimeOptions = options;}
-	
-	resetVelocityFactor(){this.velocityFactor = this.gameOptions.velocityFactorDefault;}
-	multiplyVelocityFactor(val = 2) {this.velocityFactor = this.gameOptions.velocityFactorDefault*val;}
 	
 	startGame() {
 		this.gameStarted = true;
@@ -105,6 +103,7 @@ class MenuEnvironment {
 		this.sliderTime = document.getElementById("sliderTime");
 		
 		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
+		this.haveBossCkBox = document.getElementById("haveBossCkBox");
 		
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		this.shadowCkBox = document.getElementById("shadowCkBox");
@@ -164,6 +163,7 @@ class MenuEnvironment {
 				", lifes:"+currentGameOptions.lifes+
                 ", enemyQuantity:"+currentGameOptions.enemyQuantity+
                 ", time:"+currentGameOptions.time+
+                ", haveBoss:"+currentGameOptions.haveBoss+
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
 				", shadow:"+curretGameSettings.shadow+
@@ -192,8 +192,8 @@ class MenuEnvironment {
                 lifes: parseFloat(data[1].split(":")[1]),
                 enemyQuantity: parseFloat(data[2].split(":")[1]),
                 time: parseFloat(data[3].split(":")[1]),
-				viewfinder: (data[4].split(":")[1] === 'true'),
-				velocityFactorDefault: 0.2,
+                haveBoss: parseFloat(data[4].split(":")[1] === 'true'),
+				viewfinder: (data[5].split(":")[1] === 'true'),
             });
         }
 		
@@ -265,6 +265,7 @@ class MenuEnvironment {
 		this.sliderLifes.value = curGameOptions.lifes;
 		this.sliderEnemys.value = curGameOptions.enemyQuantity;
 		this.sliderTime.value = curGameOptions.time;
+		this.haveBossCkBox.checked = curGameOptions.haveBoss;
 		this.wiewfinderCkBox.checked = curGameOptions.viewfinder;
 	}
 	updateGameSettingsUI() {
@@ -281,8 +282,8 @@ class MenuEnvironment {
 			lifes: parseFloat(this.sliderLifes.value),
 			enemyQuantity: parseFloat(this.sliderEnemys.value),
 			time: parseFloat(this.sliderTime.value),
+			haveBoss: this.haveBossCkBox.checked,
 			viewfinder: this.wiewfinderCkBox.checked,
-			velocityFactorDefault: 0.2,
 		});
 		MANAGER.setGameSettings({
 			useNormalMap: this.normalMapCkBox.checked,
@@ -298,8 +299,8 @@ class MenuEnvironment {
 					lifes: 10,
 					enemyQuantity: 10,
 					time: 180,
+					haveBoss: false,
 					viewfinder: true,
-					velocityFactorDefault : 0.2,
 				}
 				break
 			case 1:		//normal
@@ -308,8 +309,8 @@ class MenuEnvironment {
 					lifes: 5,
 					enemyQuantity: 25,
 					time: 150,
+					haveBoss: true,
 					viewfinder: true,
-					velocityFactorDefault : 0.2,
 				}
 				break;
 			case 2:		//hard
@@ -318,8 +319,8 @@ class MenuEnvironment {
 					lifes: 2,
 					enemyQuantity: 50,
 					time: 120,
+					haveBoss: true,
 					viewfinder: false,
-					velocityFactorDefault : 0.2,
 				}
 				break
 		}
@@ -1086,49 +1087,11 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		//Add boss
-		var bossPosition = [0, 20, -50];
-		//this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
-		this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 40})
-		
-		// Add linked boxes
-		/*
-		var size = 0.5;
-		var he = new CANNON.Vec3(size,size,size*0.1);
-		var boxShape = new CANNON.Box(he);
-		var mass = 0;
-		var space = 0.1 * size;
-		var N = 5, last;
-		var boxGeometry = new THREE.BoxGeometry(he.x*2,he.y*2,he.z*2);
-		for(var i=0; i<N; i++){
-			var boxbody = new CANNON.Body({ mass: mass });
-			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-			material2 = new THREE.MeshBasicMaterial( { color: randomColor } );
-			//console.log (randomColor);
-			boxbody.addShape(boxShape);
-			var boxMesh = new THREE.Mesh(boxGeometry, material2);
-			boxbody.position.set(5,(N-i)*(size*2+2*space) + size*2+space,0);
-			boxbody.linearDamping = 0.01;
-			boxbody.angularDamping = 0.01;
-			// boxMesh.castShadow = true;
-			boxMesh.receiveShadow = true;
-			this.world.add(boxbody);
-			this.scene.add(boxMesh);
-			this.boxes.push(boxbody);
-			this.boxMeshes.push(boxMesh);
-
-			if(i!=0){
-				// Connect this body to the last one
-				var c1 = new CANNON.PointToPointConstraint(boxbody,new CANNON.Vec3(-size,size+space,0),last,new CANNON.Vec3(-size,-size-space,0));
-				var c2 = new CANNON.PointToPointConstraint(boxbody,new CANNON.Vec3(size,size+space,0),last,new CANNON.Vec3(size,-size-space,0));
-				this.world.addConstraint(c1);
-				this.world.addConstraint(c2);
-			} else {
-				mass=0.3;
-			}
-			last = boxbody;
+		if(MANAGER.getHaveBoss()) {
+			var bossPosition = [0, 20, -50];
+			this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 40})
 		}
-		*/
-		
+					
 		this.locker();
 		var time = Date.now();
 		this.time = Date.now();
