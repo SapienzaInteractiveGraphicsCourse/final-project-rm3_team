@@ -66,10 +66,11 @@
 			<div id="gameCanvas">
 				<canvas id="canvas"></canvas>
 				<div id="GameValues">
+					<span id="reloading" class="spanLogoMode" style="visibility: hidden;">RELOADING</span>
 					<div id="ammo">
 						<span id="gunSpanGame" class="spanLogoMode">Pistol</span>
 						<br/>
-						<img src="resources/images/bullet.png" widht="37" height="37">
+						<img id="bulletImg" src="resources/images/bullet.png" widht="37" height="37">
 						<span id="ammoSpanGame" class="spanLogoMode">00/00</span>
 					</div>
 					<div id="health">
@@ -131,6 +132,12 @@
 	                        <td colspan="2">
 	                            <span class="insideSpanElem">ALLOW SHADOWS</span>
 	                            <input id="shadowCkBox" type="checkbox" class="checkbox" checked></span>
+	                        </td>
+	                    </tr>
+						<tr>
+	                        <td colspan="2">
+	                            <span class="insideSpanElem">AMBIENT TEXTURE</span>
+	                            <input id="ambientTextureCkBox" type="checkbox" class="checkbox" checked></span>
 	                        </td>
 	                    </tr>
 					</table>

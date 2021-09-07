@@ -37,6 +37,7 @@ class gameManager {
 			this.gameSettings = {
 				useNormalMap: true,
 				shadow: true,
+				ambientTexture: true,
 			}
 		}
 		this.setGameSettingsDefault();
@@ -60,6 +61,7 @@ class gameManager {
 	getGameSettings() {return this.gameSettings;}
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
+	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
 	
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
@@ -106,6 +108,7 @@ class MenuEnvironment {
 		
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		this.shadowCkBox = document.getElementById("shadowCkBox");
+		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
 		
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -163,7 +166,8 @@ class MenuEnvironment {
                 ", time:"+currentGameOptions.time+
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
-				", shadow:"+curretGameSettings.shadow+"};";
+				", shadow:"+curretGameSettings.shadow+
+				", ambientTexture:"+curretGameSettings.ambientTexture+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
@@ -196,9 +200,11 @@ class MenuEnvironment {
 		var cookieSettings = this.getCookie("gameSettings");
         if(cookieSettings != null){
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
+			console.log(data[0].split(":")[1] === 'true')
             MANAGER.setGameSettings({
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
+                ambientTexture: (data[2].split(":")[1] === 'true'),
             });
         }
 		
@@ -250,17 +256,25 @@ class MenuEnvironment {
 		document.activeElement.blur();
 	}
 	updateAllSlider() {
+		this.updateGameOptionsUI();
+		this.updateGameSettingsUI();
+	}
+	updateGameOptionsUI() {
 		var curGameOptions = MANAGER.getGameOptions();
 		this.sliderMouseSens.value = curGameOptions.mouseSensibility;
 		this.sliderLifes.value = curGameOptions.lifes;
 		this.sliderEnemys.value = curGameOptions.enemyQuantity;
 		this.sliderTime.value = curGameOptions.time;
 		this.wiewfinderCkBox.checked = curGameOptions.viewfinder;
-		
+	}
+	updateGameSettingsUI() {
 		var curGameSettings = MANAGER.getGameSettings();
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 		this.shadowCkBox.checked = curGameSettings.shadow;
+		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
 	}
+	
+	
 	updateAllOptions() {
 		MANAGER.setGameOptions({
 			mouseSensibility: parseFloat(this.sliderMouseSens.value),
@@ -273,6 +287,7 @@ class MenuEnvironment {
 		MANAGER.setGameSettings({
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
+			ambientTexture: this.ambientTextureCkBox.checked,
 		})
 	}
 	setDifficulty(difficulty) {
@@ -309,7 +324,7 @@ class MenuEnvironment {
 				break
 		}
 		MANAGER.setGameOptions(gameOptions);
-		this.updateAllSlider();
+		this.updateGameOptionsUI();
 	}
 }
 
@@ -525,7 +540,7 @@ class gameEnvironment {
 			
 			var boxBody = new CANNON.Body({ mass: 1000 });
 			boxBody.addShape(boxShape);
-			if(false){
+			if(!MANAGER.getAmbientTextureRule()){
 				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 				var material = new THREE.MeshStandardMaterial({color: randomColor});
 			}
@@ -549,7 +564,7 @@ class gameEnvironment {
                     normalMap: normalMap,
                  });
 			}
-			var boxMesh = new THREE.Mesh( boxGeometry, material );									//TEMPORANEO
+			var boxMesh = new THREE.Mesh( boxGeometry, material );
 			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
@@ -1003,11 +1018,16 @@ class gameEnvironment {
 		//texture.wrapT = THREE.RepeatWrapping;
 		//texture.repeat.set(10,10);
 		//const material = new THREE.MeshPhongMaterial( { map: texture } );
-
-		var mesh = new THREE.Mesh( geometry, this.texture["terrain"] );
+		if(MANAGER.getAmbientTextureRule())
+			var mesh = new THREE.Mesh(geometry, this.texture["terrain"]);
+		else {
+			var material = new THREE.MeshStandardMaterial({color: 0xffeb0f});
+			var mesh = new THREE.Mesh(geometry, material);
+		}
+			
 		mesh.castShadow = MANAGER.getShadowRule();
 		mesh.receiveShadow = MANAGER.getShadowRule();
-		this.scene.add( mesh );
+		this.scene.add(mesh);
 
 		this.boxes = [];
 		this.boxMeshes = [];
@@ -1031,10 +1051,12 @@ class gameEnvironment {
 
 			var body = new CANNON.Body({ mass: 0 });
 			body.addShape(shape);
-			//var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-			//var material3 = new THREE.MeshLambertMaterial( { color: randColor } );
-			//var mesh = new THREE.Mesh( boxGeom, material3 );
-			var mesh = new THREE.Mesh( boxGeom, this.texture["wall"] );
+			if(MANAGER.getAmbientTextureRule())
+				var mesh = new THREE.Mesh( boxGeom, this.texture["wall"] );
+			else {
+				var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				var mesh = new THREE.Mesh(boxGeom, new THREE.MeshStandardMaterial({color: randColor}));
+			}
 			mesh.castShadow = MANAGER.getShadowRule();
 			mesh.receiveShadow = MANAGER.getShadowRule();
 	
@@ -1055,7 +1077,7 @@ class gameEnvironment {
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
-		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
+		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager, document: document});
 		this.playerEntity.setControls(this.controls);
 		this.controls.addTourch(this.tourch);
 		
