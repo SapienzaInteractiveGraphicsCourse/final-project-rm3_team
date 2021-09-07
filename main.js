@@ -1055,7 +1055,7 @@ class gameEnvironment {
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
-		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager});
+		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager, document: document});
 		this.playerEntity.setControls(this.controls);
 		this.controls.addTourch(this.tourch);
 		

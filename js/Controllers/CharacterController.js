@@ -9,6 +9,7 @@ export class CharacterController {
 		this.camera = params.camera;
 		this.bulletManager = params.bulletManager;
 		this.scoreManager = params.scoreManager;
+		this.document = params.document;
 		
 		this.characterBody = this.entity.body;
 		this.character = this.entity.character;
@@ -113,10 +114,39 @@ export class CharacterController {
 		this.shotTime = -1;
 		this.isReloading = false;
 		this.audioReloading = false;
+		document.getElementById("reloading").style.visibility = "hidden";
 	}
 	reload() {
 		this.shotTime = this.timeReload;
 		this.isReloading = true;
+		var document = this.document;
+		document.getElementById("bulletImg").style.visibility = "hidden";
+
+		document.getElementById("reloading").style.visibility = "visible";
+		setTimeout(function(){
+	    	document.getElementById("reloading").style.visibility = "hidden";
+	    }, 4000);
+
+		setTimeout(function(){
+	    	document.getElementById("bulletImg").style.visibility = "visible";
+	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
+	    }, 400);
+	    setTimeout(function(){
+	    	document.getElementById("bulletImg").style.visibility = "hidden";
+	    	/*document.getElementById("reloading").style.visibility = "visible";*/
+	    }, 800);
+	    setTimeout(function(){
+	    	document.getElementById("bulletImg").style.visibility = "visible";
+	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
+	    }, 1200);
+	    setTimeout(function(){
+	    	document.getElementById("bulletImg").style.visibility = "hidden";
+	    	/*document.getElementById("reloading").style.visibility = "visible";*/
+	    }, 1600);
+	    setTimeout(function(){
+	    	document.getElementById("bulletImg").style.visibility = "visible";
+	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
+	    }, 2000);
 	}
 	shot() {
 		if(this.MANAGER.gameEnable==false) return;
