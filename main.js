@@ -9,25 +9,25 @@ import {BossFactory} from './js/BossFactory.js';
 
 class gameManager {
 	constructor(){
-		
+
 		this.gameStarted = false;
-		
+
 		this.gameEnable = false;
-		
+
 		this.APP = null;
-		
+
 		this.dayTimeOptions = {
 			dayTime: "",
             lights: "",
             skybox: "",
 		};
-		
+
 		this.setGameOptionsDefault = function() {
 			this.gameOptions = {
 				mouseSensibility : 1,
 				lifes: 5,
 				enemyQuantity: 30,
-				time: 180,
+				time: 300,
 				haveBoss: true,
 				viewfinder: true,
 			}
@@ -42,10 +42,10 @@ class gameManager {
 		}
 		this.setGameSettingsDefault();
 		this.deletedBody = [];
-		
+
 		this.velocityFactor = 0.2;
 	}
-	
+
 	getGameOptions() {return this.gameOptions;}
 	getMouseSensibility() {return this.gameOptions.mouseSensibility;}
 	getEnemyQuantity() {return this.gameOptions.enemyQuantity;}
@@ -58,25 +58,25 @@ class gameManager {
 	getDayTime() {return this.dayTimeOptions.dayTime;}
 	getLights() {return this.dayTimeOptions.lights;}
 	getSkyBox() {return this.dayTimeOptions.skybox;}
-	
+
 	getGameSettings() {return this.gameSettings;}
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
-	
+
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
 	setDayTimeOptions(options) {this.dayTimeOptions = options;}
-	
+
 	startGame() {
 		this.gameStarted = true;
 		this.APP = new gameEnvironment();
 	}
-	
+
 	endGame(params) {
 		this.APP = new gameOverEnvironment(params);
 	}
-	
+
 }
 
 
@@ -84,31 +84,31 @@ class gameManager {
 class MenuEnvironment {
 	constructor() {
 		this.game = document.getElementById("game");
-		
+
 		this.playGameButton = document.getElementById("playGameButton");
 		this.settingButton = document.getElementById("settingsButton");
-		
+
 		this.setting = document.getElementById("settings");
 		this.exitSettings = document.getElementById("exitSettings");
 		this.confirmSettings = document.getElementById("confirmSettings");
 		this.resetSettings = document.getElementById("resetSettings");
-		
+
 		this.difficultyEasy = document.getElementById("easyMode");
 		this.difficultyNormal = document.getElementById("normalMode");
 		this.difficultyHard = document.getElementById("hardMode");
-		
+
 		this.sliderMouseSens = document.getElementById("sliderMouseSens");
 		this.sliderLifes = document.getElementById("sliderLifes");
 		this.sliderEnemys = document.getElementById("sliderEnemys");
 		this.sliderTime = document.getElementById("sliderTime");
-		
+
 		this.wiewfinderCkBox = document.getElementById("wiewfinderCkBox");
 		this.haveBossCkBox = document.getElementById("haveBossCkBox");
-		
+
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		this.shadowCkBox = document.getElementById("shadowCkBox");
 		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
-		
+
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
             dayTime: "day",
@@ -128,12 +128,12 @@ class MenuEnvironment {
             skybox: SceneFactory.GALAXY_SKYBOX,
         };
 		this.elemChecked = dayButton;
-		
+
 		this.setUpMainButtons();
 		this.setUpSettingButton();
 		this.giveValueFromCookie();
 	}
-	
+
 	setUpMainButtons() {
 		this.game.style.display = "none";
 		this.playGameButton.addEventListener("click", () => {
@@ -149,7 +149,7 @@ class MenuEnvironment {
 			this.setting.style.display = "block"
             this.setting.style.bottom = "0px";
             this.setting.style.animation = "1s newPage normal";
-            document.activeElement.blur();		
+            document.activeElement.blur();
         }, false);
 	}
 	setUpSettingButton() {
@@ -178,7 +178,7 @@ class MenuEnvironment {
 		this.difficultyEasy.addEventListener("click", this.setDifficulty.bind(this, 0), false);
 		this.difficultyNormal.addEventListener("click", this.setDifficulty.bind(this, 1), false);
 		this.difficultyHard.addEventListener("click", this.setDifficulty.bind(this, 2), false);
-		
+
         this.dayButton.addEventListener('change', this.selectElementDayTime.bind(this, this.dayButton, this.dayOptions), false);
         this.nightButton.addEventListener('change', this.selectElementDayTime.bind(this, this.nightButton, this.nightOptions), false);
         this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
@@ -196,7 +196,7 @@ class MenuEnvironment {
 				viewfinder: (data[5].split(":")[1] === 'true'),
             });
         }
-		
+
 		var cookieSettings = this.getCookie("gameSettings");
         if(cookieSettings != null){
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
@@ -207,7 +207,7 @@ class MenuEnvironment {
                 ambientTexture: (data[2].split(":")[1] === 'true'),
             });
         }
-		
+
 		var cookieDayTime = this.getCookie("dayTime");
         switch(cookieDayTime){
             case "night":
@@ -235,8 +235,8 @@ class MenuEnvironment {
         }
 		this.elemChecked.checked = true;
 	}
-	
-	
+
+
 	getCookie(name){
         var elem = document.cookie.split("; ").find(row => row.startsWith(name))
         if(elem == null)
@@ -274,8 +274,8 @@ class MenuEnvironment {
 		this.shadowCkBox.checked = curGameSettings.shadow;
 		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
 	}
-	
-	
+
+
 	updateAllOptions() {
 		MANAGER.setGameOptions({
 			mouseSensibility: parseFloat(this.sliderMouseSens.value),
@@ -298,7 +298,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 10,
 					enemyQuantity: 10,
-					time: 180,
+					time: 300,
 					haveBoss: false,
 					viewfinder: true,
 				}
@@ -308,7 +308,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 5,
 					enemyQuantity: 25,
-					time: 150,
+					time: 300,
 					haveBoss: true,
 					viewfinder: true,
 				}
@@ -318,7 +318,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 2,
 					enemyQuantity: 50,
-					time: 120,
+					time: 300,
 					haveBoss: true,
 					viewfinder: false,
 				}
@@ -350,7 +350,7 @@ class gameEnvironment {
 		this.texture = {};
 		this.buildings = {};
 		this.load();
-		
+
 		this.scoreManager = new ScoreManager({
 			//hBar: document.getElementById("health-bar"),
 			bar: document.getElementById("bar"),
@@ -363,19 +363,19 @@ class gameEnvironment {
 			time: MANAGER.getTime(),
 		})
 	}
-	
+
 	load() {
 		var promise = [
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_03'),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_04'),
             this.getModel('Guns/scene.gltf', 0.0006, 'Weapon_06'),
             this.getModel('Guns/scene.gltf', 0.001, 'Weapon_08'),
-			
+
 			this.getCharacterTexture('character/protagonist/', MANAGER.getNormalMapRule()),
 			this.getCharacterTexture('character/soldier/', MANAGER.getNormalMapRule()),
-			
+
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
-			
+
 			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
 			this.getTexture('textures/wall.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [50, 7]}),
 			this.getImages('textures/buildings/building1',MANAGER.getNormalMapRule()),
@@ -401,7 +401,7 @@ class gameEnvironment {
 				"terrain",
 				"wall",
 			]
-			
+
 			this.buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
 
 			for(let i in nameModels){
@@ -419,19 +419,19 @@ class gameEnvironment {
 				this.texture[nameTexture[i]] = {};
 				this.texture[nameTexture[i]] = data[(parseInt(i) + displace)];
 			}
-			
+
 			displace += nameTexture.length;
 			for(let i in this.buildingNames) {
 				this.buildings[this.buildingNames[i]] = {};
 				this.buildings[this.buildingNames[i]] = data[(parseInt(i) + displace)];
 			}
-			
+
 			setTimeout(this.init(), 3000);
 		}, error => {
             console.log('An error happened:', error);
         });
 	}
-	
+
 	getModel(path, scale=1.0, childName=null) {
         const myPromise = new Promise((resolve, reject) => {
             const gltfLoader = new THREE.GLTFLoader();
@@ -461,7 +461,7 @@ class gameEnvironment {
         });
         return myPromise;
     }
-	
+
 	getTexture(path, useNormalMap=false, mode={wrapS: 1, wrapT: 1, repeat: [1, 1]}) {
         const myPromise = new Promise((resolve, reject) => {
             var textureLoader = new THREE.TextureLoader();
@@ -496,7 +496,7 @@ class gameEnvironment {
         });
         return myPromise;
     }
-	
+
 	getImages(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
 			var textureLoader = new THREE.TextureLoader();
@@ -522,8 +522,8 @@ class gameEnvironment {
 			});
         });
 		return myPromise;
-	} 
-	
+	}
+
 	buildingBuildings(){
 		var buildingRepeatFactors = [{x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 1, y: 1}, {x: 3, y: 4}, {x: 2, y: 1}]
 
@@ -538,7 +538,7 @@ class gameEnvironment {
 				var z = (Math.random()-0.5)*300;
 			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
 			this.positionsList.push([x, z, halfExtents.x, halfExtents.z]);
-			
+
 			var boxBody = new CANNON.Body({ mass: 1000 });
 			boxBody.addShape(boxShape);
 			if(!MANAGER.getAmbientTextureRule()){
@@ -553,13 +553,13 @@ class gameEnvironment {
 				texture.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				if(this.buildings[this.buildingNames[index]].normalMap) {
 					var normalMap = this.buildings[this.buildingNames[index]].normalMap.clone();
-					if(!normalMap.image)
-						console.log(index)
+					//if(!normalMap.image)
+						//console.log(index)
 					normalMap.needsUpdate = true;
 					normalMap.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				}
 				else normalMap = null;
-				
+
 				var material = new THREE.MeshStandardMaterial({
                     map: texture,
                     normalMap: normalMap,
@@ -576,10 +576,10 @@ class gameEnvironment {
 			this.boxes.push(boxBody);
 			this.boxMeshes.push(boxMesh);
 		}
-			
-		
+
+
 	}
-	
+
 	getBossTexture(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
 			var characterTexture = {};
@@ -620,7 +620,7 @@ class gameEnvironment {
 		});
         return myPromise;
 	}
-	
+
 	getCharacterTexture(path, useNormalMap=false) {
 		const myPromise = new Promise((resolve, reject) => {
 			var characterTexture = {};
@@ -650,7 +650,7 @@ class gameEnvironment {
 				this.getTexture(path+"legRight.png",useNormalMap),
 				this.getTexture(path+"legBack.png",useNormalMap),
 			]
-			
+
 			Promise.all(promiseCharacter).then(data => {
 				var nameCharacterPart = [
 					"headTop",
@@ -722,7 +722,7 @@ class gameEnvironment {
 		});
         return myPromise;
 	}
-	
+
 	changeVisual() {
 		this.activeCamera = (this.activeCamera+1)%3;
 		if(MANAGER.getViewfinder()) {
@@ -731,9 +731,9 @@ class gameEnvironment {
 		else if(this.activeCamera==0)
 			document.getElementById('viewfinder').style.display = 'block';
 		}
-		
+
 	}
-	
+
 	onWindowResize() {
 		for(let i in this.camera) {
 			this.camera[i].aspect = window.innerWidth / window.innerHeight;
@@ -741,15 +741,15 @@ class gameEnvironment {
 		}
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
-	
+
 	/*DA QUI è WORK IN PROGRESS FINO ALLA LINEA ---------------*/
 	locker() {
 		document.getElementById("loading").style.display = "none";
-		
+
 		var blocker = document.getElementById( 'blocker' );
 		var pauseCanvas = document.getElementById( 'PauseCanvas' );
 		var resumeButton = document.getElementById( 'resumeButton' );
-		
+
 		if(MANAGER.getViewfinder())
 			document.getElementById('viewfinder').style.display = 'block'
 		else
@@ -764,12 +764,12 @@ class gameEnvironment {
 			var pointerlockchange = function ( event ) {
 				if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
 					MANAGER.gameEnable = true;
-					
+
 					if(this.pauseTime){
 						this.pausePassedTime = Date.now()-this.pauseTime;
 						this.scoreManager.addPauseTime(this.pausePassedTime);
 					}
-					
+
 					blocker.style.display = 'none';
 					pauseCanvas.style.display = 'none';
 
@@ -831,18 +831,18 @@ class gameEnvironment {
 					element.requestPointerLock();
 
 				}
-				
+
 		} else {
 
 			instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
 		}
-		
+
 		resumeButton.addEventListener('click', () => {
             element.requestPointerLock();
         }, false)
 	}
-		
+
 	update() {
 		var dt = 1/60;
 		this.world.step(dt);
@@ -850,7 +850,7 @@ class gameEnvironment {
 			this.world.remove(MANAGER.deletedBody[i]);
 		}
 		MANAGER.deletedBody = [];
-		
+
 		var time = Date.now() - this.time - this.addedTime;
 		//console.log(time);
 		this.scoreManager.updateCurrTime(Date.now());
@@ -868,7 +868,7 @@ class gameEnvironment {
 		this.entityManager.update(time);
 		this.bulletManager.update(time);
 		this.controls.update(time);
-		
+
 		// Update ball positions
 		for(var i=0; i<this.balls.length; i++){
 			this.ballMeshes[i].position.copy(this.balls[i].position);
@@ -918,31 +918,31 @@ class gameEnvironment {
 		}
 		return false;
 	}
-	
+
 	init() {
 		this.world = this.initCannon();
 		this.camera = [];
 		this.camera.push(new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 0.15, 1000 ));
-		
+
 		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
 		this.camera[1].translateY(1.4)
 		this.camera[1].translateX(0.4)
 		this.camera[1].translateZ(3)
 		this.camera[1].rotation.x = -Math.PI/30;
-		
+
 		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
 		this.camera[2].translateY(80)
 		this.camera[2].translateZ(-5)
 		this.camera[2].rotation.x = -Math.PI/2;
-		
+
 		this.activeCamera = 0;
 
 		this.scene = new SceneFactory(MANAGER.getSkyBox());
 		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
-		
+
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
-		
+
 		this.lights = new LightFactory(MANAGER.getLights());
         for (var i in this.lights) {
 			this.lights.castShadow = MANAGER.getShadowRule();
@@ -971,7 +971,7 @@ class gameEnvironment {
 
 			//light.shadowCameraVisible = true;
 		}*/
-		
+
 		this.tourch = new THREE.SpotLight(0xffffff);
 		this.tourch.angle = Math.PI/4
 		this.tourch.distance = 100;
@@ -992,8 +992,8 @@ class gameEnvironment {
 		}
 		this.tourch.position.set(0, 1.5, 0);
 		this.tourch.target.position.set(0, 1.5, -1);
-		  
-		
+
+
 		this.renderer = new THREE.WebGLRenderer({canvas: document.getElementById( 'canvas' ), antialias: true});
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMapSoft = true;
@@ -1025,7 +1025,7 @@ class gameEnvironment {
 			var material = new THREE.MeshStandardMaterial({color: 0xffeb0f});
 			var mesh = new THREE.Mesh(geometry, material);
 		}
-			
+
 		mesh.castShadow = MANAGER.getShadowRule();
 		mesh.receiveShadow = MANAGER.getShadowRule();
 		this.scene.add(mesh);
@@ -1060,38 +1060,38 @@ class gameEnvironment {
 			}
 			mesh.castShadow = MANAGER.getShadowRule();
 			mesh.receiveShadow = MANAGER.getShadowRule();
-	
+
 			this.world.add(body);
 			this.scene.add(mesh);
 			body.position.set(posX,posY,posZ);
 			mesh.position.set(posX,posY/2,posZ);
 		}
-		
+
 		// Add boxes
-		this.buildingBuildings();	
+		this.buildingBuildings();
 
 		//Add personaggio
 		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
 		var playerStartPosition = [0, 1.6, 0];
 		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition});
-		
+
 		this.entityManager.setPlayer(this.playerEntity);
 		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
 		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager, document: document});
 		this.playerEntity.setControls(this.controls);
 		this.controls.addTourch(this.tourch);
-		
+
 		this.scene.add(this.controls.getObject());
-		
+
 		this.spawnEnemy();
-		
+
 		//Add boss
 		if(MANAGER.getHaveBoss()) {
-			var bossPosition = [0, 20, -50];
-			this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 40})
+			var bossPosition = [0, 20, -100];
+			this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 80})
 		}
-					
+
 		this.locker();
 		var time = Date.now();
 		this.time = Date.now();
@@ -1099,11 +1099,12 @@ class gameEnvironment {
         this.scoreManager.updateCurrTime(time);
 		this.GameLoop();
 	}
-	
+
 	spawnEnemy() {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
 			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
-			var minDistanceSquared = 625;
+			/*var minDistanceSquared = 625;*/
+			var minDistanceSquared = 5000;
 			do {
 				var position = [0,20,0];
 				position[0] = Math.random()*2-1;
@@ -1120,7 +1121,7 @@ class gameEnvironment {
 			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
 		}
 	}
-	
+
 	initCannon() {
 		var world = new CANNON.World();
 		world.quatNormalizeSkip = 0;
@@ -1152,10 +1153,10 @@ class gameEnvironment {
 		// Create other non slippery Material
 		var groundMaterial = new CANNON.Material();
 		groundMaterial.friction = 200.0;
-		
+
 		// We must add the contact materials to the world
 		world.addContactMaterial(physicsContactMaterial);
-		
+
 		// Create a plane
 		var groundShape = new CANNON.Plane();
 		var groundBody = new CANNON.Body({ mass: 0 });
@@ -1203,7 +1204,7 @@ class gameOverEnvironment {
         //this._statsScore.innerHTML = score.substr(score.length-4);
         this.statsTime.innerHTML = parseInt(params.time / 60) + ":" + (params.time % 60).toLocaleString('en-US',
             { minimumIntegerDigits: 2, useGrouping: false });
-        
+
         this.gameOver.style.display = "block";
     }
 }
