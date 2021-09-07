@@ -27,7 +27,7 @@ class gameManager {
 				mouseSensibility : 1,
 				lifes: 5,
 				enemyQuantity: 30,
-				time: 180,
+				time: 300,
 				viewfinder: true,
 				velocityFactorDefault : 0.2,
 			}
@@ -297,7 +297,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 10,
 					enemyQuantity: 10,
-					time: 180,
+					time: 300,
 					viewfinder: true,
 					velocityFactorDefault : 0.2,
 				}
@@ -307,7 +307,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 5,
 					enemyQuantity: 25,
-					time: 150,
+					time: 300,
 					viewfinder: true,
 					velocityFactorDefault : 0.2,
 				}
@@ -317,7 +317,7 @@ class MenuEnvironment {
 					mouseSensibility : 1,
 					lifes: 2,
 					enemyQuantity: 50,
-					time: 120,
+					time: 300,
 					viewfinder: false,
 					velocityFactorDefault : 0.2,
 				}
@@ -1086,9 +1086,9 @@ class gameEnvironment {
 		this.spawnEnemy();
 		
 		//Add boss
-		var bossPosition = [0, 20, -50];
+		var bossPosition = [0, 20, -100];
 		//this.boss = new BossFactory({manager: MANAGER, position: bossPosition});
-		this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 40})
+		this.boss = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_BOSS, position: bossPosition, maxDistance: 80})
 		
 		// Add linked boxes
 		/*
@@ -1140,7 +1140,8 @@ class gameEnvironment {
 	spawnEnemy() {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
 			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
-			var minDistanceSquared = 625;
+			/*var minDistanceSquared = 625;*/
+			var minDistanceSquared = 5000;
 			do {
 				var position = [0,20,0];
 				position[0] = Math.random()*2-1;
@@ -1154,7 +1155,7 @@ class gameEnvironment {
 				//console.log(this.positionsList);
 			} while(this.unsafeSpawn(position[0], position[2], 1, 1));
 			this.positionsList.push([position[0], position[2], 1, 1]);
-			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 250});
+			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
 		}
 	}
 	

@@ -22,10 +22,13 @@ export class BasicAIController {
 		this.body.velocity.z *= 0.95;
 		
 		var distance = this.player.body.position.distanceTo(this.body.position);
-		if(distance<this.maxDistance*1.2){				//From maxDistance*1.2 start to move in player direction
-			var direction = this.computeDirection();
-			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
-			if(distance<this.maxDistance) {				//From maxDistance start to shot
+		if(distance<this.maxDistance*3){				//From maxDistance*1.2 start to move in player direction
+			console.log(distance);
+			if (Math.random() > 0.1) {
+				var direction = this.computeDirection();
+				this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
+			}
+			if(distance<this.maxDistance*2) {				//From maxDistance start to shot
 				if(this.timeToShot<0) {
 
 					var shotAudio = new Audio(this.entity.character.getActualGun().audio.shot);
