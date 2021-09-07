@@ -2,27 +2,11 @@ export class BossFactory {
 	constructor(params){
 		this.MANAGER = params.manager;
 		this.texture = params.texture;
-		//console.log(this.texture)
-		//------------------------------TEMPORANEO----------------
-		/*
-		this.texture = [];
-		this.texture = params.texture;
-		var tex = new THREE.TextureLoader().load('./resources/textures/ragnoFace.png');
-		var material = new THREE.MeshStandardMaterial({
-                    map: tex,
-                    emissive: 'white',
-                    emissiveIntensity: 0.0,
-                 });
-		this.texture.push(material);
-		console.log(this.texture);
-		*/
-		//------------------------------FINE TEMPORANEO-----------
 		this.buildBoss();
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
 		this.deathAnimation()
 		this.boss.scale.set(5,5,5);
-		//this.startMove();
 	}
 	
 	buildBoss(){
@@ -97,14 +81,10 @@ export class BossFactory {
 		var boxGeometry = new THREE.BoxGeometry(width, height, depth);
 		if(this.texture == null ||  texturePart == null){
 			var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-			//var color = '#0a0a0a'
 			var boxMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
 		}
 		else {
-			//console.log("applico texture")
 			var boxMaterial = this.texture[texturePart];
-			//console.log(boxMaterial)
-			console.log(texturePart)
 		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
 		mesh.castShadow = true;
