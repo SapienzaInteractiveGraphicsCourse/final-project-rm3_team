@@ -101,10 +101,7 @@ export class BossFactory {
 			var boxMaterial = new THREE.MeshPhongMaterial( { color: randomColor } );
 		}
 		else {
-			//console.log("applico texture")
 			var boxMaterial = this.texture[texturePart];
-			//console.log(boxMaterial)
-			console.log(texturePart)
 		}
 		var mesh = new THREE.Mesh(boxGeometry, boxMaterial);
 		mesh.castShadow = true;

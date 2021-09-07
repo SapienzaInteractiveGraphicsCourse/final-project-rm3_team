@@ -537,8 +537,8 @@ class gameEnvironment {
 				texture.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				if(this.buildings[this.buildingNames[index]].normalMap) {
 					var normalMap = this.buildings[this.buildingNames[index]].normalMap.clone();
-					if(!normalMap.image)
-						console.log(index)
+					//if(!normalMap.image)
+						//console.log(index)
 					normalMap.needsUpdate = true;
 					normalMap.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				}
@@ -1132,7 +1132,7 @@ class gameEnvironment {
 				//console.log(this.positionsList);
 			} while(this.unsafeSpawn(position[0], position[2], 1, 1));
 			this.positionsList.push([position[0], position[2], 1, 1]);
-			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
+			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 250});
 		}
 	}
 	

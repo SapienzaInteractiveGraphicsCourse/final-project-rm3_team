@@ -111,7 +111,7 @@ export class ScoreManager{
         var totalLifes = this.totalLifes;
 	    setTimeout(function(){
 	    	//bar.css('width', 300 + "%");
-	    	console.log(currLifes);
+	    	//console.log(currLifes);
 	    	bar.style.width = "" + (currLifes/totalLifes * 100) + "%";
 	    }, 500);
 
