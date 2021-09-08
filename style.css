@@ -566,7 +566,7 @@ body {
 }
 #gameBackMenu:hover{
     color: var(--darkYellow);
-    background: rgb(240, 240, 240, 0.9);
+    background: rgb(30, 30, 30, 1.0);
 }
 
 #gameOverStats{
