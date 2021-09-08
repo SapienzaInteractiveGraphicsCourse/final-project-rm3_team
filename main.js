@@ -38,6 +38,9 @@ class gameManager {
 				useNormalMap: true,
 				shadow: true,
 				ambientTexture: true,
+				musicVolume: 1,
+				effectVolume: 1,
+				enableSound: true,
 			}
 		}
 		this.setGameSettingsDefault();
@@ -63,6 +66,9 @@ class gameManager {
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
+	getMusicVolume() {return this.gameSettings.musicVolume;}
+	getEffectVolume() {return this.gameSettings.effectVolume;}
+	getSoundRule() {return this.gameSettings.enableSound;}
 
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
@@ -108,6 +114,10 @@ class MenuEnvironment {
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		this.shadowCkBox = document.getElementById("shadowCkBox");
 		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
+		
+		this.sliderMusicVolume = document.getElementById("sliderMusicVolume");
+		this.sliderEffectVolume = document.getElementById("sliderEffectVolume");
+		this.enableSoundCkBox = document.getElementById("enableSoundCkBox");
 
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -167,7 +177,10 @@ class MenuEnvironment {
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
 				", shadow:"+curretGameSettings.shadow+
-				", ambientTexture:"+curretGameSettings.ambientTexture+"};";
+				", ambientTexture:"+curretGameSettings.ambientTexture+
+				", musicVolume:"+curretGameSettings.musicVolume+
+				", effectVolume:"+curretGameSettings.effectVolume+
+				", enableSound:"+curretGameSettings.enableSound+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
@@ -205,6 +218,9 @@ class MenuEnvironment {
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
                 ambientTexture: (data[2].split(":")[1] === 'true'),
+                musicVolume: (data[3].split(":")[1]),
+                effectVolume: (data[4].split(":")[1]),
+                enableSound: (data[5].split(":")[1] === 'true'),
             });
         }
 
@@ -273,6 +289,9 @@ class MenuEnvironment {
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 		this.shadowCkBox.checked = curGameSettings.shadow;
 		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
+		this.sliderMusicVolume.value = curGameSettings.musicVolume;
+		this.sliderEffectVolume.value = curGameSettings.effectVolume;
+		this.enableSoundCkBox.checked = curGameSettings.enableSound;
 	}
 
 
@@ -289,6 +308,9 @@ class MenuEnvironment {
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
 			ambientTexture: this.ambientTextureCkBox.checked,
+			musicVolume: parseFloat(this.sliderMusicVolume.value),
+			effectVolume: parseFloat(this.sliderEffectVolume.value),
+			enableSound: this.enableSoundCkBox.checked,
 		})
 	}
 	setDifficulty(difficulty) {
