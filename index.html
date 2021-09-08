@@ -24,35 +24,52 @@
 				<div style="height: 32vh;">
 					<div id="controls">
 						<div class="controlsItem">
-							Move
+							MOVE
 							<br/>
 							<img id="menuIconMove" src="./resources/images/wasd.png"/>
 						</div>
 						<div class="controlsItem">
-							Jump
-							<br/>
-							<img id="menuIconJump" src="./resources/images/spacebarWhiteS.png"/>
-						</div>
-						<div class="controlsItem">
-							Run
-							<br/>
-							<img id="menuIconRun" src="./resources/images/shiftWhite.png"/>
-						</div>
-						<div class="controlsItem">
-							Change gun
-							<br/>
-							<img id="menuIconChangeGun" src="./resources/images/tabWhiteS.png"/>
-						</div>
-						<div class="controlsItem">
-							Look
+							LOOK
 							<br/>
 							<img id="menuIconLook" src="./resources/images/mouse2.png"/>
 						</div>
 						<div class="controlsItem">
-							Click
+							RUN
+							<br/>
+							<img id="menuIconRun" src="./resources/images/shiftWhite.png"/>
+						</div>
+						<div class="controlsItem">
+							JUMP
+							<br/>
+							<img id="menuIconJump" src="./resources/images/spacebarWhiteS.png"/>
+						</div>
+						<div class="controlsItem">
+							SHOOT
 							<br/>
 							<img id="menuIconClick" src="./resources/images/click2.png"/>
-						</div>						
+						</div>
+						<div class="controlsItem">
+							RELOAD
+							<br/>
+							<img id="menuIconClick" src="./resources/images/rWhite.png"/>
+						</div>
+						<div class="controlsItem">
+							CHANGE GUN
+							<br/>
+							<img id="menuIconChangeGun" src="./resources/images/tabWhiteS.png"/>
+						</div>
+						<div class="controlsItem">
+							USE TORCH
+							<br/>
+							<img id="menuIconClick" src="./resources/images/tWhite.png"/>
+						</div>
+						<div class="controlsItem">
+							CHANGE CAMERA
+							<br/>
+							<img id="menuIconClick" src="./resources/images/vWhite.png"/>
+						</div>
+						
+												
 					</div>
 					
 				</div>
@@ -142,15 +159,15 @@
 	                    </tr>
 						</tr>
 	                        <td><span class="insideSpanElem">MUSIC VOLUME</span></td>
-	                        <td><span> &nbsp;&nbsp;0 </span></td>
+	                        <td><span> &nbsp;&nbsp;0</span></td>
 	                        <td><input id="sliderMusicVolume" class="sliderSetting" type="range" min="0.0" max="2" value="1" step="0.2"></td>
 	                        <td><span> 100</span></td>
 	                    </tr>
 	                    <tr>
 	                        <td><span class="insideSpanElem">EFFECT VOLUME</span></td>
-	                        <td><span> &nbsp;&nbsp;0 </span></td>
+	                        <td><span> &nbsp;&nbsp;0</span></td>
 	                        <td><input id="sliderEffectVolume" class="sliderSetting" type="range" min="0.0" max="2" value="1" step="0.2"></td>
-	                        <td><span> &nbsp;100</span></td>
+	                        <td><span> 100</span></td>
 	                    </tr>
 						<tr>
 	                        <td colspan="2">
@@ -195,7 +212,7 @@
 	                    </tr>
 						<tr>
 	                        <td colspan="2">
-	                            <span class="insideSpanElem">HAVE BOSS</span>
+	                            <span class="insideSpanElem">BOSS</span>
 	                            <input id="haveBossCkBox" type="checkbox" class="checkbox" checked></span>
 	                        </td>
 	                    </tr>
@@ -223,16 +240,16 @@
 
 				<div id="gameOverStats">
 					<div class="divStats">
-						<span class="spanName">ENEMY KILLED</span>
+						<span class="spanName">ENEMY KILLED:&nbsp;</span>
 						<span id="statsEnemy" class="spanValue"></span>
 					</div>
 					<div class="divStats">
-						<span class="spanName">TIME</span>
+						<span class="spanName">TIME REMAINING:&nbsp;</span>
 						<span id="statsTime" class="spanValue"></span>
 					</div>
 				</div>
 				
-				<a href="./" id="gameBackMenu2" class="MSButton">🡸 BACK TO MENU</a>
+				<a href="./" id="gameBackMenu" class="MSButton">🡸 BACK TO MENU</a>
 			</div>
 		</div>
 		<script src="js/extraLibraries/three.js"></script>
