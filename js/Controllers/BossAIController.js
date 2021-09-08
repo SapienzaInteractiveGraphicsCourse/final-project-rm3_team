@@ -15,6 +15,9 @@ export class BossAIController {
 		if(!this.dead){
 			this.target.position.copy(this.body.position);
 			this.target.position.y -= 4;
+
+			var distance = this.player.body.position.distanceTo(this.body.position);
+
 			if(this.body.position.y<8) {
 				this.body.velocity.x *= 0.95;
 				this.body.velocity.z *= 0.95;
@@ -24,7 +27,7 @@ export class BossAIController {
 				if(this.body.velocity.y>0) this.body.velocity.y *= 0.99;
 				this.body.velocity.z *= 0.99;
 			}
-			var distance = this.player.body.position.distanceTo(this.body.position);
+			
 			if(distance<this.maxDistance*1.2){				//From maxDistance*1.2 start to move in player direction
 				var direction = this.computeDirection();
 				this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
@@ -44,6 +47,9 @@ export class BossAIController {
 					this.entity.character.stopMove();
 				}
 			}
+			if(this.move) {
+
+			}
 		}
 		else{
 			if(this.deathAnimationTime<0){
@@ -61,6 +67,8 @@ export class BossAIController {
 		this.deathAnimationTime = 4000;
 		this.entity.character.stopMove();
 		this.entity.character.startDeathAnimation();
+		this.entity.character.spiderDeathScream_audio.play();
+		this.entity.character.spiderMusic_audio.pause();
 	}
 	
 	

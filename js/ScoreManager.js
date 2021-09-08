@@ -1,3 +1,7 @@
+function randRange(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
 export class ScoreManager{
     constructor(params){
 
@@ -77,14 +81,21 @@ export class ScoreManager{
         var hitTime = Date.now();
 		if(this.lastHit && hitTime-this.lastHit < 500)	//After being hit, we have half a second of immunity
 			return;
-		console.log("Eseguo")
+		//console.log("Eseguo")
 		this.lastHit = hitTime;
 		this.currLifes -= 1;
+		this.playPainSound();
 		this.updateSpansGame();
 		this.updateGameOver();
     }
+
+    playPainSound() {
+    	var randomNumber = Math.round(randRange(1, 15));
+    	console.log("randomNumber " + randomNumber)
+    	new Audio(".\\resources\\audio\\pain\\pain ("+randomNumber+").mp3").play();
+    }
 	
-    updateCurrTime(time){
+    updateCurrTime(time) {
         this.currTime = time;
 		var oldPassedTime = this.currPassedTime;
         this.currPassedTime = parseInt(this.time - (this.currTime - this.startTime - this.pauseTime) / 1000);
@@ -94,13 +105,15 @@ export class ScoreManager{
 		}
     }
 	
-    changeScore(value){
+    changeScore(value) {
         this.currScore += value;
         this.updateSpansGame();
     }
 	enemyKilled() {
 		this.killedEnemy++;
 		this.updateSpansGame();
+		var enemyDeath_audio = new Audio(".\\resources\\audio\\enemyDeath2.mp3");
+		enemyDeath_audio.play();
 	}
 
     updateSpansGame() {

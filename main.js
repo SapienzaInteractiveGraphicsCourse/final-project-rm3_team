@@ -1222,8 +1222,10 @@ class gameOverEnvironment {
         if(params.win){
             this.gameOverResult.innerHTML ="You WIN";
             this.winGame.style.background = "#85B24D";
+            new Audio(".\\resources\\audio\\youWon.mp3").play();
         } else {
             this.gameOverResult.innerHTML ="You LOSE";
+            new Audio(".\\resources\\audio\\youLost.mp3").play();
         }
 
         this.statsEnemy.innerHTML = params.enemyKilled+"/"+params.numEnemy;

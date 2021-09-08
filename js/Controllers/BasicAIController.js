@@ -23,7 +23,7 @@ export class BasicAIController {
 		
 		var distance = this.player.body.position.distanceTo(this.body.position);
 		if(distance<this.maxDistance*3){				//From maxDistance*1.2 start to move in player direction
-			console.log(distance);
+			//console.log(distance);
 			if (Math.random() > 0.1) {
 				var direction = this.computeDirection();
 				this.target.rotation.y = Math.atan2(-direction.x,-direction.z);

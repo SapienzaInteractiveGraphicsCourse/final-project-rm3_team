@@ -224,8 +224,11 @@ class PlayerEntity extends Entity {
 		this.controls = controls;
 	}
 	hittedBoss(bossBody) {
+		console.log("HITTED BOSS");
 		this.controls.kickBack(bossBody.position)
 		this.hitted();
+		var spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
+		spiderAttack_audio.play();
 	};
 	hitted(){
 		this.scoreManager.lose1life();
@@ -259,6 +262,9 @@ class BossEntity extends Entity {
 			//this.entityManager.eliminateThisEntity(this);
 			this.controls.death();
 		}
+		else
+			new Audio(".\\resources\\audio\\spider_hit.mp3").play();
+
 	}
 	update(timeInSeconds){
 		this.controls.update(timeInSeconds);

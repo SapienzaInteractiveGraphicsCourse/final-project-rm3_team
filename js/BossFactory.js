@@ -5,7 +5,8 @@ export class BossFactory {
 		this.buildBoss();
 		this.boss.position.set(...params.position);
 		this.initializeAnimation();
-		this.deathAnimation()
+		this.initializeAudio();
+		this.deathAnimation();
 		this.boss.scale.set(5,5,5);
 	}
 	
@@ -180,9 +181,19 @@ export class BossFactory {
 		this.legTween2.onUpdate(this.updateLeg1.bind(this))
 		this.legTween3.onUpdate(this.updateLeg1.bind(this))		
 	}
+
+	initializeAudio() {
+		this.spiderMusic_audio = new Audio(".\\resources\\audio\\spider_music.mp3");
+		//this.spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
+		this.spiderDeathScream_audio = new Audio(".\\resources\\audio\\spider_deathScream.mp3");
+		this.spiderMusic_audio.volume = 1;
+		//this.spiderAttack_audio.volume = 0.85;
+		this.spiderDeathScream_audio.volume = 1;
+	}
 	
 	startMove() {
 		this.legTween1.start();
+		this.spiderMusic_audio.play();
 	}
 	
 	stopMove() {
