@@ -4,6 +4,7 @@
     --yellow: #FBAF35;
     --darkYellow: #E2900A;
     --blue: #009AD2;
+    --mediumBlue: #0075A2;
     --darkBlue: #20374E;
 	--white: #eeeeee;
     --green: #85B24D;
@@ -552,16 +553,20 @@ body {
 }
 #gameBackMenu{
     margin-top: 5%;
-    text-decoration: underline;
-    font-size: 230%;
+    font-size: 160%;
     color: white;
     transition: all 0.3s;
-    color: var(--darkBlue);
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #fff;
+    color: white;
+    background: var(--darkYellow);
+    padding: 15px 25px;
+    border-radius: 20px;
+    border-width: 0;
+    text-decoration: none;
+    font-weight: 100;
 }
 #gameBackMenu:hover{
-    color: var(--darkBlue);
+    color: var(--darkYellow);
+    background: rgb(240, 240, 240, 0.9);
 }
 
 #gameOverStats{
