@@ -32,7 +32,7 @@ export class BasicAIController {
 				if(this.timeToShot<0) {
 
 					var shotAudio = new Audio(this.entity.character.getActualGun().audio.shot);
-					shotAudio.volume = Math.exp(-0.1*distance);
+					shotAudio.volume = Math.exp(-0.1*distance)*this.MANAGER.getEffectVolume()*this.entity.character.getActualGun().audio.shotVolumeFactor;
 
 					shotAudio.play();
 					this.bulletManager.spawnNewBullet(this.entity,direction)

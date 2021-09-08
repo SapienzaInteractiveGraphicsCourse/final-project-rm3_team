@@ -159,7 +159,9 @@ export class CharacterController {
 			else{
 				this.shotTime = this.timeBetweenAmmo;
 			}
-			new Audio(this.character.getActualGun().audio.shot).play();
+			var shotAudio = new Audio(this.character.getActualGun().audio.shot);
+			shotAudio.volume = this.MANAGER.getEffectVolume()*this.character.getActualGun().audio.shotVolumeFactor;
+			shotAudio.play();
 		}
 	}
 	setAmmo(quantity=null) {

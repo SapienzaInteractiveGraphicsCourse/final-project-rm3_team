@@ -13,6 +13,7 @@ export class CharacterFactory {
 		},
 		audio: {
 			shot: ".\\resources\\audio\\pistol_shot.mp3",
+			shotVolumeFactor: 0.8,
 			reload: new Audio(".\\resources\\audio\\pistol_reload.mp3")
 		}
 	};
@@ -30,6 +31,7 @@ export class CharacterFactory {
 		},
 		audio: {
 			shot: ".\\resources\\audio\\ak47_shot.mp3",
+			shotVolumeFactor: 1.0,
 			reload: new Audio(".\\resources\\audio\\ak47_reload.mp3")
 		}
 	};
@@ -47,6 +49,7 @@ export class CharacterFactory {
 		},
 		audio: {
 			shot: ".\\resources\\audio\\sniper_shot.mp3",
+			shotVolumeFactor: 0.4,
 			reload: new Audio(".\\resources\\audio\\sniper_reload.mp3")
 		}
 	};
@@ -64,6 +67,7 @@ export class CharacterFactory {
 		},
 		audio: {
 			shot: ".\\resources\\audio\\RPG_shot.mp3",
+			shotVolumeFactor: 1.0,
 			reload: new Audio(".\\resources\\audio\\RPG_reload.mp3")
 		}
 	};

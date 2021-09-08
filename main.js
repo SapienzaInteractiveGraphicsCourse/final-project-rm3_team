@@ -38,8 +38,8 @@ class gameManager {
 				useNormalMap: true,
 				shadow: true,
 				ambientTexture: true,
-				musicVolume: 1,
-				effectVolume: 1,
+				musicVolume: 0.7,
+				effectVolume: 0.7,
 				enableSound: true,
 			}
 		}
@@ -66,8 +66,8 @@ class gameManager {
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
-	getMusicVolume() {return this.gameSettings.musicVolume;}
-	getEffectVolume() {return this.gameSettings.effectVolume;}
+	getMusicVolume() {return (this.gameSettings.enableSound ? this.gameSettings.musicVolume : 0.0);}
+	getEffectVolume() {return (this.gameSettings.enableSound ? this.gameSettings.effectVolume : 0.0);}
 	getSoundRule() {return this.gameSettings.enableSound;}
 
 	setGameOptions(options) {this.gameOptions = options;}
@@ -195,6 +195,8 @@ class MenuEnvironment {
         this.dayButton.addEventListener('change', this.selectElementDayTime.bind(this, this.dayButton, this.dayOptions), false);
         this.nightButton.addEventListener('change', this.selectElementDayTime.bind(this, this.nightButton, this.nightOptions), false);
         this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
+		
+		this.enableSoundCkBox.addEventListener('change', this.checkedEnableSound.bind(this), false);
 	}
 	giveValueFromCookie() {
 		var cookieOptions = this.getCookie("gameOptions");
@@ -205,7 +207,7 @@ class MenuEnvironment {
                 lifes: parseFloat(data[1].split(":")[1]),
                 enemyQuantity: parseFloat(data[2].split(":")[1]),
                 time: parseFloat(data[3].split(":")[1]),
-                haveBoss: parseFloat(data[4].split(":")[1] === 'true'),
+                haveBoss: data[4].split(":")[1] === 'true',
 				viewfinder: (data[5].split(":")[1] === 'true'),
             });
         }
@@ -213,7 +215,6 @@ class MenuEnvironment {
 		var cookieSettings = this.getCookie("gameSettings");
         if(cookieSettings != null){
             var data = cookieSettings.slice(1, cookieSettings.length-1).split(", ");
-			console.log(data[0].split(":")[1] === 'true')
             MANAGER.setGameSettings({
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
@@ -348,6 +349,10 @@ class MenuEnvironment {
 		}
 		MANAGER.setGameOptions(gameOptions);
 		this.updateGameOptionsUI();
+	}
+	checkedEnableSound() {
+		this.sliderMusicVolume.disabled = !this.enableSoundCkBox.checked;
+		this.sliderEffectVolume.disabled = !this.enableSoundCkBox.checked;
 	}
 }
 
