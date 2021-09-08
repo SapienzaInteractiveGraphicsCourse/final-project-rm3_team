@@ -531,34 +531,39 @@ body {
     align-content: center;
     justify-content: center;
     align-items: center;
-    background: var(--red);
+    background: var(--darkRed);
 }
 .spanValue{
-    font-size: 30px;
+    font-size: 150%;
     color: var(--yellow);
 }
 .spanName{
     color: #3a3a3a;
-    font-size: 30px;
-    -webkit-text-stroke-width: 1px;
+    font-size: 150%;
+    -webkit-text-stroke-width: 0.5px;
     -webkit-text-stroke-color: #fff;
 }
 #gameOverTitle{
-    font-size: 60px;
+    font-size: 400%;
+    margin-bottom: 5%;
 }
 #gameOverResult{
-    font-size: 50px;
+    font-size: 300%;
 }
 #gameBackMenu{
-    margin: 15px 0 0 0;
-    text-decoration: none;
-    font-size: 20px;
+    margin-top: 5%;
+    text-decoration: underline;
+    font-size: 230%;
     color: white;
     transition: all 0.3s;
+    color: var(--darkBlue);
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #fff;
 }
 #gameBackMenu:hover{
-    color: var(--red);
+    color: var(--darkBlue);
 }
+
 #gameOverStats{
     display: flex;
     width: 600px;
