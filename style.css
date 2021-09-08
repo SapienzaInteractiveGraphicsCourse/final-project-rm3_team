@@ -5,7 +5,7 @@
     --darkYellow: #E2900A;
     --blue: #009AD2;
     --mediumBlue: #0075A2;
-    --darkBlue: #20374E;
+    --darkBlue: #0E324F;
 	--white: #eeeeee;
     --green: #85B24D;
     --darkGreen: #5D8B25;
@@ -52,7 +52,7 @@ body {
 }
 
 #logo {
-    padding-top: 11vh;
+    /*padding-top: 11vh;*/
 }
 
 #playGameButton{
