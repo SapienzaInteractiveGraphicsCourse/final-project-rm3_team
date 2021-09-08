@@ -109,6 +109,8 @@ export class CharacterFactory {
 		this.prepareGuns();
 		
 		this.initializeAnimation();
+
+		this.initializeAudio();
 	}
 	
 	buildCharacter() {
@@ -241,6 +243,15 @@ export class CharacterFactory {
 		this.legTween3.onUpdate(this.updateLeg1.bind(this))		
 	}
 	
+	initializeAudio() {
+		this.footStepWalk_audio = new Audio(".\\resources\\audio\\footStepWalk.mp3");
+		this.footStepRun_audio = new Audio(".\\resources\\audio\\footStepRun.mp3");
+		this.jump_audio = new Audio(".\\resources\\audio\\jump.mp3");
+		this.footStepWalk_audio.volume = 0.87;
+		this.footStepRun_audio.volume = 0.87;
+		this.jump_audio.volume = 0.80;
+	}
+
 	getMesh() {
 		return this.character;
 	}
@@ -271,6 +282,7 @@ export class CharacterFactory {
 	
 	startMove() {
 		this.legTween1.start();
+		/*this.footStep_audio.play();*/
 	}
 	
 	stopMove() {

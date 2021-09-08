@@ -235,6 +235,9 @@ export class CharacterController {
 			this.velocity.y = this.jumpVelocity;
 			this.canJump = false;
 			this.input.keys.space = false;
+			this.character.jump_audio.play();
+			this.character.footStepWalk_audio.pause();
+			this.character.footStepRun_audio.pause();
 		}
 		if (this.input.keys.shift && !this.shiftHelded){
 			//this.MANAGER.multiplyVelocityFactor();
@@ -261,6 +264,16 @@ export class CharacterController {
 			this.character.stopMove();
 			this.isMoving = false;
 		}
+
+		if (this.isMoving && !this.shiftHelded && this.canJump) {
+			this.character.footStepWalk_audio.play();
+			this.character.footStepRun_audio.pause();
+		}
+		else if (this.isMoving && this.shiftHelded && this.canJump) {
+			this.character.footStepRun_audio.play();
+			this.character.footStepWalk_audio.pause();
+		}
+
 		if (this.input.keys.r && !this.rHelded){
 			if(!this.isReloading) this.reload();
 			this.rHelded = true;
