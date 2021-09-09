@@ -5,11 +5,7 @@ function randRange(min, max) {
 export class ScoreManager{
     constructor(params){
 		this.MANAGER = params.manager;
-    	//this.hBar = params.hBar;
-      	//this.bar = this.hBar.find('.bar');
       	this.bar = params.bar;
-
-        //this.lifesSpanGame = params.lifesTarget;
         this.timeSpanGame = params.timeTarget;
         this.enemySpanGame = params.enemyTarget;
         this.gunSpanGame = params.gunTarget;
@@ -19,8 +15,7 @@ export class ScoreManager{
 		this.time = params.time;
 
         this.currLifes = this.totalLifes;
-		
-        //this.currScore = 0;
+
         this.startTime = 0;
         this.currTime = 0;
         this.pauseTime = 0;
@@ -80,7 +75,6 @@ export class ScoreManager{
         var hitTime = Date.now();
 		if(this.lastHit && hitTime-this.lastHit < 500)	//After being hit, we have half a second of immunity
 			return;
-		//console.log("Eseguo")
 		this.lastHit = hitTime;
 		this.currLifes -= 1;
 		this.playPainSound();
@@ -118,22 +112,16 @@ export class ScoreManager{
 	}
 
     updateSpansGame() {
-        //this.lifesSpanGame.innerHTML = "Lifes: " + this.currLifes;
-
-        //this.hBar.data('value', 300);
         var currLifes = this.currLifes;
         var totalLifes = this.totalLifes;
 	    setTimeout(function(){
-	    	//bar.css('width', 300 + "%");
-
 	    	bar.style.width = "" + (currLifes/totalLifes * 100) + "%";
 	    }, 500);
 
         this.timeSpanGame.innerHTML = parseInt(this.currPassedTime / 60) + ":" + (this.currPassedTime % 60).toLocaleString('en-US',
             { minimumIntegerDigits: 2, useGrouping: false });
         this.enemySpanGame.innerHTML = "Kills: " + this.killedEnemy + "/" + this.quantityEnemy;
-        //var score = ("0000" + this.currScore);
-        //this.scoreSpanGame.innerHTML = "score: " + score.substr(score.length-4);
+
 		if(this.gun) {
 			this.gunSpanGame.innerHTML = this.gun.name.toUpperCase();
 			this.ammoSpanGame.innerHTML = this.gun.currAmmo + "/" + this.gun.ammo;

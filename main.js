@@ -359,10 +359,8 @@ class gameEnvironment {
 		this.load();
 
 		this.scoreManager = new ScoreManager({
-			//hBar: document.getElementById("health-bar"),
 			manager: MANAGER,
 			bar: document.getElementById("bar"),
-			//lifesTarget: document.getElementById("lifesSpanGame"),
 			timeTarget: document.getElementById("timeSpanGame"),
 			enemyTarget: document.getElementById("enemySpanGame"),
 			gunTarget: document.getElementById("gunSpanGame"),
@@ -541,7 +539,6 @@ class gameEnvironment {
 			var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
 			do {
 				var x = (Math.random()-0.5)*300;
-				//var y = 5 + (Math.random()-0.5)*1;
 				var y = halfExtents.y;
 				var z = (Math.random()-0.5)*300;
 			} while(this.unsafeSpawn(x, z, halfExtents.x, halfExtents.z));
@@ -561,8 +558,6 @@ class gameEnvironment {
 				texture.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				if(this.buildings[this.buildingNames[index]].normalMap) {
 					var normalMap = this.buildings[this.buildingNames[index]].normalMap.clone();
-					//if(!normalMap.image)
-						//console.log(index)
 					normalMap.needsUpdate = true;
 					normalMap.repeat.set(buildingRepeatFactors[index].x, repeatingFactorY);
 				}
@@ -574,7 +569,6 @@ class gameEnvironment {
                  });
 			}
 			var boxMesh = new THREE.Mesh( boxGeometry, material );
-			//var boxMesh = new THREE.Mesh( boxGeometry, this.characterTexture["protagonist"]["head"] );
 			this.world.add(boxBody);
 			this.scene.add(boxMesh);
 			boxBody.position.set(x,y,z);
@@ -750,7 +744,6 @@ class gameEnvironment {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 
-	/*DA QUI è WORK IN PROGRESS FINO ALLA LINEA ---------------*/
 	locker() {
 		document.getElementById("loading").style.display = "none";
 
@@ -860,7 +853,6 @@ class gameEnvironment {
 		MANAGER.deletedBody = [];
 
 		var time = Date.now() - this.time - this.addedTime;
-		//console.log(time);
 		this.scoreManager.updateCurrTime(Date.now());
         if(this.scoreManager.isGameOver()){
 			cancelAnimationFrame(this.animationFrameID);
@@ -911,16 +903,6 @@ class gameEnvironment {
 		for (const item of this.positionsList) {
 			let [left1, top1, right1, bottom1] = [posX-halfDimX-margin, posZ+halfDimZ+margin, posX+halfDimX+margin, posZ-halfDimZ-margin],
 				[left2, top2, right2, bottom2] = [item[0]-item[2], item[1]+item[3], item[0]+item[2], item[1]-item[3]];
-			/*
-			// The first rectangle is under the second or vice versa
-			if ((top1 < bottom2 || top2 < bottom1)) {
-				return false;
-			}
-			// The first rectangle is to the left of the second or vice versa
-			if ((right1 < left2 || right2 < left1)) {
-				return false;
-			}
-			*/
 			if (!(top1 < bottom2 || top2 < bottom1 || right1 < left2 || right2 < left1))
 				return true;
 		}
@@ -1079,7 +1061,6 @@ class gameEnvironment {
 	spawnEnemy() {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
 			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*(CharacterFactory.GUN_ALL.length-1))];
-			/*var minDistanceSquared = 625;*/
 			var minDistanceSquared = 5000;
 			do {
 				var position = [0,20,0];
@@ -1089,9 +1070,6 @@ class gameEnvironment {
 				var factor = Math.sqrt(minDistanceSquared/distanceSquared);
 				position[0] *= (factor+Math.random()*100);
 				position[2] *= (factor+Math.random()*100);
-				//console.log("Enemy: " + position[0] + position[2]);
-				//console.log(this.positionsList[0] + " " + this.positionsList[1] + " " + " " + this.positionsList[2] + " " + " " + this.positionsList[3] + " " + " " + this.positionsList[4] + " " + " " + this.positionsList[5] + " ");
-				//console.log(this.positionsList);
 			} while(this.unsafeSpawn(position[0], position[2], 1, 1));
 			this.positionsList.push([position[0], position[2], 1, 1]);
 			this.entityManager.addEntity({name: EntityManager.ENTITY_SIMPLE_ENEMY, guns: [gun], position: position, maxDistance: 25});
@@ -1163,7 +1141,6 @@ class gameOverEnvironment {
         this.gameOverResult = document.getElementById("gameOverResult");
 
         this.statsEnemy = document.getElementById("statsEnemy");
-        //this._statsScore = document.getElementById("statsScore");
         this.statsTime = document.getElementById("statsTime");
 
         this.winGame = document.getElementById("winGame");
@@ -1180,8 +1157,6 @@ class gameOverEnvironment {
 		audioEnd.play();
 
         this.statsEnemy.innerHTML = params.enemyKilled+"/"+params.numEnemy;
-        //var score = ("0000" + params.score);
-        //this._statsScore.innerHTML = score.substr(score.length-4);
         this.statsTime.innerHTML = parseInt(params.time / 60) + ":" + (params.time % 60).toLocaleString('en-US',
             { minimumIntegerDigits: 2, useGrouping: false });
 

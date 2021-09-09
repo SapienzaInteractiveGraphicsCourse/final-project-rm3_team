@@ -282,7 +282,6 @@ export class CharacterFactory {
 	
 	startMove() {
 		this.legTween1.start();
-		/*this.footStep_audio.play();*/
 	}
 	
 	stopMove() {

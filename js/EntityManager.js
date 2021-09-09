@@ -11,7 +11,6 @@ export class EntityManager{
 	
 	constructor(params){
         this.entities = [];
-        //this.collectables = [];
         this.player = null;
 
         this.scene = params.scene;
@@ -112,7 +111,6 @@ export class EntityManager{
 	
 	eliminateThisEntity(elem){
 		elem.target.parent.remove(elem.target);
-		//elem.body.position.y = 100;
 		this.MANAGER.deletedBody.push(elem.body);
         var pos = elem.pos;
         this.entities.splice(pos, 1);
@@ -126,7 +124,6 @@ export class EntityManager{
     }
 	
 	update(timeInSeconds){
-		//console.log(this.entities)
         for(var i in this.entities){
             this.entities[i].update(timeInSeconds);
         }
@@ -137,7 +134,6 @@ class Entity{
     constructor(params){
         this.MANAGER = params.manager;
         this.entityManager = params.entityManager;
-        //this.scoreManager = params.scoreManager;
         this.target = params.target;
         this.body = params.body;
         this.pos = params.pos;
@@ -224,7 +220,6 @@ class PlayerEntity extends Entity {
 		this.controls = controls;
 	}
 	hittedBoss(bossBody) {
-		console.log("HITTED BOSS");
 		this.controls.kickBack(bossBody.position)
 		this.hitted();
 		var spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
@@ -260,7 +255,6 @@ class BossEntity extends Entity {
 		if(this.life<=0 && this.alive) {
 			this.body.isBoss = false;
 			this.alive = false;
-			//this.entityManager.eliminateThisEntity(this);
 			this.controls.death();
 		}
 		else {

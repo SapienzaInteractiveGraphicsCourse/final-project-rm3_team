@@ -143,25 +143,17 @@ export class BossFactory {
 					if(j == 0){
 						if(i==0) {
 							leg.rotation.y = object.roty;
-							//leg.rotation.z = object.upz;
-							//lowerLeg.rotation.z = object.lowz;
 						}
 						if(i==1) {
 							leg.rotation.y = Math.PI/3 - object.roty;
-							//leg.rotation.z = Math.PI/6 - object.upz;
-							//lowerLeg.rotation.z = -2*Math.PI/3 - object.lowz;
 						}
 					}
 					if(j == 3){
 						if(i==0) {
 							leg.rotation.y = -object.roty;
-							//leg.rotation.z = object.upz;
-							//lowerLeg.rotation.z = object.lowz;
 						}
 						if(i==1) {
 							leg.rotation.y = -Math.PI/3 + object.roty;
-							//leg.rotation.z = Math.PI/6 - object.upz;
-							//lowerLeg.rotation.z = -2*Math.PI/3 - object.lowz;;
 						}
 					}
 					if(j == 1) {
@@ -184,10 +176,8 @@ export class BossFactory {
 
 	initializeAudio() {
 		this.spiderMusic_audio = new Audio(".\\resources\\audio\\spider_music.mp3");
-		//this.spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
 		this.spiderDeathScream_audio = new Audio(".\\resources\\audio\\spider_deathScream.mp3");
 		this.spiderMusic_audio.volume = 1*this.MANAGER.getEffectVolume();
-		//this.spiderAttack_audio.volume = 0.85;
 		this.spiderDeathScream_audio.volume = 1*this.MANAGER.getEffectVolume();
 	}
 	

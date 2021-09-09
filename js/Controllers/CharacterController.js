@@ -51,7 +51,6 @@ export class CharacterController {
 		var contact = e.contact;
 
 		// contact.bi and contact.bj are the colliding bodies, and contact.ni is the collision normal.
-		// We do not yet know which one is which! Let's check.
 		if(contact.bi.id == this.characterBody.id)  // bi is the player body, flip the contact normal
 			contact.ni.negate(this.contactNormal);
 		else
@@ -129,23 +128,18 @@ export class CharacterController {
 
 		setTimeout(function(){
 	    	document.getElementById("bulletImg").style.visibility = "visible";
-	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
 	    }, 400);
 	    setTimeout(function(){
 	    	document.getElementById("bulletImg").style.visibility = "hidden";
-	    	/*document.getElementById("reloading").style.visibility = "visible";*/
 	    }, 800);
 	    setTimeout(function(){
 	    	document.getElementById("bulletImg").style.visibility = "visible";
-	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
 	    }, 1200);
 	    setTimeout(function(){
 	    	document.getElementById("bulletImg").style.visibility = "hidden";
-	    	/*document.getElementById("reloading").style.visibility = "visible";*/
 	    }, 1600);
 	    setTimeout(function(){
 	    	document.getElementById("bulletImg").style.visibility = "visible";
-	    	/*document.getElementById("reloading").style.visibility = "hidden";*/
 	    }, 2000);
 	}
 	shot() {
@@ -240,12 +234,10 @@ export class CharacterController {
 			this.character.footStepRun_audio.pause();
 		}
 		if (this.input.keys.shift && !this.shiftHelded){
-			//this.MANAGER.multiplyVelocityFactor();
 			this.shiftFactor = 2;
 			this.shiftHelded = true;
 		}
 		if (this.shiftHelded && !this.input.keys.shift){
-			//this.MANAGER.resetVelocityFactor();
 			this.shiftFactor = 1;
 			this.shiftHelded = false;
 		}
@@ -295,7 +287,6 @@ export class CharacterController {
         this.euler.order = "XYZ";
         this.quat.setFromEuler(this.euler);
         this.inputVelocity.applyQuaternion(this.quat);
-        //this.quat.multiplyVector3(this.inputVelocity);
 		if(!this.isMoving) {		//to avoid too much slippage
 			this.velocity.x *= 0.93;
 			this.velocity.z *= 0.93;
