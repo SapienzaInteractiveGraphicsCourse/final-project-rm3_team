@@ -48,7 +48,8 @@ export class BulletManager {
 		var bulletBody = new CANNON.Body({mass: bullet.mass});
 		var bulletShape = new CANNON.Sphere(bullet.radius);
 		var ballGeometry = new THREE.SphereGeometry(bullet.radius, 32, 32);
-		var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+		do var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+		while(randomColor.length!=7);
 		var material2 = new THREE.MeshPhongMaterial( { color: randomColor } );
 		var shootVelocity = bullet.shootVelocity;
 		var bulletMesh = new THREE.Mesh( ballGeometry, material2 );
