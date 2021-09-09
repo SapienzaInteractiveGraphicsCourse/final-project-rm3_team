@@ -877,12 +877,6 @@ class gameEnvironment {
 		this.bulletManager.update(time);
 		this.controls.update(time);
 
-		// Update ball positions
-		for(var i=0; i<this.balls.length; i++){
-			this.ballMeshes[i].position.copy(this.balls[i].position);
-			this.ballMeshes[i].quaternion.copy(this.balls[i].quaternion);
-		}
-
 		// Update box positions
 		for(var i=0; i<this.boxes.length; i++){
 			this.boxMeshes[i].position.copy(this.boxes[i].position);
@@ -973,7 +967,7 @@ class gameEnvironment {
 			this.tourch.shadow.mapSize.width = 2*512;
 			this.tourch.shadow.mapSize.height = 2*512;
 
-			this.tourch.shadowCameraVisible = true;
+			//this.tourch.shadowCameraVisible = true;
 		}
 		this.tourch.position.set(0, 1.5, 0);
 		this.tourch.target.position.set(0, 1.5, -1);
