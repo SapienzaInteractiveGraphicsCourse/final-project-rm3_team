@@ -31,8 +31,6 @@ export class LightFactory{
 				
 				var hemisphereLight = new THREE.HemisphereLight(0xfbd9ac, 0x666666, 0.5)
 				this.lights.push(hemisphereLight);
-                //var ambientLight = new THREE.AmbientLight(0xfbd9ac, 1.0);
-                //this.lights.push(ambientLight);
                 break;
             case LightFactory.DAY_LIGHT:
             default:
@@ -56,8 +54,6 @@ export class LightFactory{
 
 				var hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x666666, 0.5);
 				this.lights.push(hemisphereLight);
-                //var ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.2);
-                //this.lights.push(ambientLight);
                 break;
         }
         

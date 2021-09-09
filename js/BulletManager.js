@@ -75,8 +75,6 @@ export class BulletManager {
 			bullet.mesh.position.copy(bullet.body.position);
 			bullet.mesh.quaternion.copy(bullet.body.quaternion);
 		}
-		//if(this.bullets[0])
-			//console.log(this.bullets[0].mesh.position)
 	}
 }
 
