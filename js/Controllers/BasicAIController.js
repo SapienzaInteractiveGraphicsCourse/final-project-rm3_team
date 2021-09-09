@@ -24,10 +24,8 @@ export class BasicAIController {
 		var distance = this.player.body.position.distanceTo(this.body.position);
 		if(distance<this.maxDistance*3){				//From maxDistance*1.2 start to move in player direction
 			//console.log(distance);
-			if (Math.random() > 0.1) {
-				var direction = this.computeDirection();
-				this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
-			}
+			var direction = this.computeDirection();
+			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
 			if(distance<this.maxDistance*2) {				//From maxDistance start to shot
 				if(this.timeToShot<0) {
 
@@ -35,7 +33,7 @@ export class BasicAIController {
 					shotAudio.volume = Math.exp(-0.1*distance)*this.MANAGER.getEffectVolume()*this.entity.character.getActualGun().audio.shotVolumeFactor;
 
 					shotAudio.play();
-					this.bulletManager.spawnNewBullet(this.entity,direction)
+					this.bulletManager.spawnNewBullet(this.entity,direction);
 					this.currAmmo -= 1;
 					this.timeToShot = this.computeNewTimeToShot();
 				}
@@ -107,10 +105,4 @@ export class BasicAIController {
 		var direction = objective.sub(from).normalize();
 		return (new THREE.Ray(this.body.position, direction)).direction;
 	}
-	
-	/*
-	selectBullet() {
-		switch()
-	}
-	*/
 }

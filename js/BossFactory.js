@@ -186,9 +186,9 @@ export class BossFactory {
 		this.spiderMusic_audio = new Audio(".\\resources\\audio\\spider_music.mp3");
 		//this.spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
 		this.spiderDeathScream_audio = new Audio(".\\resources\\audio\\spider_deathScream.mp3");
-		this.spiderMusic_audio.volume = 1;
+		this.spiderMusic_audio.volume = 1*this.MANAGER.getEffectVolume();
 		//this.spiderAttack_audio.volume = 0.85;
-		this.spiderDeathScream_audio.volume = 1;
+		this.spiderDeathScream_audio.volume = 1*this.MANAGER.getEffectVolume();
 	}
 	
 	startMove() {

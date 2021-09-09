@@ -29,7 +29,7 @@ export class BulletManager {
 		
 		this.bullets.push(bullet);
 		
-		bullet.body.velocity.set(  direction.x * bullet.velocity,
+		bullet.body.velocity.set(direction.x * bullet.velocity,
 								direction.y * bullet.velocity,
 								direction.z * bullet.velocity);
 

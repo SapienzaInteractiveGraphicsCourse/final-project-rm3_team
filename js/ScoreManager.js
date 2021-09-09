@@ -4,7 +4,7 @@ function randRange(min, max) {
 
 export class ScoreManager{
     constructor(params){
-
+		this.MANAGER = params.manager;
     	//this.hBar = params.hBar;
       	//this.bar = this.hBar.find('.bar');
       	this.bar = params.bar;
@@ -77,7 +77,6 @@ export class ScoreManager{
 	}
 
     lose1life(){
-		console.log("Colpito")
         var hitTime = Date.now();
 		if(this.lastHit && hitTime-this.lastHit < 500)	//After being hit, we have half a second of immunity
 			return;
@@ -91,8 +90,9 @@ export class ScoreManager{
 
     playPainSound() {
     	var randomNumber = Math.round(randRange(1, 15));
-    	console.log("randomNumber " + randomNumber)
-    	new Audio(".\\resources\\audio\\pain\\pain ("+randomNumber+").mp3").play();
+    	let audio = new Audio(".\\resources\\audio\\pain\\pain ("+randomNumber+").mp3");
+		audio.volume = this.MANAGER.getEffectVolume();
+		audio.play();
     }
 	
     updateCurrTime(time) {
@@ -113,6 +113,7 @@ export class ScoreManager{
 		this.killedEnemy++;
 		this.updateSpansGame();
 		var enemyDeath_audio = new Audio(".\\resources\\audio\\enemyDeath2.mp3");
+		enemyDeath_audio.volume = this.MANAGER.getEffectVolume();
 		enemyDeath_audio.play();
 	}
 

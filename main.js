@@ -38,9 +38,7 @@ class gameManager {
 				useNormalMap: true,
 				shadow: true,
 				ambientTexture: true,
-				musicVolume: 0.7,
 				effectVolume: 0.7,
-				enableSound: true,
 			}
 		}
 		this.setGameSettingsDefault();
@@ -66,9 +64,7 @@ class gameManager {
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
-	getMusicVolume() {return (this.gameSettings.enableSound ? this.gameSettings.musicVolume : 0.0);}
-	getEffectVolume() {return (this.gameSettings.enableSound ? this.gameSettings.effectVolume : 0.0);}
-	getSoundRule() {return this.gameSettings.enableSound;}
+	getEffectVolume() {return this.gameSettings.effectVolume;}
 
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
@@ -115,9 +111,7 @@ class MenuEnvironment {
 		this.shadowCkBox = document.getElementById("shadowCkBox");
 		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
 		
-		this.sliderMusicVolume = document.getElementById("sliderMusicVolume");
 		this.sliderEffectVolume = document.getElementById("sliderEffectVolume");
-		this.enableSoundCkBox = document.getElementById("enableSoundCkBox");
 
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -178,9 +172,7 @@ class MenuEnvironment {
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
 				", shadow:"+curretGameSettings.shadow+
 				", ambientTexture:"+curretGameSettings.ambientTexture+
-				", musicVolume:"+curretGameSettings.musicVolume+
-				", effectVolume:"+curretGameSettings.effectVolume+
-				", enableSound:"+curretGameSettings.enableSound+"};";
+				", effectVolume:"+curretGameSettings.effectVolume+"};";
 			this.exitSetting();
         }, false);
 		this.resetSettings.addEventListener("click", () => {
@@ -195,8 +187,6 @@ class MenuEnvironment {
         this.dayButton.addEventListener('change', this.selectElementDayTime.bind(this, this.dayButton, this.dayOptions), false);
         this.nightButton.addEventListener('change', this.selectElementDayTime.bind(this, this.nightButton, this.nightOptions), false);
         this.sunSetButton.addEventListener('change', this.selectElementDayTime.bind(this, this.sunSetButton, this.sunSetOptions), false);
-		
-		this.enableSoundCkBox.addEventListener('change', this.checkedEnableSound.bind(this), false);
 	}
 	giveValueFromCookie() {
 		var cookieOptions = this.getCookie("gameOptions");
@@ -219,9 +209,7 @@ class MenuEnvironment {
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
                 ambientTexture: (data[2].split(":")[1] === 'true'),
-                musicVolume: (data[3].split(":")[1]),
-                effectVolume: (data[4].split(":")[1]),
-                enableSound: (data[5].split(":")[1] === 'true'),
+                effectVolume: (data[3].split(":")[1]),
             });
         }
 
@@ -290,9 +278,7 @@ class MenuEnvironment {
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 		this.shadowCkBox.checked = curGameSettings.shadow;
 		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
-		this.sliderMusicVolume.value = curGameSettings.musicVolume;
 		this.sliderEffectVolume.value = curGameSettings.effectVolume;
-		this.enableSoundCkBox.checked = curGameSettings.enableSound;
 	}
 
 
@@ -309,9 +295,7 @@ class MenuEnvironment {
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
 			ambientTexture: this.ambientTextureCkBox.checked,
-			musicVolume: parseFloat(this.sliderMusicVolume.value),
 			effectVolume: parseFloat(this.sliderEffectVolume.value),
-			enableSound: this.enableSoundCkBox.checked,
 		})
 	}
 	setDifficulty(difficulty) {
@@ -350,10 +334,6 @@ class MenuEnvironment {
 		MANAGER.setGameOptions(gameOptions);
 		this.updateGameOptionsUI();
 	}
-	checkedEnableSound() {
-		this.sliderMusicVolume.disabled = !this.enableSoundCkBox.checked;
-		this.sliderEffectVolume.disabled = !this.enableSoundCkBox.checked;
-	}
 }
 
 function searchInChild(root, name) {
@@ -380,6 +360,7 @@ class gameEnvironment {
 
 		this.scoreManager = new ScoreManager({
 			//hBar: document.getElementById("health-bar"),
+			manager: MANAGER,
 			bar: document.getElementById("bar"),
 			//lifesTarget: document.getElementById("lifesSpanGame"),
 			timeTarget: document.getElementById("timeSpanGame"),
@@ -975,30 +956,7 @@ class gameEnvironment {
 			this.lights.castShadow = MANAGER.getShadowRule();
             this.scene.add(this.lights[i]);
         }
-		//var ambient = new THREE.AmbientLight( 0xAAAAAA );
-		//var hemisphere = new THREE.HemisphereLight( 0xC8C8FF, 0x666666, 1 )
-		//var ambient = new THREE.AmbientLight( 0xffffff );
-		//this.scene.add(ambient);
-		//this.scene.add(hemisphere);
-		/* //Old light
-		this.light = new THREE.SpotLight( 0x666666 );
-		this.light.position.set( 10, 30, 20 );
-		this.light.target.position.set( 0, 0, 0 );
-		if(true){
-			this.light.castShadow = true;
-
-			this.light.shadow.camera.near = 20;
-			this.light.shadow.camera.far = 50;//camera.far;
-			this.light.shadow.camera.fov = 40;
-
-			this.light.shadowMapBias = 0.1;
-			this.light.shadowMapDarkness = 0.7;
-			this.light.shadow.mapSize.width = 2*512;
-			this.light.shadow.mapSize.height = 2*512;
-
-			//light.shadowCameraVisible = true;
-		}*/
-
+		
 		this.tourch = new THREE.SpotLight(0xffffff);
 		this.tourch.angle = Math.PI/4
 		this.tourch.distance = 100;
@@ -1025,27 +983,19 @@ class gameEnvironment {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMapSoft = true;
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		//this.renderer.setClearColor( this.scene.fog.color, 1 );
 		this.renderer.setClearColor( 0xffffff, 0);
 
 		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+		
+		//SetVolumeToRecharge
+		for(let i in CharacterFactory.GUN_ALL_STATISTIC) {
+			CharacterFactory.GUN_ALL_STATISTIC[i].audio.reload.volume = MANAGER.getEffectVolume();
+		}
 
 		// floor
 		var geometry = new THREE.PlaneGeometry( 324, 324, 50, 50 );
-		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
+		geometry.rotateX(-Math.PI/2);
 
-		//var material = new THREE.MeshLambertMaterial({color: 0xeeee00});
-		//var material = new THREE.MeshPhongMaterial({color: 0xeeee00, dithering: true});
-		//var loader = new THREE.TextureLoader();
-		//var material = loader.load("./resources/textures/terrain.jpg");
-		//console.log(material.image);
-		//terrain = this.texture["terrain"]
-		//const texture = new THREE.TextureLoader().load('./resources/textures/terrain.jpg');
-		// immediately use the texture for material creation
-		//texture.wrapS = THREE.RepeatWrapping;
-		//texture.wrapT = THREE.RepeatWrapping;
-		//texture.repeat.set(10,10);
-		//const material = new THREE.MeshPhongMaterial( { map: texture } );
 		if(MANAGER.getAmbientTextureRule())
 			var mesh = new THREE.Mesh(geometry, this.texture["terrain"]);
 		else {
@@ -1098,12 +1048,11 @@ class gameEnvironment {
 		this.buildingBuildings();
 
 		//Add personaggio
-		var gunsPlayer = [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"];
+		var gunsPlayer = [CharacterFactory.GUN_PISTOL, CharacterFactory.GUN_AK47, CharacterFactory.GUN_SNIPER, CharacterFactory.GUN_RPG];
 		var playerStartPosition = [0, 1.6, 0];
 		this.playerEntity = this.entityManager.addEntityAndReturn({name: EntityManager.ENTITY_PLAYER, guns : gunsPlayer, position: playerStartPosition});
 
 		this.entityManager.setPlayer(this.playerEntity);
-		//this.person = new CharacterFactory({manager : MANAGER, guns : [CharacterFactory.GUN_PISTOL, "ak47", "sniper", "rpg"]});
 
 		this.controls = new CharacterController({manager: MANAGER, entity: this.playerEntity, camera: this.camera, bulletManager: this.bulletManager, scoreManager: this.scoreManager, document: document});
 		this.playerEntity.setControls(this.controls);
@@ -1129,7 +1078,7 @@ class gameEnvironment {
 
 	spawnEnemy() {
 		for(let i=0;i<MANAGER.getEnemyQuantity();i++) {
-			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*CharacterFactory.GUN_ALL.length)];
+			var gun = CharacterFactory.GUN_ALL[Math.floor(Math.random()*(CharacterFactory.GUN_ALL.length-1))];
 			/*var minDistanceSquared = 625;*/
 			var minDistanceSquared = 5000;
 			do {
@@ -1222,11 +1171,13 @@ class gameOverEnvironment {
         if(params.win){
             this.gameOverResult.innerHTML ="You WIN";
             this.winGame.style.background = "#85B24D";
-            new Audio(".\\resources\\audio\\youWon.mp3").play();
+            var audioEnd = new Audio(".\\resources\\audio\\youWon.mp3");
         } else {
             this.gameOverResult.innerHTML ="You LOSE";
-            new Audio(".\\resources\\audio\\youLost.mp3").play();
+            var audioEnd = new Audio(".\\resources\\audio\\youLost.mp3");
         }
+		audioEnd.volume = MANAGER.getEffectVolume();
+		audioEnd.play();
 
         this.statsEnemy.innerHTML = params.enemyKilled+"/"+params.numEnemy;
         //var score = ("0000" + params.score);

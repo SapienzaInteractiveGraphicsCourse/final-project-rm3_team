@@ -13,7 +13,7 @@ export class CharacterFactory {
 		},
 		audio: {
 			shot: ".\\resources\\audio\\pistol_shot.mp3",
-			shotVolumeFactor: 0.8,
+			shotVolumeFactor: 0.7,
 			reload: new Audio(".\\resources\\audio\\pistol_reload.mp3")
 		}
 	};
@@ -247,9 +247,9 @@ export class CharacterFactory {
 		this.footStepWalk_audio = new Audio(".\\resources\\audio\\footStepWalk.mp3");
 		this.footStepRun_audio = new Audio(".\\resources\\audio\\footStepRun.mp3");
 		this.jump_audio = new Audio(".\\resources\\audio\\jump.mp3");
-		this.footStepWalk_audio.volume = 0.87;
-		this.footStepRun_audio.volume = 0.87;
-		this.jump_audio.volume = 0.80;
+		this.footStepWalk_audio.volume = 0.87*this.MANAGER.getEffectVolume();
+		this.footStepRun_audio.volume = 0.87*this.MANAGER.getEffectVolume();
+		this.jump_audio.volume = 0.80*this.MANAGER.getEffectVolume();
 	}
 
 	getMesh() {

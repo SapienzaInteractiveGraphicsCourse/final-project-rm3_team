@@ -228,6 +228,7 @@ class PlayerEntity extends Entity {
 		this.controls.kickBack(bossBody.position)
 		this.hitted();
 		var spiderAttack_audio = new Audio(".\\resources\\audio\\spider_attack.mp3");
+		spiderAttack_audio.volume = this.MANAGER.getEffectVolume();
 		spiderAttack_audio.play();
 	};
 	hitted(){
@@ -262,8 +263,11 @@ class BossEntity extends Entity {
 			//this.entityManager.eliminateThisEntity(this);
 			this.controls.death();
 		}
-		else
-			new Audio(".\\resources\\audio\\spider_hit.mp3").play();
+		else {
+			let audio = new Audio(".\\resources\\audio\\spider_hit.mp3");
+			audio.volume = this.MANAGER.getEffectVolume();
+			audio.play();
+		}
 
 	}
 	update(timeInSeconds){
