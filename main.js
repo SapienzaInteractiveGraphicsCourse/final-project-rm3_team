@@ -398,6 +398,7 @@ class gameEnvironment {
 
 			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping, repeat: [10, 10]}),
 			this.getTexture('textures/wall.jpg',MANAGER.getNormalMapRule(),{wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping, repeat: [50, 7]}),
+			this.getTexture('textures/grey.png'),
 			this.getImages('textures/buildings/building1',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building2',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building3',MANAGER.getNormalMapRule()),
@@ -420,6 +421,7 @@ class gameEnvironment {
 			var nameTexture = [
 				"terrain",
 				"wall",
+				"grey",
 			]
 
 			this.buildingNames = ["building1", "building2", "building3", "building4", "building5", "building6"];
@@ -578,10 +580,18 @@ class gameEnvironment {
 				}
 				else normalMap = null;
 
-				var material = new THREE.MeshStandardMaterial({
+				var sideMaterial = new THREE.MeshStandardMaterial({
                     map: texture,
                     normalMap: normalMap,
                  });
+				var material = [
+					sideMaterial,
+					sideMaterial,
+					this.texture["grey"],
+					this.texture["grey"],
+					sideMaterial,
+					sideMaterial,
+				]
 			}
 			var boxMesh = new THREE.Mesh( boxGeometry, material );
 			this.world.add(boxBody);
