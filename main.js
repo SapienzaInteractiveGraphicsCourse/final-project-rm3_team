@@ -213,8 +213,8 @@ class MenuEnvironment {
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
                 ambientTexture: (data[2].split(":")[1] === 'true'),
-                renderDistance: (data[3].split(":")[1]),
-                effectVolume: (data[4].split(":")[1]),
+                renderDistance: parseInt(data[3].split(":")[1]),
+                effectVolume: parseFloat(data[4].split(":")[1]),
             });
         }
 
@@ -301,7 +301,7 @@ class MenuEnvironment {
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
 			ambientTexture: this.ambientTextureCkBox.checked,
-			renderDistance: parseFloat(this.sliderRenderDistance.value),
+			renderDistance: parseInt(this.sliderRenderDistance.value),
 			effectVolume: parseFloat(this.sliderEffectVolume.value),
 		})
 	}
