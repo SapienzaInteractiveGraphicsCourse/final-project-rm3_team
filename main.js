@@ -561,7 +561,8 @@ class gameEnvironment {
 			var boxBody = new CANNON.Body({ mass: 1000 });
 			boxBody.addShape(boxShape);
 			if(!MANAGER.getAmbientTextureRule()){
-				var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				do var randomColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				while(randomColor.length!=7);
 				var material = new THREE.MeshStandardMaterial({color: randomColor});
 			}
 			else {
@@ -1021,7 +1022,8 @@ class gameEnvironment {
 			if(MANAGER.getAmbientTextureRule())
 				var mesh = new THREE.Mesh( boxGeom, this.texture["wall"] );
 			else {
-				var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				do var randColor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+				while(randColor.length!=7);
 				var mesh = new THREE.Mesh(boxGeom, new THREE.MeshStandardMaterial({color: randColor}));
 			}
 			mesh.castShadow = MANAGER.getShadowRule();
