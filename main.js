@@ -95,7 +95,7 @@ class MenuEnvironment {
 		this.settingButton = document.getElementById("settingsButton");
 
 		this.setting = document.getElementById("settings");
-		this.exitSettings = document.getElementById("exitSettings");
+		//this.exitSettings = document.getElementById("exitSettings");
 		this.confirmSettings = document.getElementById("confirmSettings");
 		this.resetSettings = document.getElementById("resetSettings");
 
@@ -163,7 +163,7 @@ class MenuEnvironment {
         }, false);
 	}
 	setUpSettingButton() {
-		this.exitSettings.addEventListener("click", this.exitSetting.bind(this), false);
+		//this.exitSettings.addEventListener("click", this.exitSetting.bind(this), false);
 		this.confirmSettings.addEventListener("click", () => {
 			this.updateAllOptions();
             var currentGameOptions = MANAGER.getGameOptions();

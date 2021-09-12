@@ -480,6 +480,11 @@ body {
 }
 #confirmSettings {
     background: var(--green);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: sans-serif condensed;
+    font-weight: 600;
 }
 #confirmSettings:hover {
     background: rgb(255, 255, 255, 0.5);
@@ -487,6 +492,11 @@ body {
 }
 #resetSettings {
     background: var(--red);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: sans-serif condensed;
+    font-weight: 600;
 }
 #resetSettings:hover {
     background: rgb(255, 255, 255, 0.5);
