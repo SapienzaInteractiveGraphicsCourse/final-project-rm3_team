@@ -19,13 +19,18 @@ export class BossAIController {
 			var distance = this.player.body.position.distanceTo(this.body.position);
 
 			if(this.body.position.y<8) {
-				this.body.velocity.x *= 0.95;
-				this.body.velocity.z *= 0.95;
+				//this.body.velocity.x *= 0.95;
+				//this.body.velocity.z *= 0.95;
+				this.body.velocity.x *= Math.pow(0.95,time/10);
+				this.body.velocity.z *= Math.pow(0.95,time/10);
 			}
 			else {
-				this.body.velocity.x *= 0.99;
-				if(this.body.velocity.y>0) this.body.velocity.y *= 0.99;
-				this.body.velocity.z *= 0.99;
+				//this.body.velocity.x *= 0.99;
+				//if(this.body.velocity.y>0) this.body.velocity.y *= 0.99;
+				//this.body.velocity.z *= 0.99;
+				this.body.velocity.x *= Math.pow(0.99,time/10);
+				if(this.body.velocity.y>0) this.body.velocity.y *= Math.pow(0.99,time/10);
+				this.body.velocity.z *= Math.pow(0.99,time/10);
 			}
 			
 			if(distance<this.maxDistance*1.2){				//From maxDistance*1.2 start to move in player direction

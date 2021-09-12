@@ -288,8 +288,11 @@ export class CharacterController {
         this.quat.setFromEuler(this.euler);
         this.inputVelocity.applyQuaternion(this.quat);
 		if(!this.isMoving) {		//to avoid too much slippage
-			this.velocity.x *= 0.93;
-			this.velocity.z *= 0.93;
+			//this.velocity.x *= 0.93;
+			//this.velocity.z *= 0.93;
+			this.velocity.x *= Math.pow(0.93,time/10);
+			this.velocity.z *= Math.pow(0.93,time/10);
+			
 		}
         // Add to the object
         this.velocity.x += this.inputVelocity.x;

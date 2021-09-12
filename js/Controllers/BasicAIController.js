@@ -18,8 +18,10 @@ export class BasicAIController {
 	update(time) {
 		this.target.position.copy(this.body.position);
 		this.target.position.y += 0.3;
-		this.body.velocity.x *= 0.95;
-		this.body.velocity.z *= 0.95;
+		//this.body.velocity.x *= 0.95;
+		//this.body.velocity.z *= 0.95;
+		this.body.velocity.x *= Math.pow(0.95,time/10);
+		this.body.velocity.z *= Math.pow(0.95,time/10);
 		
 		var distance = this.player.body.position.distanceTo(this.body.position);
 		if(distance<this.maxDistance*3){				//From maxDistance*1.2 start to move in player direction
