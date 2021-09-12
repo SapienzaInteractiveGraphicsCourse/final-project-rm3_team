@@ -38,6 +38,7 @@ class gameManager {
 				useNormalMap: true,
 				shadow: true,
 				ambientTexture: true,
+				renderDistance: 150,
 				effectVolume: 0.7,
 			}
 		}
@@ -65,6 +66,7 @@ class gameManager {
 	getShadowRule() {return this.gameSettings.shadow;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
 	getEffectVolume() {return this.gameSettings.effectVolume;}
+	getRenderDistance() {return this.gameSettings.renderDistance;}
 
 	setGameOptions(options) {this.gameOptions = options;}
 	setGameSettings(settings) {this.gameSettings = settings;}
@@ -112,6 +114,7 @@ class MenuEnvironment {
 		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
 		
 		this.sliderEffectVolume = document.getElementById("sliderEffectVolume");
+		this.sliderRenderDistance = document.getElementById("sliderRenderDistance");
 
 		this.dayButton = document.getElementById("dayButton");
 		this.dayOptions = {
@@ -172,6 +175,7 @@ class MenuEnvironment {
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
 				", shadow:"+curretGameSettings.shadow+
 				", ambientTexture:"+curretGameSettings.ambientTexture+
+				", renderDistance:"+curretGameSettings.renderDistance+
 				", effectVolume:"+curretGameSettings.effectVolume+"};";
 			this.exitSetting();
         }, false);
@@ -209,7 +213,8 @@ class MenuEnvironment {
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
                 ambientTexture: (data[2].split(":")[1] === 'true'),
-                effectVolume: (data[3].split(":")[1]),
+                renderDistance: (data[3].split(":")[1]),
+                effectVolume: (data[4].split(":")[1]),
             });
         }
 
@@ -278,6 +283,7 @@ class MenuEnvironment {
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 		this.shadowCkBox.checked = curGameSettings.shadow;
 		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
+		this.sliderRenderDistance.value = curGameSettings.renderDistance;
 		this.sliderEffectVolume.value = curGameSettings.effectVolume;
 	}
 
@@ -295,6 +301,7 @@ class MenuEnvironment {
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
 			ambientTexture: this.ambientTextureCkBox.checked,
+			renderDistance: parseFloat(this.sliderRenderDistance.value),
 			effectVolume: parseFloat(this.sliderEffectVolume.value),
 		})
 	}
@@ -906,15 +913,15 @@ class gameEnvironment {
 	init() {
 		this.world = this.initCannon();
 		this.camera = [];
-		this.camera.push(new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 0.15, 1000 ));
+		this.camera.push(new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 0.15, MANAGER.getRenderDistance() ));
 
-		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
+		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, MANAGER.getRenderDistance() ));
 		this.camera[1].translateY(1.4)
 		this.camera[1].translateX(0.4)
 		this.camera[1].translateZ(3)
 		this.camera[1].rotation.x = -Math.PI/30;
 
-		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 ));
+		this.camera.push(new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 ));
 		this.camera[2].translateY(80)
 		this.camera[2].translateZ(-5)
 		this.camera[2].rotation.x = -Math.PI/2;
@@ -922,7 +929,6 @@ class gameEnvironment {
 		this.activeCamera = 0;
 
 		this.scene = new SceneFactory(MANAGER.getSkyBox());
-		this.scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 
 		this.bulletManager = new BulletManager({manager: MANAGER, world: this.world, scene: this.scene});
 		this.entityManager = new EntityManager({scene: this.scene, world: this.world, manager: MANAGER,scoreManager: this.scoreManager ,bulletManager: this.bulletManager})
