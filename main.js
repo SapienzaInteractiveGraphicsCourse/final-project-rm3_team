@@ -37,6 +37,7 @@ class gameManager {
 			this.gameSettings = {
 				useNormalMap: true,
 				shadow: true,
+				animation: true,
 				ambientTexture: true,
 				renderDistance: 150,
 				effectVolume: 0.7,
@@ -64,6 +65,7 @@ class gameManager {
 	getGameSettings() {return this.gameSettings;}
 	getNormalMapRule() {return this.gameSettings.useNormalMap;}
 	getShadowRule() {return this.gameSettings.shadow;}
+	getAnimationRule() {return this.gameSettings.animation;}
 	getAmbientTextureRule() {return this.gameSettings.ambientTexture;}
 	getEffectVolume() {return this.gameSettings.effectVolume;}
 	getRenderDistance() {return this.gameSettings.renderDistance;}
@@ -111,6 +113,7 @@ class MenuEnvironment {
 
 		this.normalMapCkBox = document.getElementById("normalMapCkBox");
 		this.shadowCkBox = document.getElementById("shadowCkBox");
+		this.animationCkBox = document.getElementById("animationCkBox");
 		this.ambientTextureCkBox = document.getElementById("ambientTextureCkBox");
 		
 		this.sliderEffectVolume = document.getElementById("sliderEffectVolume");
@@ -174,6 +177,7 @@ class MenuEnvironment {
 				", viewfinder:"+currentGameOptions.viewfinder+"};";
 			document.cookie = "gameSettings={useNormalMap:"+curretGameSettings.useNormalMap+
 				", shadow:"+curretGameSettings.shadow+
+				", animation:"+curretGameSettings.animation+
 				", ambientTexture:"+curretGameSettings.ambientTexture+
 				", renderDistance:"+curretGameSettings.renderDistance+
 				", effectVolume:"+curretGameSettings.effectVolume+"};";
@@ -212,9 +216,10 @@ class MenuEnvironment {
             MANAGER.setGameSettings({
                 useNormalMap: (data[0].split(":")[1] === 'true'),
                 shadow: (data[1].split(":")[1] === 'true'),
-                ambientTexture: (data[2].split(":")[1] === 'true'),
-                renderDistance: parseInt(data[3].split(":")[1]),
-                effectVolume: parseFloat(data[4].split(":")[1]),
+                animation: (data[2].split(":")[1] === 'true'),
+                ambientTexture: (data[3].split(":")[1] === 'true'),
+                renderDistance: parseInt(data[4].split(":")[1]),
+                effectVolume: parseFloat(data[5].split(":")[1]),
             });
         }
 
@@ -282,6 +287,7 @@ class MenuEnvironment {
 		var curGameSettings = MANAGER.getGameSettings();
 		this.normalMapCkBox.checked = curGameSettings.useNormalMap;
 		this.shadowCkBox.checked = curGameSettings.shadow;
+		this.animationCkBox.checked = curGameSettings.animation;
 		this.ambientTextureCkBox.checked = curGameSettings.ambientTexture;
 		this.sliderRenderDistance.value = curGameSettings.renderDistance;
 		this.sliderEffectVolume.value = curGameSettings.effectVolume;
@@ -300,6 +306,7 @@ class MenuEnvironment {
 		MANAGER.setGameSettings({
 			useNormalMap: this.normalMapCkBox.checked,
 			shadow: this.shadowCkBox.checked,
+			animation: this.animationCkBox.checked,
 			ambientTexture: this.ambientTextureCkBox.checked,
 			renderDistance: parseInt(this.sliderRenderDistance.value),
 			effectVolume: parseFloat(this.sliderEffectVolume.value),
@@ -389,8 +396,8 @@ class gameEnvironment {
 
 			this.getBossTexture('character/boss/', MANAGER.getNormalMapRule()),
 
-			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [10, 10]}),
-			this.getTexture('textures/wall.jpg',MANAGER.getNormalMapRule(),{wrapS: 1, wrapT: 1, repeat: [50, 7]}),
+			this.getTexture('textures/terrain2.jpg',MANAGER.getNormalMapRule(),{wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping, repeat: [10, 10]}),
+			this.getTexture('textures/wall.jpg',MANAGER.getNormalMapRule(),{wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping, repeat: [50, 7]}),
 			this.getImages('textures/buildings/building1',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building2',MANAGER.getNormalMapRule()),
 			this.getImages('textures/buildings/building3',MANAGER.getNormalMapRule()),
@@ -475,7 +482,7 @@ class gameEnvironment {
         return myPromise;
     }
 
-	getTexture(path, useNormalMap=false, mode={wrapS: 1, wrapT: 1, repeat: [1, 1]}) {
+	getTexture(path, useNormalMap=false, mode={wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping, repeat: [1, 1]}) {
         const myPromise = new Promise((resolve, reject) => {
             var textureLoader = new THREE.TextureLoader();
             textureLoader.load("./resources/" + path, (img) => {
@@ -881,7 +888,7 @@ class gameEnvironment {
 			this.boxMeshes[i].position.copy(this.boxes[i].position);
 			this.boxMeshes[i].quaternion.copy(this.boxes[i].quaternion);
 		}
-		TWEEN.update()
+		if(MANAGER.getAnimationRule()) TWEEN.update()
 	}
 
 	//Run game loop (update, render, repet)

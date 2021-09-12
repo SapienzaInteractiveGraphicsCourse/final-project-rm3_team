@@ -27,6 +27,9 @@ export class BasicAIController {
 		if(distance<this.maxDistance*3){				//From maxDistance*1.2 start to move in player direction
 			var direction = this.computeDirection();
 			this.target.rotation.y = Math.atan2(-direction.x,-direction.z);
+			direction.x += (Math.random()-0.5)*0.16;
+			direction.y += (Math.random()-0.5)*0.1;
+			direction.z += (Math.random()-0.5)*0.16;
 			if(distance<this.maxDistance*2) {				//From maxDistance start to shot
 				if(this.timeToShot<0) {
 
