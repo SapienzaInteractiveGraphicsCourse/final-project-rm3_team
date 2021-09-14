@@ -5,3 +5,6 @@ An FPS game in which the player is in a fantasy city and its goal is to kill all
 Lorenzo Mattia 1793272
 Luca Maurici 1809678
 Edoardo Montecchiani 1969618
+
+
+![Alt Text](./resources/images/testGame.gif)
