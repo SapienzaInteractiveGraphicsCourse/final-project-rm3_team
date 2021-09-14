@@ -238,7 +238,7 @@ class BossEntity extends Entity {
 		this.scoreManager = params.scoreManager;
 		this.maxDistance = params.maxDistance;
 		this.character = params.character;
-		this.life = 5;
+		this.life = 20;
 		this.alive = true;
 		this.controls = new BossAIController({
 			manager: this.MANAGER,
